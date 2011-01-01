@@ -92,7 +92,8 @@ fiber setup by the API super class. We return the triple of _response_code_, _he
 
 If we save and execute (-s is for standard out logging, -v is verbose logging):
 
-    ruby ./echo.rb -sv
+    dj2@titania ~ $ ruby echo.rb -sv
+    [85201:INFO] 2010-12-31 23:48:09 :: Starting server on 0.0.0.0:9000. Watch out for stones.
 
 We should have an echo server running on port 9000. We can query using curl:
 
