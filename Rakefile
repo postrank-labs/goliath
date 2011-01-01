@@ -39,7 +39,7 @@ Rake::RDocTask.new(:rdoc) do |task|
   task.title    = 'Goliath'
   task.options = %w(--title Goliath --main README --line-numbers)
   task.rdoc_files.include(['lib/**/*.rb'])
-  task.rdoc_files.include(['README'])
+  task.rdoc_files.include(['README', 'LICENSE'])
 end
 
 spec = eval(File.read(File.join(File.dirname(__FILE__), "goliath.gemspec")))
