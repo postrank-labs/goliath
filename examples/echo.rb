@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-$:.unshift("../lib")
-
 require 'rubygems'
 require 'goliath'
 require 'rack/supported_media_types'
