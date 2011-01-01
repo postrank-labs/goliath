@@ -1,4 +1,4 @@
-require 'api/v3/lib/goliath/rack/validation_error'
+require 'goliath/rack/validation_error'
 
 module Goliath
   module Rack

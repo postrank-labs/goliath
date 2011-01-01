@@ -1,5 +1,6 @@
-require 'api/v3/lib/goliath/connection'
-require 'api/v3/lib/goliath/goliath'
+require 'em-synchrony'
+require 'goliath/connection'
+require 'goliath/goliath'
 
 module Goliath
   class Server

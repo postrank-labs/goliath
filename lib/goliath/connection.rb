@@ -1,5 +1,5 @@
-require 'api/v3/lib/goliath/request'
-require 'api/v3/lib/goliath/response'
+require 'goliath/request'
+require 'goliath/response'
 
 module Goliath
   class Connection < EM::Connection

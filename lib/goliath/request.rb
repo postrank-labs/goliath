@@ -1,5 +1,6 @@
-require 'api/v3/ext/goliath_parser/goliath_parser'
-require 'api/v3/lib/goliath/env'
+require 'stringio'
+require 'goliath_parser/goliath_parser'
+require 'goliath/env'
 
 module Goliath
   class Request

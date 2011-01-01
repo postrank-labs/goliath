@@ -1,6 +1,6 @@
-require 'api/v3/lib/goliath/headers'
-require 'api/v3/lib/goliath/request'
-require 'api/v3/lib/goliath/http_status_codes'
+require 'goliath/headers'
+require 'goliath/request'
+require 'goliath/http_status_codes'
 require 'time'
 
 module Goliath

@@ -1,6 +1,7 @@
-require 'api/v3/lib/goliath/goliath'
-require 'api/v3/lib/goliath/server'
+require 'goliath/goliath'
+require 'goliath/server'
 require 'optparse'
+require 'log4r'
 
 module Goliath
   class Runner

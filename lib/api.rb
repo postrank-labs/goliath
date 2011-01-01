@@ -1,4 +1,4 @@
-require 'api/v3/lib/goliath/request'
+require 'goliath/request'
 
 module Goliath
   class API
