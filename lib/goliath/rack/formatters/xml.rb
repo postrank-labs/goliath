@@ -80,6 +80,3 @@ module Goliath
     end
   end
 end
-
-
-

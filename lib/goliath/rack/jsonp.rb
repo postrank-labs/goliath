@@ -1,7 +1,6 @@
 module Goliath
   module Rack
     class JSONP
-
       def initialize(app)
         @app = app
       end

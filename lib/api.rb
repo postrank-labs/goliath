@@ -7,9 +7,6 @@ module Goliath
       @plugins = []
     end
 
-    def options_parser(opts, options)
-    end
-
     def plugins
       plugin
       @plugins
@@ -53,10 +50,12 @@ module Goliath
     def plugin
     end
 
+    def options_parser(opts, options)
+    end
+
     def response(env)
       env.logger.error('You need to implement response')
       [400, {}, {:error => 'No response implemented'}]
     end
-
   end
 end
