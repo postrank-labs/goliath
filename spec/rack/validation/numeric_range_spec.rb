@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation/numeric_range'
+require 'goliath/rack/validation/numeric_range'
 
 describe Goliath::Rack::Validation::NumericRange do
   before(:each) do

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/connection'
+require 'goliath/connection'
 
 describe Goliath::Connection do
   before(:each) do

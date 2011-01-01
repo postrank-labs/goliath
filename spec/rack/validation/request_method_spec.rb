@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation/request_method'
+require 'goliath/rack/validation/request_method'
 
 describe Goliath::Rack::Validation::RequestMethod do
   before(:each) do

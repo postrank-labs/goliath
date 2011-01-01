@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation/required_value'
+require 'goliath/rack/validation/required_value'
 
 describe Goliath::Rack::Validation::RequiredValue do
   it 'accepts an app' do

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/params'
+require 'goliath/rack/params'
 
 describe Goliath::Rack::Params do
   it 'accepts an app' do

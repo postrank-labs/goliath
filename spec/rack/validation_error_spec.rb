@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation_error'
+require 'goliath/rack/validation_error'
 
 describe Goliath::Rack::ValidationError do
   it 'accepts an app' do

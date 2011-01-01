@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/headers'
+require 'goliath/headers'
 
 describe Goliath::Headers do
   before(:each) do

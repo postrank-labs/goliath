@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/render'
-require 'api/v3/lib/goliath/goliath'
+require 'goliath/rack/render'
+require 'goliath/goliath'
 
 describe Goliath::Rack::Render do
   let(:env) do

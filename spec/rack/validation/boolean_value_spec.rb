@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation/boolean_value'
+require 'goliath/rack/validation/boolean_value'
 
 describe Goliath::Rack::Validation::BooleanValue do
   before(:each) do

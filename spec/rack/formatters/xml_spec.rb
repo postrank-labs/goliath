@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/formatters/xml'
+require 'goliath/rack/formatters/xml'
 
 describe Goliath::Rack::Formatters::XML do
   it 'accepts an app' do

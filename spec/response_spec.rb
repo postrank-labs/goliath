@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/response'
+require 'goliath/response'
 
 describe Goliath::Response do
   before(:each) do

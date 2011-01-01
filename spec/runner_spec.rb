@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/runner'
+require 'goliath/runner'
 
 describe Goliath::Runner do
   before(:each) do

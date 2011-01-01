@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/validation/default_params'
+require 'goliath/rack/validation/default_params'
 
 describe Goliath::Rack::Validation::DefaultParams do
   it 'accepts an app' do

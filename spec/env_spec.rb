@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/env'
+require 'goliath/env'
 
 describe Goliath::Env do
   before(:each) do

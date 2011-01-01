@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/formatters/json'
+require 'goliath/rack/formatters/json'
 
 describe Goliath::Rack::Formatters::JSON do
   it 'accepts an app' do

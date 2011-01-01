@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/env'
-require 'api/v3/lib/goliath/rack/default_mime_type'
+require 'goliath/env'
+require 'goliath/rack/default_mime_type'
 
 describe Goliath::Rack::DefaultMimeType do
   let(:app) { mock('app').as_null_object }

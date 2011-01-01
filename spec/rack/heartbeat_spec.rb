@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/rack/heartbeat'
-require 'api/v3/lib/goliath/env'
+require 'goliath/rack/heartbeat'
+require 'goliath/env'
 
 describe Goliath::Rack::Heartbeat do
   it 'accepts an app' do

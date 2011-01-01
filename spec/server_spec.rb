@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'api/v3/lib/goliath/server'
+require 'goliath/server'
 
 describe Goliath::Server do
   before(:each) do
