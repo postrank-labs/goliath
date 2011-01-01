@@ -4,3 +4,4 @@ mkmf.log
 *.bundle
 doc/
 pkg/
+examples/log
