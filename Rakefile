@@ -37,9 +37,9 @@ desc 'Generate RDoc documentation'
 Rake::RDocTask.new(:rdoc) do |task|
   task.rdoc_dir = 'doc'
   task.title    = 'Goliath'
-  task.options = %w(--title Goliath --main README --line-numbers)
+  task.options = %w(--title Goliath --main README.md --line-numbers)
   task.rdoc_files.include(['lib/**/*.rb'])
-  task.rdoc_files.include(['README', 'LICENSE'])
+  task.rdoc_files.include(['README.md', 'LICENSE'])
 end
 
 spec = eval(File.read(File.join(File.dirname(__FILE__), "goliath.gemspec")))
