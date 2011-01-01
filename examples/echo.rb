@@ -22,7 +22,7 @@ class Echo < Goliath::API
 
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
 
-    use Goliath::Rack::Validation::RequiredParam, {:key => 'echo', :type => 'Echo'}
+    use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}
   end
 
   def response(env)

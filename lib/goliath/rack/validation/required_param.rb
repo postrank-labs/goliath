@@ -8,8 +8,8 @@ module Goliath
 
         def initialize(app, opts = {})
           @app = app
-          @type = opts[:type] || 'Feed'
           @key = opts[:key] || 'id'
+          @type = opts[:type] || @key.capitalize
         end
 
         def call(env)
