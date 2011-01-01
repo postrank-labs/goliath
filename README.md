@@ -104,6 +104,11 @@ We should have an echo server running on port 9000. We can query using curl:
 
 You can also query the _/status_ endpoint.
 
+    dj2@titania ~ $ curl "localhost:9000/status"
+    {
+      "status": "OK"
+    }
+
 ***
 
 ## Help and Documentation
