@@ -92,14 +92,14 @@ fiber setup by the API super class. We return the triple of _response_code_, _he
 
 If we save and execute (-s is for standard out logging, -v is verbose logging):
 
-  ruby ./echo.rb -sv
+    ruby ./echo.rb -sv
 
 We should have an echo server running on port 9000. We can query using curl:
 
-  dj2@titania ~ $ curl "localhost:9000?echo=Calling%20Goliath"
-  {
-    "response": "Calling Goliath"
-  }
+    dj2@titania ~ $ curl "localhost:9000?echo=Calling%20Goliath"
+    {
+      "response": "Calling Goliath"
+    }
 
 You can also query the _/status_ endpoint.
 
