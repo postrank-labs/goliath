@@ -2,3 +2,5 @@ Makefile
 mkmf.log
 *.o
 *.bundle
+doc/
+pkg/
