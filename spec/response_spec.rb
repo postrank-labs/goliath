@@ -1,0 +1,35 @@
+require 'spec_helper'
+require 'api/v3/lib/goliath/response'
+
+describe Goliath::Response do
+  before(:each) do
+    @r = Goliath::Response.new
+  end
+
+  it 'allows setting status' do
+    @r.status = 400
+    @r.status.should == 400
+  end
+
+  it 'allows setting headers' do
+    @r.headers = [['my_key', 'my_headers']]
+    @r.headers.to_s.should == "my_key: my_headers\r\n"
+  end
+
+  it 'allows setting body' do
+    @r.body = 'my body'
+    @r.body.should == 'my body'
+  end
+
+  it 'sets a default status' do
+    @r.status.should == 200
+  end
+
+  it 'sets default headers' do
+    @r.headers.should_not be_nil
+  end
+
+  it 'outputs the http header' do
+    @r.head.should == "HTTP/1.1 200 OK\r\n"
+  end
+end

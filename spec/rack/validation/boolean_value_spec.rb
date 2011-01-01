@@ -1,0 +1,54 @@
+require 'spec_helper'
+require 'api/v3/lib/goliath/rack/validation/boolean_value'
+
+describe Goliath::Rack::Validation::BooleanValue do
+  before(:each) do
+    @app = mock('app').as_null_object
+    @env = {'params' => {}}
+  end
+
+  describe 'with middleware' do
+    before(:each) do
+      @bv = Goliath::Rack::Validation::BooleanValue.new(@app, {:key => 'id', :default => true})
+    end
+
+    it 'uses the default if the key is not present' do
+      @bv.call(@env)
+      @env['params']['id'].should == true
+    end
+
+    it 'uses the default if the key is nil' do
+      @env['params']['id'] = nil
+      @bv.call(@env)
+      @env['params']['id'].should == true
+    end
+
+    it 'uses the default if the key is blank' do
+      @env['params']['id'] = ""
+      @bv.call(@env)
+      @env['params']['id'].should == true
+    end
+
+    it 'a random value is false' do
+      @env['params']['id'] = 'blarg'
+      @bv.call(@env)
+      @env['params']['id'].should == false
+    end
+
+    %w(t true TRUE T 1).each do |type|
+      it "considers #{type} true" do
+        @env['params']['id'] = type
+        @bv.call(@env)
+        @env['params']['id'].should == true
+      end
+    end
+
+    %w(f false FALSE F 0).each do |type|
+      it "considers #{type} false" do
+        @env['params']['id'] = type
+        @bv.call(@env)
+        @env['params']['id'].should == false
+      end
+    end
+  end
+end

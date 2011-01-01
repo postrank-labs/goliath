@@ -1,0 +1,7 @@
+require 'rubygems'
+require 'eventmachine'
+require 'log4r'
+require 'rack'
+require 'nokogiri'
+require 'time'
+require 'json'

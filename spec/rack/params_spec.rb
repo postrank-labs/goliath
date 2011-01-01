@@ -1,0 +1,94 @@
+require 'spec_helper'
+require 'api/v3/lib/goliath/rack/params'
+
+describe Goliath::Rack::Params do
+  it 'accepts an app' do
+    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error(Exception)
+  end
+
+  describe 'with middleware' do
+    before(:each) do
+      @app = mock('app').as_null_object
+      @env = {}
+      @params = Goliath::Rack::Params.new(@app)
+    end
+
+    it 'parses the query string' do
+      @env['QUERY_STRING'] = 'foo=bar&baz=bonkey'
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].should == 'bar'
+      ret['baz'].should == 'bonkey'
+    end
+
+    it 'parses the post body' do
+      @env['rack.input'] = StringIO.new
+      @env['rack.input'] << "foo=bar&baz=bonkey"
+      @env['rack.input'].rewind
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].should == 'bar'
+      ret['baz'].should == 'bonkey'
+    end
+
+    it 'parses arrays of data' do
+      @env['QUERY_STRING'] = 'foo[]=bar&foo[]=baz&foo[]=foos'
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].is_a?(Array).should be_true
+      ret['foo'].length.should == 3
+      ret['foo'].should == %w(bar baz foos)
+    end
+
+    it 'combines query string and post body params' do
+      @env['QUERY_STRING'] = "baz=bar"
+
+      @env['rack.input'] = StringIO.new
+      @env['rack.input'] << "foos=bonkey"
+      @env['rack.input'].rewind
+
+      ret = @params.retrieve_params(@env)
+      ret['baz'].should == 'bar'
+      ret['foos'].should == 'bonkey'
+    end
+
+    it 'handles empty query and post body' do
+      ret = @params.retrieve_params(@env)
+      ret.is_a?(Hash).should be_true
+      ret.should be_empty
+    end
+
+    it 'prefers post body over query string' do
+      @env['QUERY_STRING'] = "foo=bar1&baz=bar"
+
+      @env['rack.input'] = StringIO.new
+      @env['rack.input'] << "foo=bar2&baz=bonkey"
+      @env['rack.input'].rewind
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].should == 'bar2'
+      ret['baz'].should == 'bonkey'
+    end
+
+    it 'sets the params into the environment' do
+      @app.should_receive(:call).with do |app_env|
+        app_env.has_key?('params').should be_true
+        app_env['params']['a'].should == 'b'
+      end
+
+      @env['QUERY_STRING'] = "a=b"
+      @params.call(@env)
+    end
+
+    it 'returns status, headers and body from the app' do
+      app_headers = {'Content-Type' => 'hash'}
+      app_body = {:a => 1, :b => 2}
+      @app.should_receive(:call).and_return([200, app_headers, app_body])
+
+      status, headers, body = @params.call(@env)
+      status.should == 200
+      headers.should == app_headers
+      body.should == app_body
+    end
+  end
+end

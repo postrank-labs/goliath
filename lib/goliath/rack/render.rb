@@ -1,0 +1,59 @@
+require 'rack/mime'
+require 'rack/respond_to'
+
+module Goliath
+  module Rack
+    class Render
+      include ::Rack::RespondTo
+
+      def initialize(app)
+        @app = app
+      end
+
+      def call(env)
+        async_cb = env['async.callback']
+
+        env['async.callback'] = Proc.new do |status, headers, body|
+          async_cb.call(post_process(env, status, headers, body))
+        end
+
+        status, headers, body = @app.call(env)
+        post_process(env, status, headers, body)
+      end
+
+      def post_process(env, status, headers, body)
+        ::Rack::RespondTo.env = env
+
+        # the respond_to block is what actually triggers the
+        # setting of selected_media_type, so it's required
+
+        respond_to do |format|
+          format.json { body }
+          format.html { body }
+          format.xml { body }
+          format.rss { body }
+          format.js { body }
+        end
+
+        extra = { 'Content-Type' => get_content_type(env),
+                  'Server' => 'PostRank Goliath API Server',
+                  'Vary' => [headers.delete('Vary'), 'Accept'].compact.join(',') }
+
+        [status, extra.merge(headers), body]
+      end
+
+      def get_content_type(env)
+        fmt = env.params['format']
+        fmt = fmt.last if fmt.is_a?(Array)
+
+        type = if fmt.nil? || fmt =~ /^\s*$/
+          ::Rack::RespondTo.selected_media_type
+        else
+          ::Rack::RespondTo::MediaType(fmt)
+        end
+
+        "#{type}; charset=utf-8"
+      end
+    end
+  end
+end
