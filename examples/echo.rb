@@ -7,7 +7,6 @@ require 'rack/abstract_format'
 
 class Echo < Goliath::API
   def middleware
-    use Rack::ContentLength
     use Goliath::Rack::Params
 
     use Rack::AbstractFormat
