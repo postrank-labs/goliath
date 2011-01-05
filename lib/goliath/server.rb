@@ -43,7 +43,6 @@ module Goliath
 
     def load_config_file(file)
       config = @config
-      status = @status
       options = self.options
       return unless File.exists?(file)
       eval(IO.read(file))
