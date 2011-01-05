@@ -2,9 +2,9 @@ require 'rubygems'
 require 'rake'
 require 'rake/rdoctask'
 require 'rake/testtask'
-require 'spec/rake/spectask'
 require 'rake/clean'
 require 'rake/gempackagetask'
+require 'rspec/core/rake_task'
 
 CLEAN.include %w(**/*.{o,bundle,so,obj,lib,log} ext/*/Makefile ext/*/conftest.dSYM)
 
@@ -29,8 +29,9 @@ end
 task :default => [:spec]
 
 desc "run spec tests"
-Spec::Rake::SpecTask.new('spec') do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
+RSpec::Core::RakeTask.new('spec') do |t|
+  t.rspec_opts = ['-I', 'ext']
+  t.pattern = 'spec/**/*_spec.rb'
 end
 
 desc 'Generate RDoc documentation'
