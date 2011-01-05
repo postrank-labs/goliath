@@ -2,17 +2,12 @@
 
 require 'rubygems'
 require 'goliath'
-require 'rack/supported_media_types'
-require 'rack/abstract_format'
 
 class Echo < Goliath::API
   def middleware
     use Goliath::Rack::Params
 
-    use Rack::AbstractFormat
-
     use Goliath::Rack::DefaultMimeType
-    use Rack::SupportedMediaTypes, %w{application/json}
 
     use Goliath::Rack::Formatters::JSON
 
