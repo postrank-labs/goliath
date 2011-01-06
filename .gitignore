@@ -5,3 +5,4 @@ mkmf.log
 doc/
 pkg/
 examples/log
+*.swp
