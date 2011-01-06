@@ -1,0 +1,43 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    async-rack (0.5.0)
+      rack (~> 1.1)
+    diff-lcs (1.1.2)
+    em-synchrony (0.2.0)
+      eventmachine (>= 0.12.9)
+    eventmachine (0.12.10)
+    log4r (1.1.9)
+    nokogiri (1.4.4)
+    query_string_parser (0.1.1)
+    rack (1.2.1)
+    rack-accept-media-types (0.9)
+    rack-contrib (1.1.0)
+      rack (>= 0.9.1)
+    rack-respond_to (0.9.8)
+      rack-accept-media-types (>= 0.6)
+    rspec (2.4.0)
+      rspec-core (~> 2.4.0)
+      rspec-expectations (~> 2.4.0)
+      rspec-mocks (~> 2.4.0)
+    rspec-core (2.4.0)
+    rspec-expectations (2.4.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.4.0)
+    yajl-ruby (0.7.8)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  async-rack
+  em-synchrony
+  eventmachine
+  log4r
+  nokogiri
+  query_string_parser
+  rack
+  rack-contrib
+  rack-respond_to
+  rspec
+  yajl-ruby
