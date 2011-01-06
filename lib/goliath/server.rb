@@ -49,17 +49,16 @@ module Goliath
     end
 
     def config_dir
-      "#{File.dirname(__FILE__)}/../../config"
+      "#{File.expand_path(File.dirname($0))}/config"
     end
 
-    def service(name)
-      file = "#{config_dir}/services/#{Goliath.env}/#{name}.rb"
+    def import(name)
+      file = "#{config_dir}/#{name}.rb"
       load_config_file(file)
     end
 
-    def load_environment_config
-      file = "#{config_dir}/environments/#{Goliath.env}/#{File.basename($0)}"
-      load_config_file(file)
+    def environment(type, &blk)
+      blk.call if type.to_sym == Goliath.env.to_sym
     end
 
     def load_config
@@ -67,7 +66,6 @@ module Goliath
 
       file = "#{config_dir}/#{File.basename($0)}"
       load_config_file(file)
-      load_environment_config
 
       @config
     end
