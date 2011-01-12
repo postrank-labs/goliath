@@ -1,6 +1,6 @@
 # Goliath
 
-Goliath is an API framework. Goliath is designed to serve a single type of API, bit it a
+Goliath is an API framework. Goliath is designed to serve a single type of API, be it a
 feed API, log API or search API. While similar to Rails and Sinatra, Goliath is more inclined
 to return JSON or XML responses instead of HTML. Goliath sits behind your Sinatra or Rails
 application and feeds data back them for display.
