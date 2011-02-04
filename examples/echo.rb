@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'lib/goliath'
-require 'lib/goliath/plugins/latency'
+require 'goliath'
+require 'goliath/plugins/latency'
 
 class Echo < Goliath::API
   use Goliath::Rack::Params

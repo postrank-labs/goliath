@@ -25,8 +25,7 @@ module Goliath
 
         EM.epoll
 
-        @config = load_config
-
+        load_config
         load_plugins
 
         EM.start_server(address, port, Goliath::Connection) do |conn|
@@ -41,9 +40,9 @@ module Goliath
       end
     end
 
-    def load_config_file(file)
-      config = @config
-      options = self.options
+    def load_config(file = nil)
+      file ||= "#{config_dir}/#{File.basename($0)}"
+
       return unless File.exists?(file)
       eval(IO.read(file))
     end
@@ -54,20 +53,11 @@ module Goliath
 
     def import(name)
       file = "#{config_dir}/#{name}.rb"
-      load_config_file(file)
+      load_config(file)
     end
 
     def environment(type, &blk)
       blk.call if type.to_sym == Goliath.env.to_sym
-    end
-
-    def load_config
-      @config = {}
-
-      file = "#{config_dir}/#{File.basename($0)}"
-      load_config_file(file)
-
-      @config
     end
 
     def load_plugins
