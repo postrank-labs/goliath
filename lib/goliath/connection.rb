@@ -19,11 +19,6 @@ module Goliath
     def receive_data(data)
       request.parse(data)
       process if request.finished?
-    rescue Goliath::InvalidRequest => e
-      logger.error("INVALID REQUEST #{e.message}, #{e.backtrace}")
-      logger.error(data)
-
-      post_process([400, {}, 'Invalid Request'])
     end
 
     def process
