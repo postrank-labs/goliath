@@ -12,9 +12,10 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'eventmachine', '>=0.12'
   s.add_dependency 'em-synchrony'
+  s.add_dependency 'http_parser.rb'
 
-  s.add_dependency 'async-rack' # :git => "git://github.com/dj2/async-rack.git"
   s.add_dependency 'rack'
+  s.add_dependency 'async-rack'
   s.add_dependency 'rack-contrib'
   s.add_dependency 'rack-respond_to'
 
@@ -23,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'query_string_parser'
 
   s.add_development_dependency 'rspec'
+  s.add_development_dependency 'nokogiri'
 
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- spec/*`.split("\n")

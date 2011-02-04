@@ -80,15 +80,6 @@ describe Goliath::Connection do
       @c.should_not_receive(:process)
       @c.receive_data('more_data')
     end
-
-    it "handles an invalid request" do
-      request_mock = mock("request").as_null_object
-      request_mock.should_receive(:finished?).and_raise(Goliath::InvalidRequest)
-
-      @c.logger = mock("logger").as_null_object
-      @c.request = request_mock
-      lambda { @c.receive_data('more_data') }.should_not raise_error
-    end
   end
 
   describe 'process' do

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'goliath'
+# require 'rubygems'
+require 'lib/goliath'
 
 class Echo < Goliath::API
   def middleware

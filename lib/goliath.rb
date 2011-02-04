@@ -2,6 +2,7 @@ $:.unshift("../ext")
 
 require 'rubygems'
 require 'eventmachine'
+require 'http/parser'
 
 require 'goliath/goliath'
 require 'goliath/runner'

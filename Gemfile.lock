@@ -1,3 +1,18 @@
+PATH
+  remote: .
+  specs:
+    goliath (0.0.1)
+      async-rack
+      em-synchrony
+      eventmachine (>= 0.12)
+      http_parser.rb
+      log4r
+      query_string_parser
+      rack
+      rack-contrib
+      rack-respond_to
+      yajl-ruby
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -7,6 +22,7 @@ GEM
     em-synchrony (0.2.0)
       eventmachine (>= 0.12.9)
     eventmachine (0.12.10)
+    http_parser.rb (0.5.1)
     log4r (1.1.9)
     nokogiri (1.4.4)
     query_string_parser (0.1.1)
@@ -24,7 +40,7 @@ GEM
     rspec-expectations (2.4.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.4.0)
-    yajl-ruby (0.7.8)
+    yajl-ruby (0.7.9)
 
 PLATFORMS
   ruby
@@ -32,7 +48,9 @@ PLATFORMS
 DEPENDENCIES
   async-rack
   em-synchrony
-  eventmachine
+  eventmachine (>= 0.12)
+  goliath!
+  http_parser.rb
   log4r
   nokogiri
   query_string_parser
