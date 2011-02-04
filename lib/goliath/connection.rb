@@ -7,7 +7,6 @@ module Goliath
     attr_reader :logger, :status, :config, :options
 
     AsyncResponse = [-1, {}, []].freeze
-    StatusPath = '/status'.freeze
 
     def post_init
       self.request = Goliath::Request.new
@@ -28,9 +27,6 @@ module Goliath
     end
 
     def process
-      unless request.env['PATH_INFO'] == StatusPath
-        logger.info("Processing #{request.env['REQUEST_METHOD']} #{request.env['PATH_INFO']}?#{request.env['QUERY_STRING']}")
-      end
       post_process(@app.call(@request.env))
 
     rescue Exception => e
@@ -40,11 +36,9 @@ module Goliath
 
     def async_process(results)
       @response.status, @response.headers, @response.body = *results
-      unless request.env['PATH_INFO'] == StatusPath
-        logger.info("Async status: #{@response.status}, " +
-                    "Content-Length: #{@response.headers['Content-Length']}, " +
-                    "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
-      end
+      logger.info("Async status: #{@response.status}, " +
+                  "Content-Length: #{@response.headers['Content-Length']}, " +
+                  "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
 
       send_response
       terminate_request
@@ -55,9 +49,7 @@ module Goliath
       return if async_response?(results)
 
       @response.status, @response.headers, @response.body = *results
-      logger.info("Sync status #{@response.status}") unless request.env['PATH_INFO'] == StatusPath
       logger.info("Sync body #{@response.body_str.inspect}") unless @response.status == 200
-
       logger.debug("nil body? really?") if @response.body.nil?
 
       send_response
