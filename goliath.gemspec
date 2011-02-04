@@ -2,10 +2,10 @@ Gem::Specification.new do |s|
   s.name = 'goliath'
   s.version = '0.0.1'
   s.platform = Gem::Platform::RUBY
-  s.authors = ['dan sinclair']
-  s.email = ['dj2@everburning.com']
-  s.homepage = 'http://labs.postrank.com'
-  s.summary = 'Framework for writting API servers'
+  s.authors = ['Dan Sinclair', 'Ilya Grigorik']
+  s.email = ['dj2@everburning.com', 'ilya@igvita.com']
+  s.homepage = 'http://labs.postrank.com/'
+  s.summary = 'Framework for writing API servers'
   s.description = s.summary
 
   s.required_ruby_version = '>=1.9.2'
