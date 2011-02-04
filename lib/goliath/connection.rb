@@ -31,12 +31,15 @@ module Goliath
 
     def async_process(results)
       @response.status, @response.headers, @response.body = *results
-      logger.info("Async status: #{@response.status}, " +
-                  "Content-Length: #{@response.headers['Content-Length']}, " +
-                  "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
-
+      log_request(:async, @response)
       send_response
       terminate_request
+    end
+
+    def log_request(type, response)
+      logger.info("#{type} status: #{@response.status}, " +
+                  "Content-Length: #{@response.headers['Content-Length']}, " +
+                  "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
     end
 
     def post_process(results)
@@ -44,9 +47,7 @@ module Goliath
       return if async_response?(results)
 
       @response.status, @response.headers, @response.body = *results
-      logger.info("Sync body #{@response.body_str.inspect}") unless @response.status == 200
-      logger.debug("nil body? really?") if @response.body.nil?
-
+      log_request(:sync, @response)
       send_response
 
     rescue Exception => e
