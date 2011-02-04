@@ -82,7 +82,8 @@ module Goliath
 
     def self.run!
       f = File.basename(app_file, '.rb')
-      s = Kernel.const_get(camel_case(f)).new
+      c = Kernel.const_get(camel_case(f))
+      s = c.new
 
       g = Goliath::Runner.new
 
@@ -92,14 +93,13 @@ module Goliath
 
       g.set_options(@options)
       g.load_app do
-        s.middlewares.each do |mw|
+        c.middlewares.each do |mw|
           use(*(mw[0..1].compact), &mw[2])
         end
         run s
       end
 
-      g.load_plugins(s.plugins)
-
+      g.load_plugins(c.plugins)
       g.run
     end
   end

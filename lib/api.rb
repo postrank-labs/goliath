@@ -2,29 +2,19 @@ require 'goliath/request'
 
 module Goliath
   class API
-    def initialize
-      @middlewares = []
-      @plugins = []
-    end
 
-    def plugins
-      plugin
-      @plugins
-    end
+    class << self
+      def middlewares; @middlewares; end
+      def use(name, args = nil, &block)
+        @middlewares ||= [[::Rack::ContentLength, nil, nil]]
+        @middlewares.push([name, args, block])
+      end
 
-    def load(name, *args)
-      @plugins.push([name, args])
-    end
-
-    def use(name, args = nil, &block)
-      @middlewares.push([name, args, block])
-    end
-
-    def middlewares
-      use ::Rack::ContentLength
-
-      middleware
-      @middlewares
+      def plugins; @plugins || []; end
+      def plugin(name, *args)
+        @plugins ||= []
+        @plugins.push([name, args])
+      end
     end
 
     def call(env)
@@ -42,12 +32,6 @@ module Goliath
       }.resume
 
       Goliath::Connection::AsyncResponse
-    end
-
-    def middleware
-    end
-
-    def plugin
     end
 
     def options_parser(opts, options)
