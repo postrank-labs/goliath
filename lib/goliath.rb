@@ -3,6 +3,7 @@ $:.unshift("../ext")
 require 'rubygems'
 require 'eventmachine'
 require 'http/parser'
+require 'async_rack'
 
 require 'goliath/version'
 require 'goliath/goliath'

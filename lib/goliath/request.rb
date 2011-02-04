@@ -14,10 +14,7 @@ module Goliath
     SERVER          = 'Goliath'.freeze
 
     HTTP_PREFIX     = 'HTTP_'.freeze
-    SERVER_NAME     = 'SERVER_NAME'.freeze
     LOCALHOST       = 'localhost'.freeze
-    REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
-    CONTENT_LENGTH  = 'CONTENT_LENGTH'.freeze
     LOGGER          = 'logger'.freeze
     STATUS          = 'status'.freeze
     CONFIG          = 'config'.freeze
@@ -34,11 +31,15 @@ module Goliath
     ASYNC_CALLBACK  = 'async.callback'.freeze
     ASYNC_CLOSE     = 'async.close'.freeze
 
+    SERVER_NAME     = 'SERVER_NAME'.freeze
+    REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
+    CONTENT_LENGTH  = 'CONTENT_LENGTH'.freeze
     REQUEST_METHOD  = 'REQUEST_METHOD'.freeze
     REQUEST_URI     = 'REQUEST_URI'.freeze
     QUERY_STRING    = 'QUERY_STRING'.freeze
     HTTP_VERSION    = 'HTTP_VERSION'.freeze
     REQUEST_PATH    = 'REQUEST_PATH'.freeze
+    PATH_INFO       = 'PATH_INFO'.freeze
     FRAGMENT        = 'FRAGMENT'.freeze
 
     def initialize(options = {})
@@ -69,6 +70,7 @@ module Goliath
         self.env[QUERY_STRING]    = @parser.query_string
         self.env[HTTP_VERSION]    = @parser.http_version.join('.')
         self.env[REQUEST_PATH]    = @parser.request_path
+        self.env[PATH_INFO]       = @parser.request_path
         self.env[FRAGMENT]        = @parser.fragment
       end
 

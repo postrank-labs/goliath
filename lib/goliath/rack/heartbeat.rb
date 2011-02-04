@@ -7,8 +7,7 @@ module Goliath
 
       def call(env)
         if env['PATH_INFO'] == '/status'
-          env.status[:status] = 'OK'
-          [200, {}, env.status]
+          [200, {}, 'OK']
         else
           @app.call(env)
         end

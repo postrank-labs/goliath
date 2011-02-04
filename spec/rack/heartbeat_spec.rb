@@ -41,7 +41,7 @@ describe Goliath::Rack::Heartbeat do
       status, headers, body = @hb.call(@env)
       status.should == 200
       headers.should == {}
-      body.should == @env['status']
+      body.should == 'OK'
     end
   end
 end

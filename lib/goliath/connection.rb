@@ -31,6 +31,7 @@ module Goliath
 
     def async_process(results)
       @response.status, @response.headers, @response.body = *results
+
       log_request(:async, @response)
       send_response
       terminate_request
