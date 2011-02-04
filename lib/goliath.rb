@@ -4,6 +4,7 @@ require 'rubygems'
 require 'eventmachine'
 require 'http/parser'
 
+require 'goliath/version'
 require 'goliath/goliath'
 require 'goliath/runner'
 require 'goliath/server'
@@ -32,6 +33,6 @@ require 'goliath/rack/validation/numeric_range'
 require 'goliath/rack/validation/default_params'
 require 'goliath/rack/validation/boolean_value'
 
-require 'api'
+require 'goliath/api'
 
 require 'goliath/application'

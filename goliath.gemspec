@@ -1,6 +1,10 @@
+# -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require 'goliath/version'
+
 Gem::Specification.new do |s|
   s.name = 'goliath'
-  s.version = '0.0.1'
+  s.version = Goliath::VERSION
   s.platform = Gem::Platform::RUBY
   s.authors = ['Dan Sinclair', 'Ilya Grigorik']
   s.email = ['dj2@everburning.com', 'ilya@igvita.com']

@@ -53,7 +53,7 @@ module Goliath
       logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
 
     ensure
-      terminate_request unless async_response?(results)
+      terminate_request if not async_response?(results)
     end
 
     def send_response

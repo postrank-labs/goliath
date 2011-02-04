@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'lib/goliath'
+require 'lib/goliath/plugins/latency'
 
 class Echo < Goliath::API
   use Goliath::Rack::Params
@@ -13,6 +14,8 @@ class Echo < Goliath::API
 
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
   use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}
+
+  plugin Goliath::Plugin::Latency
 
   def response(env)
     [200, {}, {:response => env.params['echo']}]
