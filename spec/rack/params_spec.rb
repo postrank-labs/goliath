@@ -32,7 +32,7 @@ describe Goliath::Rack::Params do
     end
 
     it 'parses arrays of data' do
-      @env['QUERY_STRING'] = 'foo[]=bar&foo[]=baz&foo[]=foos'
+      @env['QUERY_STRING'] = 'foo=bar&foo=baz&foo=foos'
 
       ret = @params.retrieve_params(@env)
       ret['foo'].is_a?(Array).should be_true

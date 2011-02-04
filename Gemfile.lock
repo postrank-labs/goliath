@@ -7,11 +7,9 @@ PATH
       eventmachine (>= 0.12)
       http_parser.rb
       log4r
-      query_string_parser
       rack
       rack-contrib
       rack-respond_to
-      yajl-ruby
 
 GEM
   remote: http://rubygems.org/
@@ -25,7 +23,6 @@ GEM
     http_parser.rb (0.5.1)
     log4r (1.1.9)
     nokogiri (1.4.4)
-    query_string_parser (0.1.1)
     rack (1.2.1)
     rack-accept-media-types (0.9)
     rack-contrib (1.1.0)
@@ -53,7 +50,6 @@ DEPENDENCIES
   http_parser.rb
   log4r
   nokogiri
-  query_string_parser
   rack
   rack-contrib
   rack-respond_to

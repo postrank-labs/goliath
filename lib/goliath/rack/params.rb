@@ -1,9 +1,8 @@
-require 'query_string_parser'
+require 'rack/utils'
 
 module Goliath
   module Rack
     class Params
-      include QueryStringParser
 
       def initialize(app)
         @app = app
@@ -16,8 +15,8 @@ module Goliath
 
       def retrieve_params(env)
         params = {}
-        params.merge!(qs_parse(env['QUERY_STRING']))
-        params.merge!(qs_parse(env['rack.input'].read)) unless env['rack.input'].nil?
+        params.merge!(::Rack::Utils.parse_query(env['QUERY_STRING']))
+        params.merge!(::Rack::Utils.parse_query(env['rack.input'].read)) unless env['rack.input'].nil?
         params
       end
     end
