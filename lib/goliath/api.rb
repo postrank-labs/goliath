@@ -4,16 +4,20 @@ module Goliath
   class API
 
     class << self
-      def middlewares; @middlewares; end
-      def use(name, args = nil, &block)
+      def middlewares
         @middlewares ||= [[::Rack::ContentLength, nil, nil]]
-        @middlewares.push([name, args, block])
       end
 
-      def plugins; @plugins || []; end
-      def plugin(name, *args)
+      def use(name, args = nil, &block)
+        middlewares.push([name, args, block])
+      end
+
+      def plugins
         @plugins ||= []
-        @plugins.push([name, args])
+      end
+
+      def plugin(name, *args)
+        plugins.push([name, args])
       end
     end
 
