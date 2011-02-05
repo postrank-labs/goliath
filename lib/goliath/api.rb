@@ -24,8 +24,7 @@ module Goliath
     def call(env)
       Fiber.new {
         begin
-          status, headers, response = response(env)
-          env[Goliath::Request::ASYNC_CALLBACK].call([status, headers, response])
+          env[Goliath::Request::ASYNC_CALLBACK].call(response(env))
 
         rescue Exception => e
           env.logger.error(e.message)
