@@ -29,7 +29,6 @@ some short cuts in order to get what we want out of the framework.
  * Rack-Respond_to
  * Log4r
  * Yajl
- * query\_string\_parser
 
 ***
 
@@ -46,24 +45,22 @@ in order to show some of the features in the framework.
     require 'rack/abstract_format'
 
     class Echo < Goliath::API
-      def middleware
-        use Goliath::Rack::Params
+      use Goliath::Rack::Params
 
-        use Rack::AbstractFormat
+      use Rack::AbstractFormat
 
-        use Goliath::Rack::DefaultMimeType
-        use Rack::SupportedMediaTypes, %w{application/json}
+      use Goliath::Rack::DefaultMimeType
+      use Rack::SupportedMediaTypes, %w{application/json}
 
-        use Goliath::Rack::Formatters::JSON
+      use Goliath::Rack::Formatters::JSON
 
-        use Goliath::Rack::Render
-        use Goliath::Rack::Heartbeat
-        use Goliath::Rack::ValidationError
+      use Goliath::Rack::Render
+      use Goliath::Rack::Heartbeat
+      use Goliath::Rack::ValidationError
 
-        use Goliath::Rack::Validation::RequestMethod, %w(GET)
+      use Goliath::Rack::Validation::RequestMethod, %w(GET)
 
-        use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}
-      end
+      use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}
 
       def response(env)
         [200, {}, {:response => env.params['echo']}]
@@ -74,9 +71,9 @@ So, what's going on here. First off, skipping the requires, all Goliath applicat
 inherit from `Goliath::API`. This will do some initial setup for us and create the _Fiber_
 that the API will execute within.
 
-Next up we setup the middleware we want to use. The middlewares are defined directly
-inside the API file in the `def middleware` function. By default, `Rack::ContentLength` will
-be included in all applications. The Goliath middleware are:
+Next up we setup the middleware we want to use. The middleware is defined directly
+inside the API file. By default, `Rack::ContentLength` will be included in all applications.
+The Goliath middleware are:
 
  * __Goliath::Rack::Params__ : The default params parser. Will setup env.params for us with the URL and POST parameters.
  * __Goliath::Rack::DefaultMimeType__ : Makes sure a MIME type is always specified.
@@ -113,7 +110,7 @@ You can also query the _/status_ endpoint.
 
 ## Help and Documentation
 
-* [GitHub repo](https://github.com/dj2/Goliath)
+* [GitHub repo](https://github.com/postrank-labs/goliath)
 
 ***
 
