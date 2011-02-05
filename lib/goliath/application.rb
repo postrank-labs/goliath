@@ -27,7 +27,9 @@ module Goliath
     end
 
     def self.app_file
-      caller_files.first || $0
+      c = caller_files.first
+      c = $0 if !c || c.empty?
+      c
     end
 
     def self.options_parser
