@@ -6,8 +6,9 @@ module Goliath
     class Render
       include ::Rack::RespondTo
 
-      def initialize(app)
+      def initialize(app, types = nil)
         @app = app
+        ::Rack::RespondTo.media_types = [types].flatten if types
       end
 
       def call(env)
