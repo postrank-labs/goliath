@@ -1,5 +1,5 @@
-
 config['global'] = 'my global'
+config['test'] = options[:test]
 
 import('shared')
 
