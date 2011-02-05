@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name = 'goliath'
   s.version = Goliath::VERSION
   s.platform = Gem::Platform::RUBY
-  s.authors = ['Dan Sinclair', 'Ilya Grigorik']
+  s.authors = ['dan sinclair', 'Ilya Grigorik']
   s.email = ['dj2@everburning.com', 'ilya@igvita.com']
   s.homepage = 'http://labs.postrank.com/'
   s.summary = 'Framework for writing API servers'
