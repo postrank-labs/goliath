@@ -6,26 +6,6 @@ require 'rake/clean'
 require 'rake/gempackagetask'
 require 'rspec/core/rake_task'
 
-CLEAN.include %w(**/*.{o,bundle,so,obj,lib,log} ext/*/Makefile ext/*/conftest.dSYM)
-
-desc "Compile the Ragel state machines"
-task :ragel do
-  Dir.chdir 'ext/goliath_parser' do
-    target = "parser.c"
-    File.unlink(target) if File.exist?(target)
-    sh "ragel parser.rl -G2 -o #{target}"
-    raise "Failed to compile Ragel state machine" unless File.exist?(target)
-  end
-end
-
-desc "Compile the parser"
-task :build do
-  Dir.chdir 'ext/goliath_parser' do
-    sh "ruby extconf.rb"
-    sh "make"
-  end
-end
-
 task :default => [:spec]
 
 desc "run spec tests"
