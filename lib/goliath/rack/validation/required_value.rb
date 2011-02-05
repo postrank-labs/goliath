@@ -33,8 +33,8 @@ module Goliath
                break
               end
             end
-          else
-            error = true unless values.include?(params[key])
+          elsif !values.include?(params[key])
+            error = true
           end
 
           raise Goliath::Validation::Error.new(400, "Provided #{@key} is invalid") if error
