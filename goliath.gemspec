@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>=1.9.2'
 
-  s.add_dependency 'eventmachine', '>=0.12'
+  s.add_dependency 'eventmachine', '>= 1.0.0.beta.1'
   s.add_dependency 'em-synchrony'
   s.add_dependency 'http_parser.rb'
   s.add_dependency 'log4r'
@@ -23,10 +23,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack-contrib'
   s.add_dependency 'rack-respond_to'
   s.add_dependency 'async-rack'
+  s.add_dependency 'multi_json'
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'nokogiri'
-  s.add_development_dependency 'yajl-ruby'
 
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- spec/*`.split("\n")

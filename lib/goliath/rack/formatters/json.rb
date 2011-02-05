@@ -1,4 +1,4 @@
-require 'yajl'
+require 'multi_json'
 
 module Goliath
   module Rack
@@ -20,7 +20,7 @@ module Goliath
 
         def post_process(status, headers, body)
           if json_response?(headers)
-            body = Yajl::Encoder.encode(body, :pretty => true, :indent => "\t")
+            body = MultiJson.encode(body)
           end
           [status, headers, body]
         end
