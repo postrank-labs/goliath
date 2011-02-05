@@ -1,6 +1,3 @@
-$:.unshift("../ext")
-
-require 'rubygems'
 require 'eventmachine'
 require 'http/parser'
 require 'async_rack'
@@ -24,7 +21,6 @@ require 'goliath/rack/validation_error'
 require 'goliath/rack/formatters/json'
 require 'goliath/rack/formatters/html'
 require 'goliath/rack/formatters/xml'
-
 require 'goliath/rack/jsonp'
 
 require 'goliath/rack/validation/request_method'
