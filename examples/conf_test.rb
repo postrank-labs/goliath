@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$:<< '../lib'
+
 require 'rubygems'
 require 'goliath'
 
