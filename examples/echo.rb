@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+
 require 'goliath'
 require 'goliath/plugins/latency'
+require 'yajl'
+# require 'json'
 
 class Echo < Goliath::API
-  use Goliath::Rack::Params
 
+  use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
   use Goliath::Rack::Formatters::JSON
   use Goliath::Rack::Render
