@@ -65,10 +65,17 @@ describe Goliath::Runner do
           end
         end
 
-        it 'configures a file logger' do
-          @r = Goliath::Runner.new
-          @r.should_receive(:setup_file_logger)
-          @r.setup_logger
+        describe 'file logger' do
+          it "doesn't configure by default" do
+            @r.should_not_receive(:setup_file_logger)
+            @r.setup_logger
+          end
+
+          it 'configures if -l is provided' do
+            @r.should_receive(:setup_file_logger)
+            @r.log_file = 'out.log'
+            @r.setup_logger
+          end
         end
 
         describe 'stdout logger' do

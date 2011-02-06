@@ -39,10 +39,7 @@ module Goliath
 
         :daemonize => false,
         :verbose => false,
-        :log_stdout => false,
-
-        :log_file => 'log/goliath.log',
-        :pid_file => 'pids/goliath.pid'
+        :log_stdout => false
       }
 
       @options_parser ||= OptionParser.new do |opts|
@@ -56,10 +53,10 @@ module Goliath
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
 
-        opts.on('-l', '--log FILE', "Log file location (default: #{@options[:log_file]})") { |file| @options[:log_file] = file }
-        opts.on('-P', '--pid FILE', "Pid file location (default: #{@options[:pid_file]})") { |file| @options[:pid_file] = file }
-
+        opts.on('-l', '--log FILE', "Log to file (default: off)") { |file| @options[:log_file] = file }
         opts.on('-s', '--stdout', "Log to stdout (default: #{@options[:log_stdout]})") { |v| @options[:log_stdout] = v }
+
+        opts.on('-P', '--pid FILE', "Pid file (default: off)") { |file| @options[:pid_file] = file }
         opts.on('-d', '--daemonize', "Run daemonized in the background (default: #{@options[:daemonize]})") { |v| @options[:daemonize] = v }
         opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
 
