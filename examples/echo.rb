@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$:<< '../lib'
+$:<< '../lib' << 'lib'
 
 require 'rubygems'
 
@@ -10,6 +10,8 @@ require 'yajl'
 # require 'json'
 
 class Echo < Goliath::API
+
+  use ::Rack::Reloader, 0 if Goliath.dev?
 
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
@@ -24,6 +26,6 @@ class Echo < Goliath::API
   plugin Goliath::Plugin::Latency
 
   def response(env)
-    [200, {}, {:response => env.params['echo']}]
+    [200, {}, {response: env.params['echo']}]
   end
 end
