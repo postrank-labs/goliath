@@ -49,24 +49,14 @@ module Goliath
       body.close if body.respond_to?(:close)
     end
 
-    def body_str
-      if body.is_a?(String)
-        body
-      else
-        str = ""
-        body.each { |chunk| str << chunk }
-        str
-      end
-    end
-
     def each
       yield head
       yield headers_output
 
-      if body.is_a?(String)
-        yield body
-      else
+      if body.respond_to?(:each)
         body.each { |chunk| yield chunk }
+      else
+        yield body
       end
     end
   end
