@@ -20,7 +20,7 @@ module Goliath
 
         def post_process(status, headers, body)
           if json_response?(headers)
-            body = MultiJson.encode(body)
+            body = StringIO.new(MultiJson.encode(body))
           end
           [status, headers, body]
         end
