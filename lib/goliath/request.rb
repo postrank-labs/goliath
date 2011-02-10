@@ -31,6 +31,10 @@ module Goliath
     ASYNC_CALLBACK  = 'async.callback'.freeze
     ASYNC_CLOSE     = 'async.close'.freeze
 
+    STREAM_START    = 'async.stream.start'.freeze
+    STREAM_SEND     = 'async.stream.send'.freeze
+    STREAM_CLOSE    = 'async.stream.close'.freeze
+
     SERVER_NAME     = 'SERVER_NAME'.freeze
     REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
     CONTENT_LENGTH  = 'CONTENT_LENGTH'.freeze
@@ -142,5 +146,18 @@ module Goliath
     def async_close
       env[ASYNC_CLOSE]
     end
+
+    def stream_start=(callback)
+      env[STREAM_START] = callback
+    end
+
+    def stream_send=(callback)
+      env[STREAM_SEND] = callback
+    end
+
+    def stream_close=(callback)
+      env[STREAM_CLOSE] = callback
+    end
+
   end
 end

@@ -21,10 +21,25 @@ module Goliath
       end
     end
 
+    def close(env)
+      env[Goliath::Request::STREAM_CLOSE].call
+    end
+
+    def send(env, data)
+      env[Goliath::Request::STREAM_SEND].call(data)
+    end
+
     def call(env)
       Fiber.new {
         begin
-          env[Goliath::Request::ASYNC_CALLBACK].call(response(env))
+          status, headers, body = response(env)
+
+
+          if body == Goliath::Response::Streaming
+            env[Goliath::Request::STREAM_START].call(status, headers)
+          else
+            env[Goliath::Request::ASYNC_CALLBACK].call(status, headers, body)
+          end
 
         rescue Exception => e
           env.logger.error(e.message)

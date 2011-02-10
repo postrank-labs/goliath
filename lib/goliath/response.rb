@@ -12,6 +12,8 @@ module Goliath
     SERVER = 'Server'.freeze
     DATE = 'Date'.freeze
 
+    Streaming = 'goliath_streaming_response'.freeze
+
     def initialize
       @headers = Goliath::Headers.new
       self.status = 200

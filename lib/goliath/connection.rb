@@ -14,6 +14,10 @@ module Goliath
 
       self.request.remote_address = remote_address
       self.request.async_callback = method(:async_process)
+
+      self.request.stream_start = method(:stream_start)
+      self.request.stream_send = method(:stream_send)
+      self.request.stream_close = method(:stream_close)
     end
 
     def receive_data(data)
@@ -34,6 +38,19 @@ module Goliath
 
       log_request(:async, @response)
       send_response
+      terminate_request
+    end
+
+    def stream_start(status, headers)
+      send_data(@response.head)
+      send_data(@response.headers_output)
+    end
+
+    def stream_send(data)
+      send_data(data)
+    end
+
+    def stream_close
       terminate_request
     end
 
