@@ -24,6 +24,14 @@ module Goliath
       self[Goliath::Request::STREAM_CLOSE].call
     end
 
+    def respond_to?(name)
+      if self.has_key?(name.to_s) || (!self['config'].nil? && self['config'].has_key?(name.to_s))
+        true
+      else
+        super
+      end
+    end
+
     def method_missing(name, *args, &blk)
       if self.has_key?(name.to_s)
         self[name.to_s]

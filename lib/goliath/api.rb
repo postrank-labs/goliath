@@ -33,12 +33,8 @@ module Goliath
 
     def method_missing(name, *args, &blk)
       name = name.to_s
-      if env.has_key?(name)
-        env[name]
-
-      elsif !env['config'].nil? && env['config'].has_key?(name)
-        env['config'][name]
-
+      if env.respond_to?(name)
+        env.send(name, *args, &blk)
       else
         super(name, *args, &blk)
       end
