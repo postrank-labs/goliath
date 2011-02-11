@@ -12,6 +12,11 @@ describe Goliath::Rack::DefaultMimeType do
   end
 
   context 'accept header cleanup' do
+    it 'handles a nil header' do
+      env['HTTP_ACCEPT'] = nil
+      lambda { dmt.call(env) }.should_not raise_error
+    end
+
     %w(gzip deflate compressed identity).each do |type|
       it "removes #{type} from the accept header" do
         env['HTTP_ACCEPT'] = "text/html, #{type}, text/javascript"
