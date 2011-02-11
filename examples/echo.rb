@@ -27,7 +27,13 @@ class Echo < Goliath::API
 
   plugin Goliath::Plugin::Latency       # output reactor latency every second
 
+  def process_request
+    logger.info "Processing request"
+
+    {response: env.params['echo']}
+  end
+
   def response(env)
-    [200, {}, {response: env.params['echo']}]
+    [200, {}, process_request]
   end
 end

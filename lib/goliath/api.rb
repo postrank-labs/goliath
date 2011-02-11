@@ -3,6 +3,9 @@ require 'goliath/request'
 
 module Goliath
   class API
+
+    GOLIATH_ENV = 'goliath.env'
+
     class << self
       def middlewares
         @middlewares ||= [[::Rack::ContentLength, nil, nil]]
@@ -24,9 +27,27 @@ module Goliath
     def options_parser(opts, options)
     end
 
+    def env
+      Thread.current[GOLIATH_ENV]
+    end
+
+    def method_missing(name, *args, &blk)
+      name = name.to_s
+      if env.has_key?(name)
+        env[name]
+
+      elsif !env['config'].nil? && env['config'].has_key?(name)
+        env['config'][name]
+
+      else
+        super(name, *args, &blk)
+      end
+    end
+
     def call(env)
       Fiber.new {
         begin
+          Thread.current[GOLIATH_ENV] = env
           status, headers, body = response(env)
 
           if body == Goliath::Response::STREAMING
