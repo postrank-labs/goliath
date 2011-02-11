@@ -81,7 +81,7 @@ module Goliath
     def run_server
       log = setup_logger
 
-      log.info("Starting server on #{self.address}:#{self.port}. Watch out for stones.")
+      log.info("Starting server on #{self.address}:#{self.port} in #{Goliath.env} mode. Watch out for stones.")
 
       server = Goliath::Server.new(self.address, self.port)
       server.logger = log
