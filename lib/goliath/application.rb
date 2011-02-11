@@ -2,10 +2,10 @@
 module Goliath
   class Application
     CALLERS_TO_IGNORE = [ # :nodoc:
-      /\/goliath(\/(application))?\.rb$/, # all sinatra code
-      /rubygems\/custom_require\.rb$/,                 # rubygems require hacks
-      /bundler(\/runtime)?\.rb/,                       # bundler require hacks
-      /<internal:/                                     # internal in ruby >= 1.9.2
+      /\/goliath(\/(application))?\.rb$/, # all goliath code
+      /rubygems\/custom_require\.rb$/,    # rubygems require hacks
+      /bundler(\/runtime)?\.rb/,          # bundler require hacks
+      /<internal:/                        # internal in ruby >= 1.9.2
     ]
 
     # add rubinius (and hopefully other VM impls) ignore patterns ...
@@ -14,8 +14,7 @@ module Goliath
     # Like Kernel#caller but excluding certain magic entries and without
     # line / method information; the resulting array contains filenames only.
     def self.caller_files
-      caller_locations.
-        map { |file,line| file }
+      caller_locations.map { |file, line| file }
     end
 
     # Like caller_files, but containing Arrays rather than strings with the
@@ -23,7 +22,7 @@ module Goliath
     def self.caller_locations
       caller(1).
         map    { |line| line.split(/:(?=\d|in )/)[0,2] }.
-        reject { |file,line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
+        reject { |file, line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
     end
 
     def self.app_file
@@ -43,7 +42,7 @@ module Goliath
       }
 
       @options_parser ||= OptionParser.new do |opts|
-        opts.banner = "Usage: <server> [options]"
+        opts.banner = "Usage: #{app_file} [options]"
 
         opts.separator ""
         opts.separator "Server options:"
@@ -72,34 +71,32 @@ module Goliath
     end
 
     def self.camel_case(str)
-      if str !~ /_/ && str =~ /[A-Z]+.*/
-        str
-      else
-        str.split('_').map { |e| e.capitalize }.join
-      end
+      return str if str !~ /_/ && str =~ /[A-Z]+.*/
+
+      str.split('_').map { |e| e.capitalize }.join
     end
 
     def self.run!
-      f = File.basename(app_file, '.rb')
-      c = Kernel.const_get(camel_case(f))
-      s = c.new
+      file = File.basename(app_file, '.rb')
+      klass = Kernel.const_get(camel_case(file))
+      app = klass.new
 
-      g = Goliath::Runner.new
+      runner = Goliath::Runner.new
 
       opts_parser = options_parser
-      s.options_parser(opts_parser, @options)
+      app.options_parser(opts_parser, @options)
       opts_parser.parse!(ARGV)
+      runner.set_options(@options)
 
-      g.set_options(@options)
-      g.load_app do
-        c.middlewares.each do |mw|
+      runner.load_app do
+        klass.middlewares.each do |mw|
           use(*(mw[0..1].compact), &mw[2])
         end
-        run s
+        run app
       end
 
-      g.load_plugins(c.plugins)
-      g.run
+      runner.load_plugins(klass.plugins)
+      runner.run
     end
   end
 

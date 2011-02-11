@@ -5,6 +5,7 @@ require 'http/parser'
 module Goliath
   class Request
     attr_accessor :env, :body
+    attr_reader :parser
 
     INITIAL_BODY = ''
     # Force external_encoding of request's body to ASCII_8BIT
@@ -23,17 +24,17 @@ module Goliath
     RACK_INPUT      = 'rack.input'.freeze
     RACK_VERSION    = 'rack.version'.freeze
     RACK_ERRORS     = 'rack.errors'.freeze
-    RACK_MULTITHREAD  = 'rack.multithread'.freeze
+    RACK_MULTITHREAD = 'rack.multithread'.freeze
     RACK_MULTIPROCESS = 'rack.multiprocess'.freeze
     RACK_RUN_ONCE   = 'rack.run_once'.freeze
-    RACK_VERSION_NUM  = [1, 0].freeze
+    RACK_VERSION_NUM = [1, 0].freeze
 
     ASYNC_CALLBACK  = 'async.callback'.freeze
     ASYNC_CLOSE     = 'async.close'.freeze
 
-    STREAM_START    = 'async.stream.start'.freeze
-    STREAM_SEND     = 'async.stream.send'.freeze
-    STREAM_CLOSE    = 'async.stream.close'.freeze
+    STREAM_START    = 'stream.start'.freeze
+    STREAM_SEND     = 'stream.send'.freeze
+    STREAM_CLOSE    = 'stream.close'.freeze
 
     SERVER_NAME     = 'SERVER_NAME'.freeze
     REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
@@ -61,8 +62,10 @@ module Goliath
       self.env[OPTIONS]           = options
 
       @parser = Http::Parser.new
-      @parser.on_body = proc {|data| body << data }
+
+      @parser.on_body = proc { |data| body << data }
       @parser.on_message_complete = proc { @state = :finished }
+
       @parser.on_headers_complete = proc do |h|
         h.each do |k,v|
           self.env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
@@ -81,12 +84,8 @@ module Goliath
       @state = :processing
     end
 
-    def parser
-      @parser
-    end
-
     def parse(data)
-      @parser << data
+      parser << data
       body.rewind if finished?
     end
 
@@ -94,70 +93,31 @@ module Goliath
       @state == :finished
     end
 
-    def content_length
-      env[CONTENT_LENGTH].to_i
-    end
+    def content_length; env[CONTENT_LENGTH].to_i; end
 
-    def logger=(logger)
-      env[LOGGER] = logger
-    end
+    def logger=(logger) env[LOGGER] = logger; end
+    def logger;         env[LOGGER] end
 
-    def logger
-      env[LOGGER]
-    end
+    def options=(options) env[OPTIONS] = options; end
 
-    def options=(options)
-      env[OPTIONS] = options
-    end
+    def status=(status) env[STATUS] = status; end
+    def status;         env[STATUS]; end
 
-    def status=(status)
-      env[STATUS] = status
-    end
+    def config=(config) env[CONFIG] = config; end
+    def config;         env[CONFIG]; end
 
-    def status
-      env[STATUS]
-    end
+    def remote_address=(address) env[REMOTE_ADDR] = address; end
+    def remote_address;          env[REMOTE_ADDR]; end
 
-    def config=(config)
-      env[CONFIG] = config
-    end
-
-    def config
-      env[CONFIG]
-    end
-
-    def remote_address=(address)
-      env[REMOTE_ADDR] = address
-    end
-
-    def remote_address
-      env[REMOTE_ADDR]
-    end
-
+    def async_close;    env[ASYNC_CLOSE]; end
+    def async_callback; env[ASYNC_CALLBACK]; end
     def async_callback=(callback)
       env[ASYNC_CALLBACK] = callback
       env[ASYNC_CLOSE] = EM::DefaultDeferrable.new
     end
 
-    def async_callback
-      env[ASYNC_CALLBACK]
-    end
-
-    def async_close
-      env[ASYNC_CLOSE]
-    end
-
-    def stream_start=(callback)
-      env[STREAM_START] = callback
-    end
-
-    def stream_send=(callback)
-      env[STREAM_SEND] = callback
-    end
-
-    def stream_close=(callback)
-      env[STREAM_CLOSE] = callback
-    end
-
+    def stream_start=(callback) env[STREAM_START] = callback; end
+    def stream_send=(callback)  env[STREAM_SEND] = callback; end
+    def stream_close=(callback) env[STREAM_CLOSE] = callback; end
   end
 end

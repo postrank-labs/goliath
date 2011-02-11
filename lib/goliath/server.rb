@@ -42,8 +42,8 @@ module Goliath
 
     def load_config(file = nil)
       file ||= "#{config_dir}/#{File.basename($0)}"
-
       return unless File.exists?(file)
+
       eval(IO.read(file))
     end
 
@@ -63,8 +63,9 @@ module Goliath
     def load_plugins
       @plugins.each do |(name, args)|
         logger.info("Loading #{name.to_s}")
-        p = name.new(port, config, status, logger)
-        p.run(*args)
+
+        plugin = name.new(port, config, status, logger)
+        plugin.run(*args)
       end
     end
   end

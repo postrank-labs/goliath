@@ -8,11 +8,11 @@ module Goliath
     attr_accessor :status, :headers, :body
 
     CONNECTION = 'Connection'.freeze
-    CLOSE = 'close'.freeze
-    SERVER = 'Server'.freeze
-    DATE = 'Date'.freeze
+    CLOSE      = 'close'.freeze
+    SERVER     = 'Server'.freeze
+    DATE       = 'Date'.freeze
 
-    Streaming = 'goliath_streaming_response'.freeze
+    STREAMING  = :goliath_stream_response
 
     def initialize
       @headers = Goliath::Headers.new
@@ -32,17 +32,19 @@ module Goliath
     end
 
     def headers=(key_value_pairs)
-      if key_value_pairs
-        key_value_pairs.each do |k, vs|
-          next unless vs
+      return unless key_value_pairs
 
-          if vs.is_a?(String)
-            vs.each_line { |v| @headers[k] = v.chomp }
-          elsif vs.is_a?(Time)
-            @headers[k] = vs
-          else
-            vs.each { |v| @headers[k] = v.chomp }
-          end
+      key_value_pairs.each do |k, vs|
+        next unless vs
+
+        if vs.is_a?(String)
+          vs.each_line { |v| @headers[k] = v.chomp }
+
+        elsif vs.is_a?(Time)
+          @headers[k] = vs
+
+        else
+          vs.each { |v| @headers[k] = v.chomp }
         end
       end
     end

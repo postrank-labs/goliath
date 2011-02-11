@@ -3,9 +3,7 @@
 $:<< '../lib' << 'lib'
 
 require 'rubygems'
-
 require 'goliath'
-
 require 'yajl'
 
 class Stream < Goliath::API

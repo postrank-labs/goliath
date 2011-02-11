@@ -35,8 +35,8 @@ module Goliath
       log = Log4r::Logger.new('goliath')
 
       log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
-      setup_file_logger(log, log_format)    if self.log_file
-      setup_stdout_logger(log, log_format)  if self.log_stdout
+      setup_file_logger(log, log_format) if self.log_file
+      setup_stdout_logger(log, log_format) if self.log_stdout
 
       log.level = self.verbose ? Log4r::DEBUG : Log4r::INFO
       log

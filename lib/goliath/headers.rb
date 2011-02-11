@@ -1,6 +1,6 @@
 module Goliath
   class Headers
-    HEADER_FORMAT = "%s: %s\r\n".freeze
+    HEADER_FORMAT      = "%s: %s\r\n".freeze
     ALLOWED_DUPLICATES = %w(Set-Cookie Set-Cookie2 Warning WWW-Authenticate).freeze
 
     def initialize
