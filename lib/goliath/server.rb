@@ -10,11 +10,11 @@ module Goliath
     DEFAULT_ADDRESS = '0.0.0.0'
 
     def initialize(address = DEFAULT_ADDRESS, port = DEFAULT_PORT)
-      self.address = address
-      self.port = port
+      @address = address
+      @port = port
 
-      self.status = {}
-      self.config = {}
+      @status = {}
+      @config = {}
       @plugins = []
     end
 

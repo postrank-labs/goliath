@@ -9,15 +9,15 @@ module Goliath
     AsyncResponse = [-1, {}, []].freeze
 
     def post_init
-      self.request = Goliath::Request.new
-      self.response = Goliath::Response.new
+      @request = Goliath::Request.new
+      @response = Goliath::Response.new
 
-      self.request.remote_address = remote_address
-      self.request.async_callback = method(:async_process)
+      @request.remote_address = remote_address
+      @request.async_callback = method(:async_process)
 
-      self.request.stream_start = method(:stream_start)
-      self.request.stream_send = method(:stream_send)
-      self.request.stream_close = method(:stream_close)
+      @request.stream_start = method(:stream_start)
+      @request.stream_send = method(:stream_send)
+      @request.stream_close = method(:stream_close)
     end
 
     def receive_data(data)
@@ -106,22 +106,22 @@ module Goliath
 
     def logger=(logger)
       @logger = logger
-      self.request.logger = logger
+      @request.logger = logger
     end
 
     def status=(status)
       @status = status
-      self.request.status = status
+      @request.status = status
     end
 
     def config=(config)
       @config = config
-      self.request.config = config
+      @request.config = config
     end
 
     def options=(options)
       @options = options
-      self.request.options = options
+      @request.options = options
     end
   end
 end

@@ -48,18 +48,18 @@ module Goliath
     FRAGMENT        = 'FRAGMENT'.freeze
 
     def initialize(options = {})
-      self.body = StringIO.new(INITIAL_BODY.dup)
+      @body = StringIO.new(INITIAL_BODY.dup)
 
-      self.env = Goliath::Env.new
-      self.env[SERVER_SOFTWARE]   = SERVER
-      self.env[SERVER_NAME]       = LOCALHOST
-      self.env[RACK_INPUT]        = body
-      self.env[RACK_VERSION]      = RACK_VERSION_NUM
-      self.env[RACK_ERRORS]       = STDERR
-      self.env[RACK_MULTITHREAD]  = false
-      self.env[RACK_MULTIPROCESS] = false
-      self.env[RACK_RUN_ONCE]     = false
-      self.env[OPTIONS]           = options
+      @env = Goliath::Env.new
+      @env[SERVER_SOFTWARE]   = SERVER
+      @env[SERVER_NAME]       = LOCALHOST
+      @env[RACK_INPUT]        = body
+      @env[RACK_VERSION]      = RACK_VERSION_NUM
+      @env[RACK_ERRORS]       = STDERR
+      @env[RACK_MULTITHREAD]  = false
+      @env[RACK_MULTIPROCESS] = false
+      @env[RACK_RUN_ONCE]     = false
+      @env[OPTIONS]           = options
 
       @parser = Http::Parser.new
 
@@ -68,17 +68,17 @@ module Goliath
 
       @parser.on_headers_complete = proc do |h|
         h.each do |k,v|
-          self.env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
+          @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
         end
 
-        self.env[STATUS]          = @parser.status_code
-        self.env[REQUEST_METHOD]  = @parser.http_method
-        self.env[REQUEST_URI]     = @parser.request_url
-        self.env[QUERY_STRING]    = @parser.query_string
-        self.env[HTTP_VERSION]    = @parser.http_version.join('.')
-        self.env[REQUEST_PATH]    = @parser.request_path
-        self.env[PATH_INFO]       = @parser.request_path
-        self.env[FRAGMENT]        = @parser.fragment
+        @env[STATUS]          = @parser.status_code
+        @env[REQUEST_METHOD]  = @parser.http_method
+        @env[REQUEST_URI]     = @parser.request_url
+        @env[QUERY_STRING]    = @parser.query_string
+        @env[HTTP_VERSION]    = @parser.http_version.join('.')
+        @env[REQUEST_PATH]    = @parser.request_path
+        @env[PATH_INFO]       = @parser.request_path
+        @env[FRAGMENT]        = @parser.fragment
       end
 
       @state = :processing

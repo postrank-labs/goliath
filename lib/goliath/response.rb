@@ -16,7 +16,7 @@ module Goliath
 
     def initialize
       @headers = Goliath::Headers.new
-      self.status = 200
+      @status = 200
     end
 
     def head
