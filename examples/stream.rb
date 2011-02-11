@@ -22,15 +22,15 @@ class Stream < Goliath::API
   def response(env)
     i = 0
     pt = EM.add_periodic_timer(1) do
-      env.stream_send("#{i} ")
+      stream_send("#{i} ")
       i += 1
     end
 
     EM.add_timer(10) do
       pt.cancel
 
-      env.stream_send("!! BOOM !!\n")
-      env.stream_close
+      stream_send("!! BOOM !!\n")
+      stream_close
     end
 
     [200, {}, Goliath::Response::STREAMING]
