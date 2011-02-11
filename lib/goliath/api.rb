@@ -1,8 +1,8 @@
+require 'goliath/response'
 require 'goliath/request'
 
 module Goliath
   class API
-
     class << self
       def middlewares
         @middlewares ||= [[::Rack::ContentLength, nil, nil]]
@@ -21,12 +21,7 @@ module Goliath
       end
     end
 
-    def close(env)
-      env[Goliath::Request::STREAM_CLOSE].call
-    end
-
-    def send(env, data)
-      env[Goliath::Request::STREAM_SEND].call(data)
+    def options_parser(opts, options)
     end
 
     def call(env)
@@ -34,8 +29,7 @@ module Goliath
         begin
           status, headers, body = response(env)
 
-
-          if body == Goliath::Response::Streaming
+          if body == Goliath::Response::STREAMING
             env[Goliath::Request::STREAM_START].call(status, headers)
           else
             env[Goliath::Request::ASYNC_CALLBACK].call(status, headers, body)
@@ -50,9 +44,6 @@ module Goliath
       }.resume
 
       Goliath::Connection::AsyncResponse
-    end
-
-    def options_parser(opts, options)
     end
 
     def response(env)

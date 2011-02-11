@@ -16,6 +16,14 @@ module Goliath
       self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
 
+    def stream_send(data)
+      self[Goliath::Request::STREAM_SEND].call(data)
+    end
+
+    def stream_close
+      self[Goliath::Request::STREAM_CLOSE].call
+    end
+
     def method_missing(name, *args, &blk)
       if self.has_key?(name.to_s)
         self[name.to_s]
