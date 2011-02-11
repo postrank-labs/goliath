@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '>2.0'
   s.add_development_dependency 'nokogiri'
+  s.add_development_dependency 'em-http-request'
+  s.add_development_dependency 'yajl-ruby'
 
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- spec/*`.split("\n")
