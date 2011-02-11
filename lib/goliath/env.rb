@@ -1,6 +1,5 @@
 module Goliath
   class Env < Hash
-
     def initialize
       self[:start_time] = Time.now.to_f
       self[:time] = Time.now.to_f
@@ -8,7 +7,7 @@ module Goliath
     end
 
     def trace(name)
-      self[:trace].push [name, "%.2f" % ((Time.now.to_f - self[:time]) * 1000)]
+      self[:trace].push([name, "%.2f" % ((Time.now.to_f - self[:time]) * 1000)])
       self[:time] = Time.now.to_f
     end
 
@@ -25,23 +24,15 @@ module Goliath
     end
 
     def respond_to?(name)
-      if self.has_key?(name.to_s) || (!self['config'].nil? && self['config'].has_key?(name.to_s))
-        true
-      else
-        super
-      end
+      return true if has_key?(name.to_s)
+      return true if self['config'] && self['config'].has_key?(name.to_s)
+      super
     end
 
     def method_missing(name, *args, &blk)
-      if self.has_key?(name.to_s)
-        self[name.to_s]
-
-      elsif !self['config'].nil? && self['config'].has_key?(name.to_s)
-        self['config'][name.to_s]
-
-      else
-        super(name, *args, &blk)
-      end
+      return self[name.to_s] if has_key?(name.to_s)
+      return self['config'][name.to_s] if self['config'] && self['config'].has_key?(name.to_s)
+      super(name, *args, &blk)
     end
   end
 end

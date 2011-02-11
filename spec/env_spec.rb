@@ -15,14 +15,41 @@ describe Goliath::Env do
     lambda { @env['test'].should == 'blah' }.should_not raise_error(Exception)
   end
 
-  it 'allows access to items as methods' do
-    @env['db'] = 'test'
-    @env.db.should == 'test'
+  context '#method_missing' do
+    it 'allows access to items as methods' do
+      @env['db'] = 'test'
+      @env.db.should == 'test'
+    end
+
+    it 'allows access to config items as methods' do
+      @env['config'] = {}
+      @env['config']['db'] = 'test'
+      @env.db.should == 'test'
+    end
   end
 
-  it 'allows access to config items as methods' do
-    @env['config'] = {}
-    @env['config']['db'] = 'test'
-    @env.db.should == 'test'
+  context '#respond_to?' do
+    it 'returns true for items in the hash' do
+      @env['test'] = 'true'
+      @env.respond_to?(:test).should be_true
+    end
+
+    it 'returns false for items not in hash' do
+      @env.respond_to?(:test).should be_false
+    end
+
+    it 'returns true for items in the config hash' do
+      @env['config'] = {'test' => true}
+      @env.respond_to?(:test).should be_true
+    end
+
+    it 'returns false for items not in the config hash' do
+      @env['config'] = {}
+      @env.respond_to?(:test).should be_false
+    end
+
+    it 'delegates if not found' do
+      @env.respond_to?(:[]).should be_true
+    end
   end
 end
