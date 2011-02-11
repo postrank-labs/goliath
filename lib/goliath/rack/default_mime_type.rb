@@ -4,7 +4,6 @@ require 'rack/respond_to'
 module Goliath
   module Rack
     class DefaultMimeType
-
       def initialize(app)
         @app = app
       end

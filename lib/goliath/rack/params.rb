@@ -3,7 +3,6 @@ require 'rack/utils'
 module Goliath
   module Rack
     class Params
-
       def initialize(app)
         @app = app
       end
