@@ -111,6 +111,7 @@ You can also query the _/status_ endpoint.
 ## Help and Documentation
 
 * [GitHub repo](https://github.com/postrank-labs/goliath)
+* [Mailing List](http://groups.google.com/group/goliath-io)
 
 ***
 
