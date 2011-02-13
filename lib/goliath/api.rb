@@ -49,7 +49,7 @@ module Goliath
           if body == Goliath::Response::STREAMING
             env[Goliath::Request::STREAM_START].call(status, headers)
           else
-            env[Goliath::Request::ASYNC_CALLBACK].call(status, headers, body)
+            env[Goliath::Request::ASYNC_CALLBACK].call([status, headers, body])
           end
 
         rescue Exception => e
