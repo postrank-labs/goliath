@@ -36,7 +36,7 @@ module Goliath
       if env.respond_to?(name)
         env.send(name, *args, &blk)
       else
-        super(name, *args, &blk)
+        super(name.to_sym, *args, &blk)
       end
     end
 
