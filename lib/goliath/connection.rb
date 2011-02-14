@@ -43,7 +43,7 @@ module Goliath
 
     def stream_start(status, headers)
       send_data(@response.head)
-      send_data(@response.headers_output)
+      send_data(@response.headers_output(:keep_alive => true))
     end
 
     def stream_send(data)

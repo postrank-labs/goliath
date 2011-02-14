@@ -23,8 +23,8 @@ module Goliath
       "HTTP/1.1 #{status} #{HTTP_STATUS_CODES[status.to_i]}\r\n"
     end
 
-    def headers_output
-      headers[CONNECTION] = CLOSE
+    def headers_output(opts = {})
+      headers[CONNECTION] = CLOSE unless opts[:keep_alive]
       headers[SERVER] = Goliath::Request::SERVER
       headers[DATE] = Time.now.httpdate
 
