@@ -15,6 +15,10 @@ module Goliath
       self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
 
+    def on_close(&blk)
+      self[Goliath::Request::ASYNC_CLOSE].callback &blk
+    end
+
     def stream_send(data)
       self[Goliath::Request::STREAM_SEND].call(data)
     end
