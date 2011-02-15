@@ -1,122 +1,46 @@
 # Goliath
 
-Goliath is an API framework. Goliath is designed to serve a single type of API, be it a
-feed API, log API or search API. While similar to Rails and Sinatra, Goliath is more inclined
-to return JSON or XML responses instead of HTML. Goliath sits behind your Sinatra or Rails
-application and feeds data back them for display.
+Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack like API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
 
-While rack-aware, Goliath is not 100% rack compliant. We make some modifications and take
-some short cuts in order to get what we want out of the framework.
+The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby Fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we're all familiar and comfortable with: linear execution. Each Goliath request is executed in its own Ruby Fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code.
 
-***
+Goliath exposes a raw, bare-metal Rack-like API for developing high through web-services. Request processing is synchronous, and all processing is asynchronous.
 
-## Features
+## Installation & Prerequisites
 
- * Asynchronous execution from the ground up.
- * Rack-aware, but not rack compliant.
- * Plugins.
+* Ruby 1.9.x +
+* **gem install goliath**
 
-***
+## Getting Started: Hello World
 
-## Requirements
-
- * Ruby 1.9.2 or greater
- * [eventmachine](http://rubyeventmachine.org)
- * EM-Synchrony
- * Rack
- * Rack-Contrib
- * Async-Rack
- * Rack-Respond_to
- * Log4r
- * Yajl
-
-***
-
-## Getting Started
-
-Let's create an echo server with Goliath. I'm adding a bit of validation and a few other things
-in order to show some of the features in the framework.
-
-    #!/usr/bin/env ruby
-
-    require 'rubygems'
     require 'goliath'
-    require 'rack/supported_media_types'
-    require 'rack/abstract_format'
 
     class Echo < Goliath::API
-      use Goliath::Rack::Params
-
-      use Rack::AbstractFormat
-
-      use Goliath::Rack::DefaultMimeType
-      use Rack::SupportedMediaTypes, %w{application/json}
-
-      use Goliath::Rack::Formatters::JSON
-
-      use Goliath::Rack::Render
-      use Goliath::Rack::Heartbeat
-      use Goliath::Rack::ValidationError
-
-      use Goliath::Rack::Validation::RequestMethod, %w(GET)
-
-      use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}
+      # reload code on every request in dev environment
+      use ::Rack::Reloader, 0 if Goliath.dev?
 
       def response(env)
-        [200, {}, {:response => env.params['echo']}]
+        [200, {}, "Hello World"]
       end
     end
 
-So, what's going on here. First off, skipping the requires, all Goliath applications will
-inherit from `Goliath::API`. This will do some initial setup for us and create the _Fiber_
-that the API will execute within.
+    > ruby echo.rb -sv
+    > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
 
-Next up we setup the middleware we want to use. The middleware is defined directly
-inside the API file. By default, `Rack::ContentLength` will be included in all applications.
-The Goliath middleware are:
+## Guides
 
- * __Goliath::Rack::Params__ : The default params parser. Will setup env.params for us with the URL and POST parameters.
- * __Goliath::Rack::DefaultMimeType__ : Makes sure a MIME type is always specified.
- * __Goliath::Rack::Formatters::JSON__ : Formatter for application/json requests.
- * __Goliath::Rack::Render__ : Sets the correct Content-Type for the response.
- * __Goliath::Rack::Heartbeat__ : Adds a /status handler that responds with OK. For monitoring purposes.
- * __Goliath::Rack::ValidationError__ : Generic handler for all error responses.
- * __Goliath::Rack::Validation::RequestMethod__ : Validates we only respond to GET requests.
- * __Goliath::Rack::Validation::RequiredParam__ : Validates the *echo* param is provided to the API.
+* [Beyond "Hello World": middleware & validations]()
+* [Asynchronous processing: HTTP, MySQL, etc]()
+* [Building a streaming API with Goliath]()
+* [Goliath configuration]()
+* [Goliath plugins]()
 
-Finally, we implement the `def response(env)` method. This method is required and is executed with the
-fiber setup by the API super class. We return the triple of _response_code_, _headers_, and _body_.
+## Discussion and Support
 
-If we save and execute (-s is for standard out logging, -v is verbose logging):
-
-    dj2@titania ~ $ ruby echo.rb -sv
-    [85201:INFO] 2010-12-31 23:48:09 :: Starting server on 0.0.0.0:9000. Watch out for stones.
-
-We should have an echo server running on port 9000. We can query using curl:
-
-    dj2@titania ~ $ curl "localhost:9000?echo=Calling%20Goliath"
-    {
-      "response": "Calling Goliath"
-    }
-
-You can also query the _/status_ endpoint.
-
-    dj2@titania ~ $ curl "localhost:9000/status"
-    {
-      "status": "OK"
-    }
-
-***
-
-## Help and Documentation
-
-* [GitHub repo](https://github.com/postrank-labs/goliath)
+* [Source](https://github.com/postrank-labs/goliath)
+* [Issues](https://github.com/postrank-labs/goliath/issues)
 * [Mailing List](http://groups.google.com/group/goliath-io)
 
-***
+## License & acknowledgments
 
-## Acknowledgments
-
-Goliath is originally cribbed from the Thin (https://github.com/macournoyer/thin) HTTP server and has
-liberally borrowed the application launching code from the Sinatra (https://github.com/bmizerany/sinatra)
-framework.
+Goliath is available under the MIT license, for full details please see the LICENSE file.
