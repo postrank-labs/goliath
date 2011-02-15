@@ -1,10 +1,22 @@
 # Goliath
 
-Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack like API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
+Goliath is an open source version of the non-blocking Ruby web server framework
+powering PostRank. It's a lightweight framework designed to meet the following
+goals: bare metal performance, Rack like API and middleware support, simple
+configuration, fully asynchronous processing, and readable and maintainable
+code (read: no callbacks).
 
-The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby Fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we're all familiar and comfortable with: linear execution. Each Goliath request is executed in its own Ruby Fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code.
+The framework is powered by an EventMachine reactor under the hood and Ryan
+Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over
+other asynchronous frameworks is the fact that by leveraging Ruby Fibers introduced
+in Ruby 1.9+, it can untangle the complicated callback-based code into a format
+we're all familiar and comfortable with: linear execution. Each Goliath request
+is executed in its own Ruby Fiber and all asynchronous I/O operations can transparently
+suspend and later resume the processing without requiring the developer to write
+any additional code.
 
-Goliath exposes a raw, bare-metal Rack-like API for developing high through web-services. Request processing is synchronous, and all processing is asynchronous.
+Goliath exposes a raw, bare-metal Rack-like API for developing high throughput
+web-services. Request processing is synchronous, and all processing is asynchronous.
 
 ## Installation & Prerequisites
 
@@ -41,6 +53,7 @@ Goliath exposes a raw, bare-metal Rack-like API for developing high through web-
 * [Issues](https://github.com/postrank-labs/goliath/issues)
 * [Mailing List](http://groups.google.com/group/goliath-io)
 
-## License & acknowledgments
+## License & Acknowledgments
 
 Goliath is available under the MIT license, for full details please see the LICENSE file.
+
