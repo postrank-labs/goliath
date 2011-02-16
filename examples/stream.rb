@@ -33,6 +33,10 @@ class Stream < Goliath::API
       env.stream_close
     end
 
+    env.on_close do
+      env.logger.info "Connection closed."
+    end
+
     [200, {}, Goliath::Response::STREAMING]
   end
 end
