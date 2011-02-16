@@ -26,6 +26,7 @@ module Goliath
     end
 
     def process
+      response.send_close = request.env[Goliath::Request::HEADERS]['Connection']
       post_process(@app.call(@request.env))
 
     rescue Exception => e
@@ -43,7 +44,7 @@ module Goliath
 
     def stream_start(status, headers)
       send_data(@response.head)
-      send_data(@response.headers_output(:keep_alive => true))
+      send_data(@response.headers_output)
     end
 
     def stream_send(data)

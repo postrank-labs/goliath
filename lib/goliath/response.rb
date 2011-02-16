@@ -17,14 +17,19 @@ module Goliath
     def initialize
       @headers = Goliath::Headers.new
       @status = 200
+      @send_close = false
+    end
+
+    def send_close=(header)
+      @send_close = true if header && header.downcase == 'close'
     end
 
     def head
       "HTTP/1.1 #{status} #{HTTP_STATUS_CODES[status.to_i]}\r\n"
     end
 
-    def headers_output(opts = {})
-      headers[CONNECTION] = CLOSE unless opts[:keep_alive]
+    def headers_output
+      headers[CONNECTION] = CLOSE if @send_close
       headers[SERVER] = Goliath::Request::SERVER
       headers[DATE] = Time.now.httpdate
 
