@@ -45,6 +45,8 @@ web-services. Request processing is synchronous, and all processing is asynchron
 * [Configuration](https://github.com/postrank-labs/goliath/wiki/Configuration)
 * [Plugins](https://github.com/postrank-labs/goliath/wiki/Plugins)
 
+Hands-on applications:
+
 * [Asynchronous HTTP, MySQL, etc](https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing)
 * [Streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
