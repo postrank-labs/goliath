@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
-
 $:<< '../lib' << 'lib'
 
-require 'rubygems'
 require 'goliath'
 
 class HelloWorld < Goliath::API

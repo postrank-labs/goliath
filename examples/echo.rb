@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
-
 $:<< '../lib' << 'lib'
-
-require 'rubygems'
 
 require 'goliath'
 require 'goliath/plugins/latency'
 
-require 'yajl'
+# Goliath uses multi-jon, so pick your favorite JSON serializer
 # require 'json'
+require 'yajl'
 
 class Echo < Goliath::API
 

@@ -1,11 +1,16 @@
 #!/usr/bin/env ruby
+$:<< '../lib' << 'lib'
 
-$:<< '../lib'
+#
+# Example of using "config/conf_test.rb" during server initialization
+#  - options parser allows us to extend the command line parameters for API
+#  - config file shows loading of environment specific, global, and shared variables
+#
 
-require 'rubygems'
 require 'goliath'
 
 class ConfTest < Goliath::API
+
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
   use Goliath::Rack::Formatters::JSON

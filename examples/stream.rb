@@ -1,24 +1,19 @@
 #!/usr/bin/env ruby
-
 $:<< '../lib' << 'lib'
 
-require 'rubygems'
+#
+# A simple HTTP streaming API which returns a 200 response for any GET request
+# and then emits numbers 1 through 10 in 1 second intervals, and then closes the
+# connection.
+#
+# A good use case for this pattern would be to provide a stream of updates or a
+# 'firehose' like API to stream data back to the clients. Simply hook up to your
+# datasource and then stream the data to your clients via HTTP.
+#
+
 require 'goliath'
-require 'yajl'
 
 class Stream < Goliath::API
-
-  # reload code on every request in dev environment
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
-  use Goliath::Rack::Params             # parse & merge query and body parameters
-  use Goliath::Rack::Formatters::JSON   # JSON output formatter
-  use Goliath::Rack::Render             # auto-negotiate response format
-  use Goliath::Rack::Heartbeat          # respond to /status with 200, OK (monitoring, etc)
-  use Goliath::Rack::ValidationError    # catch and render validation errors
-
-  use Goliath::Rack::Validation::RequestMethod, %w(GET)           # allow GET requests only
-
   def response(env)
     i = 0
     pt = EM.add_periodic_timer(1) do

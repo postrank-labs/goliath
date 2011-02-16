@@ -1,21 +1,23 @@
 #!/usr/bin/env ruby
-
-# curl -s -H "Accept-Encoding: gzip,deflate" localhost:9000?gziped=test |gunzip
-
 $:<< '../lib' << 'lib'
 
-require 'rubygems'
+#
+# Example of using the rack/deflater middleware to automatically GZIP your response
+# if the client indicated that it will accept gzipped data.
+#
+# Note that we're also using Rack::Rewrite to alter incoming request prior to it
+# being parsed by the Rack::Params middleware. This allows us to transparently
+# rewrite incoming requests before any processing is done on it.
+#
+# curl -s -H "Accept-Encoding: gzip,deflate" localhost:9000?gziped=test | gunzip
+#
 
 require 'rack/deflater'
 require 'rack/rewrite'
-
 require 'goliath'
-
 require 'yajl'
 
 class Gziped < Goliath::API
-  # reload code on every request in dev environment
-  use ::Rack::Reloader, 0 if Goliath.dev?
 
   # if client requested, compress the response
   use ::Rack::Deflater
@@ -28,7 +30,6 @@ class Gziped < Goliath::API
   use Goliath::Rack::Params             # parse & merge query and body parameters
   use Goliath::Rack::Formatters::JSON   # JSON output formatter
   use Goliath::Rack::Render             # auto-negotiate response format
-  use Goliath::Rack::Heartbeat          # respond to /status with 200, OK (monitoring, etc)
   use Goliath::Rack::ValidationError    # catch and render validation errors
 
   use Goliath::Rack::Validation::RequestMethod, %w(GET)           # allow GET requests only
