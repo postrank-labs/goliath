@@ -3,7 +3,19 @@ require 'goliath/rack/validation_error'
 module Goliath
   module Rack
     module Validation
+      # A middleware to validate that a parameter always has a value
+      #
+      # @example
+      #  use Goliath::Rack::Validation::DefaultParams, {:key => 'order', :defaults => 'pubdate'}
+      #
       class DefaultParams
+        # Called by the framework to create the validator
+        #
+        # @param app The app object
+        # @param opts [Hash] The options hash
+        # @option opts [String] :key The key to access in the parameters
+        # @option opts :defaults The default value to assign if the key is empty or non-existant
+        # @return [Goliath::Rack::Validation::DefaultParams] The validator
         def initialize(app, opts = {})
           @app = app
           @defaults = opts[:defaults]

@@ -1,6 +1,18 @@
 module Goliath
   module Plugin
+    # Report latency information about the EventMachine reactor to the log file.
+    #
+    # @example
+    #  plugin Goliath::Plugin::Latency
+    #
     class Latency
+      # Called by the framework to initialize the plugin
+      #
+      # @param port [Integer] Unused
+      # @param config [Hash] The server configuration data
+      # @param status [Hash] A status hash
+      # @param logger [Log4R::Logger] The logger
+      # @return [Goliath::Plugin::Latency] An instance of the Goliath::Plugin::Latency plugin
       def initialize(port, config, status, logger)
         @status = status
         @config = config
@@ -9,6 +21,7 @@ module Goliath
         @last = Time.now.to_f
       end
 
+      # Called automatically to start the plugin
       def run
         EM.add_periodic_timer(1) do
           @logger.info "LATENCY: #{Time.now.to_f - @last}"

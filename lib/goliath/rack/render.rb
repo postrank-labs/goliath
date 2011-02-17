@@ -3,6 +3,12 @@ require 'rack/respond_to'
 
 module Goliath
   module Rack
+    # The render middleware will set the Content-Type of the response
+    # based on the provided HTTP_ACCEPT headers.
+    #
+    # @example
+    #  use Goliath::Rack::Render
+    #
     class Render
       include ::Rack::RespondTo
 

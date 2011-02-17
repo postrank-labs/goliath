@@ -30,6 +30,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'em-http-request'
   s.add_development_dependency 'yajl-ruby'
 
+  s.add_development_dependency 'yard'
+  s.add_development_dependency 'bluecloth'
+
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ['lib']

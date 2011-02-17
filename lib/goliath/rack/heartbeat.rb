@@ -1,5 +1,11 @@
 module Goliath
   module Rack
+    # A heartbeat mechanism for the server. This will add a _/status_ endpoint
+    # that returns status 200 and content OK when executed.
+    #
+    # @example
+    #  use Goliath::Rack::Heartbeat
+    #
     class Heartbeat
       def initialize(app)
         @app = app

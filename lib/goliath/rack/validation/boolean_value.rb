@@ -1,7 +1,24 @@
 module Goliath
   module Rack
     module Validation
+      # A middleware to validate a given value is boolean. This will attempt to do the following
+      # conversions:
+      #  true  = 'true'  | 't' | 1
+      #  false = 'false' | 'f' | 0
+      #
+      # If the parameter is not provided the :default is used.
+      #
+      # @example
+      #  use Goliath::Rack::Validation::BooleanValue, {:key => 'raw', :default => false}
+      #
       class BooleanValue
+        # Called by the framework to create the validator
+        #
+        # @param app The app object
+        # @param opts [Hash] The options hash
+        # @option opts [String] :key The key to access in the parameters
+        # @option opts [Boolean] :default The default value to set
+        # @return [Goliath::Rack::Validation::BooleanValue] The validator
         def initialize(app, opts = {})
           @app = app
           @key = opts[:key]

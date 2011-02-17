@@ -3,7 +3,15 @@ require 'rack'
 module Goliath
   module Rack
     module Formatters
+      # A XML formatter. Attempts to convert your data into
+      # an XML document.
+      #
+      # @example
+      #   use Goliath::Rack::Formatters::XML
       class XML
+        # Called by the framework to create the formatter.
+        #
+        # @return [Goliath::Rack::Formatters::XML] The XML formatter.
         def initialize(app)
           @app = app
         end

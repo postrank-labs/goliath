@@ -2,6 +2,13 @@ require 'rack/utils'
 
 module Goliath
   module Rack
+    # A middle ware to parse params. This will parse both the
+    # query string parameters and the body and place them into
+    # the _params_ hash of the Goliath::Env for the request.
+    #
+    # @example
+    #  use Goliath::Rack::Params
+    #
     class Params
       def initialize(app)
         @app = app

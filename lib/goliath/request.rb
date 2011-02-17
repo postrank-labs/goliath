@@ -3,6 +3,7 @@ require 'goliath/env'
 require 'http/parser'
 
 module Goliath
+  # @private
   class Request
     attr_accessor :env, :body
     attr_reader :parser

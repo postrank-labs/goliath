@@ -7,3 +7,6 @@ pkg/
 examples/log
 *.swp
 Gemfile.lock
+.yardoc
+.livereload
+*.watchr

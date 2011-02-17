@@ -3,9 +3,22 @@ require 'goliath/rack/validation_error'
 module Goliath
   module Rack
     module Validation
+      # Middleware to validate that a given parameter has a specified value.
+      #
+      # @example
+      #  use Goliath::Rack::Validation::RequiredValue, {:key => 'mode', :values => %w(foo bar)}
+      #  use Goliath::Rack::Validation::RequiredValue, {:key => 'baz', :values => 'awesome'}
+      #
       class RequiredValue
         attr_reader :key, :values
 
+        # Creates the Goliath::Rack::Validation::RequiredValue validator.
+        #
+        # @param app The app object
+        # @param opts [Hash] The options to create the validator with
+        # @option opts [String] :key The key to look for in params (default: id)
+        # @option opts [String | Array] :values The values to verify are in the params
+        # @return [Goliath::Rack::Validation::RequiredValue] The validator
         def initialize(app, opts = {})
           @app = app
           @key = opts[:key] || 'id'

@@ -2,6 +2,7 @@ require 'goliath/request'
 require 'goliath/response'
 
 module Goliath
+  # @private
   class Connection < EM::Connection
     attr_accessor :app, :request, :response
     attr_reader :logger, :status, :config, :options

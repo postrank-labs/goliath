@@ -3,7 +3,15 @@ require 'multi_json'
 module Goliath
   module Rack
     module Formatters
+      # A JSON formatter. Uses MultiJson so you can use the JSON
+      # encoder that is right for your project.
+      #
+      # @example
+      #   use Goliath::Rack::Formatters::JSON
       class JSON
+        # Called by the framework to create the formatter.
+        #
+        # @return [Goliath::Rack::Formatters::JSON] The JSON formatter.
         def initialize(app)
           @app = app
         end

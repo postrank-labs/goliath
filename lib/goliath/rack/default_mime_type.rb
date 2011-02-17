@@ -3,6 +3,13 @@ require 'rack/respond_to'
 
 module Goliath
   module Rack
+    # Does some basic cleanup / handling of the HTTP_ACCEPT header.
+    # This will remove gzip, deflate, compressed and identity. If
+    # there are no values left the header will be set to \*/\*.
+    #
+    # @example
+    #   use Goliath::Rack::DefaultMimeType
+    #
     class DefaultMimeType
       def initialize(app)
         @app = app

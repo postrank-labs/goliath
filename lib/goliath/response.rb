@@ -4,6 +4,7 @@ require 'goliath/http_status_codes'
 require 'time'
 
 module Goliath
+  # @private
   class Response
     attr_accessor :status, :headers, :body
 

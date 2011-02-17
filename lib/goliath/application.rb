@@ -1,6 +1,11 @@
-# Most of this stuff is straight out of sinatra.
 module Goliath
+  # The main execution class for Goliath. This will execute in the at_exit
+  # handler to run the server.
+  #
+  # @private
   class Application
+    # Most of this stuff is straight out of sinatra.
+
     CALLERS_TO_IGNORE = [ # :nodoc:
       /\/goliath(\/(application))?\.rb$/, # all goliath code
       /rubygems\/custom_require\.rb$/,    # rubygems require hacks

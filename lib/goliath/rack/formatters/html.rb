@@ -3,7 +3,17 @@ require 'rack'
 module Goliath
   module Rack
     module Formatters
+      # A simple HTML formatter. This doesn't try to be fancy and just turns
+      # Hashes into tables, Arrays into ordered lists and strings are output
+      # as HTML escaped strings.
+      #
+      # @example
+      #   use Goliath::Rack::Formatters::HTML
       class HTML
+        # Called by the framework to create the formatter.
+        #
+        # @param app The application
+        # @return [Goliath::Rack::Formatters::HTML] The HTML formatter
         def initialize(app)
           @app = app
         end

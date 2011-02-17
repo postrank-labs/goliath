@@ -4,6 +4,7 @@ require 'optparse'
 require 'log4r'
 
 module Goliath
+  # @private
   class Runner
     attr_accessor :address, :port, :daemonize, :verbose, :log_stdout, :log_file, :pid_file, :app, :plugins, :app_options
 

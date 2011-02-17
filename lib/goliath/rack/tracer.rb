@@ -1,5 +1,10 @@
 module Goliath
   module Rack
+    # Middleware to inject the tracer statistics into the response headers.
+    #
+    # @example
+    #  use Goliath::Rack::Tracer
+    #
     class Tracer
       def initialize(app)
         @app = app
@@ -10,7 +15,7 @@ module Goliath
 
         env['async.callback'] = Proc.new do |status, headers, body|
           async_cb.call(post_process(env, status, headers, body))
-          env.logger.info env.trace_stats.collect{|s| s.join(':')}.join(', ')        
+          env.logger.info env.trace_stats.collect{|s| s.join(':')}.join(', ')
         end
 
         status, headers, body = @app.call(env)

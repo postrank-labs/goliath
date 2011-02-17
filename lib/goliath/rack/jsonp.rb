@@ -1,5 +1,10 @@
 module Goliath
   module Rack
+    # A middleware to wrap the response into a JSONP callback.
+    #
+    # @example
+    #  use Goliath::Rack::JSONP
+    #
     class JSONP
       def initialize(app)
         @app = app

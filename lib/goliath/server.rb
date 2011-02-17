@@ -3,6 +3,7 @@ require 'goliath/connection'
 require 'goliath/goliath'
 
 module Goliath
+  # @private
   class Server
     attr_accessor :address, :port, :logger, :app, :status, :config, :plugins, :options
 
