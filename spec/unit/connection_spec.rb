@@ -80,6 +80,10 @@ describe Goliath::Connection do
       @c.should_not_receive(:process)
       @c.receive_data('more_data')
     end
+
+    it "closes the connection when a parse error is received" do
+      lambda { @c.receive_data("bad data") }.should_not raise_error
+    end
   end
 
   describe 'process' do

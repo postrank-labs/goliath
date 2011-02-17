@@ -22,8 +22,12 @@ module Goliath
     end
 
     def receive_data(data)
-      request.parse(data)
-      process if request.finished?
+      begin
+        request.parse(data)
+        process if request.finished?
+      rescue HTTP::Parser::Error => e
+        terminate_request
+      end
     end
 
     def process
