@@ -8,8 +8,6 @@ module Goliath
   class Response
     attr_accessor :status, :headers, :body
 
-    CONNECTION = 'Connection'.freeze
-    CLOSE      = 'close'.freeze
     SERVER     = 'Server'.freeze
     DATE       = 'Date'.freeze
 
@@ -18,11 +16,6 @@ module Goliath
     def initialize
       @headers = Goliath::Headers.new
       @status = 200
-      @send_close = false
-    end
-
-    def send_close=(header)
-      @send_close = true if header && header.downcase == 'close'
     end
 
     def head
@@ -30,7 +23,6 @@ module Goliath
     end
 
     def headers_output
-      headers[CONNECTION] = CLOSE if @send_close
       headers[SERVER] = Goliath::Request::SERVER
       headers[DATE] = Time.now.httpdate
 

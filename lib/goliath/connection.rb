@@ -31,7 +31,6 @@ module Goliath
     end
 
     def process
-      response.send_close = request.env[Goliath::Request::HEADERS]['Connection'] rescue nil
       post_process(@app.call(@request.env))
 
     rescue Exception => e
@@ -44,26 +43,8 @@ module Goliath
 
       log_request(:async, @response)
       send_response
-      terminate_request
-    end
 
-    def stream_start(status, headers)
-      send_data(@response.head)
-      send_data(@response.headers_output)
-    end
-
-    def stream_send(data)
-      send_data(data)
-    end
-
-    def stream_close
-      terminate_request
-    end
-
-    def log_request(type, response)
-      logger.info("#{type} status: #{@response.status}, " +
-                  "Content-Length: #{@response.headers['Content-Length']}, " +
-                  "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
+      terminate_request if not persistent?
     end
 
     def post_process(results)
@@ -78,7 +59,7 @@ module Goliath
       logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
 
     ensure
-      terminate_request if not async_response?(results)
+      terminate_request if not async_response?(results) or not persistent?
     end
 
     def send_response
@@ -89,19 +70,22 @@ module Goliath
       results && results.first == AsyncResponse.first
     end
 
-    def terminate_request
-      close_connection_after_writing rescue nil
-      close_request_response
+    def unbind
+      @request.async_close.succeed unless @request.async_close.nil?
+      @response.body.fail if @response.body.respond_to?(:fail)
     end
 
-    def close_request_response
+    def terminate_request
+      close_connection_after_writing rescue nil
       @request.async_close.succeed
       @response.close rescue nil
     end
 
-    def unbind
-      @request.async_close.succeed unless @request.async_close.nil?
-      @response.body.fail if @response.body.respond_to?(:fail)
+    alias :stream_send :send_data
+    alias :stream_close :terminate_request
+    def stream_start(status, headers)
+      send_data(@response.head)
+      send_data(@response.headers_output)
     end
 
     def remote_address
@@ -129,5 +113,17 @@ module Goliath
       @options = options
       @request.options = options
     end
+
+    private
+
+      def log_request(type, response)
+        logger.info("#{type} status: #{@response.status}, " +
+                    "Content-Length: #{@response.headers['Content-Length']}, " +
+                    "Response Time: #{"%.2f" % ((Time.now.to_f - request.env[:start_time]) * 1000)}ms")
+      end
+
+      def persistent?
+        @request.keep_alive?
+      end
   end
 end

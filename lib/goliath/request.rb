@@ -47,6 +47,7 @@ module Goliath
     REQUEST_PATH    = 'REQUEST_PATH'.freeze
     PATH_INFO       = 'PATH_INFO'.freeze
     FRAGMENT        = 'FRAGMENT'.freeze
+    CONNECTION      = 'CONNECTION'.freeze
 
     HEADERS         = 'HEADERS'.freeze
 
@@ -96,6 +97,20 @@ module Goliath
 
     def finished?
       @state == :finished
+    end
+
+    def keep_alive?
+      case @env[HTTP_VERSION]
+        # HTTP 1.1: all requests are persistent requests, client
+        # must send a Connection:close header to indicate otherwise
+        when '1.1' then
+          (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+
+        # HTTP 1.0: all requests are non keep-alive, client must
+        # send a Connection: Keep-Alive to indicate otherwise
+        when '1.0' then
+          (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+      end
     end
 
     def content_length; env[CONTENT_LENGTH].to_i; end
