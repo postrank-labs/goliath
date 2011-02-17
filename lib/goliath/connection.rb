@@ -31,7 +31,7 @@ module Goliath
     end
 
     def process
-      response.send_close = request.env[Goliath::Request::HEADERS]['Connection']
+      response.send_close = request.env[Goliath::Request::HEADERS]['Connection'] rescue nil
       post_process(@app.call(@request.env))
 
     rescue Exception => e
