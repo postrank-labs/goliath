@@ -48,8 +48,6 @@ module Goliath
     PATH_INFO       = 'PATH_INFO'.freeze
     FRAGMENT        = 'FRAGMENT'.freeze
 
-    HEADERS         = 'HEADERS'.freeze
-
     def initialize(options = {})
       @body = StringIO.new(INITIAL_BODY.dup)
 
@@ -70,8 +68,6 @@ module Goliath
       @parser.on_message_complete = proc { @state = :finished }
 
       @parser.on_headers_complete = proc do |h|
-        @env[HEADERS] = h.dup
-
         h.each do |k, v|
           @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
         end
