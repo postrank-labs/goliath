@@ -39,6 +39,33 @@ web-services. Request processing is synchronous, and all processing is asynchron
     > ruby echo.rb -sv
     > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
 
+## Goliath Server
+
+Goliath uses its own event based server built on top of EventMachine.
+As shown in the above example, to start the server, you just need to
+have Ruby execute your Goliath API file.
+
+The server accepts some optional parameters described below:
+
+Server options:
+    -e, --environment NAME           Set the execution environment (prod, dev or test) (default: development)
+    -a, --address HOST               Bind to HOST address (default: 0.0.0.0)
+    -p, --port PORT                  Use PORT (default: 9000)
+    -l, --log FILE                   Log to file (default: off)
+    -s, --stdout                     Log to stdout (default: false)
+    -P, --pid FILE                   Pid file (default: off)
+    -d, --daemonize                  Run daemonized in the background (default: false)
+    -v, --verbose                    Enable verbose logging (default: false)
+    -h, --help                       Display help message
+
+Note that the default environment could be set in your code using the +Goliath.env=+ method call.
+
+Here is an example of how to start a production Goliath API daemonized
+and on port 92010. If not set, the default goliath pid and log files will be used.
+
+    $ ruby awesome_api.rb -e production -p 92010 -d
+
+
 ## Guides
 
 * [Middleware](https://github.com/postrank-labs/goliath/wiki/Middleware)
