@@ -13,10 +13,10 @@ module Goliath
     INITIAL_BODY.encode!(Encoding::ASCII_8BIT) if INITIAL_BODY.respond_to?(:encode)
 
     SERVER_SOFTWARE = 'SERVER_SOFTWARE'.freeze
-    SERVER          = 'Goliath'.freeze
+    SERVER          = 'Goliath'
 
     HTTP_PREFIX     = 'HTTP_'.freeze
-    LOCALHOST       = 'localhost'.freeze
+    LOCALHOST       = 'localhost'
     LOGGER          = 'logger'.freeze
     STATUS          = 'status'.freeze
     CONFIG          = 'config'.freeze
@@ -38,6 +38,8 @@ module Goliath
     STREAM_CLOSE    = 'stream.close'.freeze
 
     SERVER_NAME     = 'SERVER_NAME'.freeze
+    SERVER_PORT     = 'SERVER_PORT'
+    SCRIPT_NAME     = 'SCRIPT_NAME'
     REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
     CONTENT_LENGTH  = 'CONTENT_LENGTH'.freeze
     REQUEST_METHOD  = 'REQUEST_METHOD'.freeze
@@ -48,9 +50,10 @@ module Goliath
     PATH_INFO       = 'PATH_INFO'.freeze
     FRAGMENT        = 'FRAGMENT'.freeze
 
+    HOST_PORT_REGEXP = /(?<host>.*?):(?<port>.*)/
+
     def initialize(options = {})
       @body = StringIO.new(INITIAL_BODY.dup)
-
       @env = Goliath::Env.new
       @env[SERVER_SOFTWARE]   = SERVER
       @env[SERVER_NAME]       = LOCALHOST
@@ -68,6 +71,13 @@ module Goliath
       @parser.on_message_complete = proc { @state = :finished }
 
       @parser.on_headers_complete = proc do |h|
+        # Extract the server port if defined in the host
+        m = HOST_PORT_REGEXP.match(h['Host'])
+        if m && m[:host]
+          h['Host'] = m[:host]
+          @env[SERVER_PORT] ||= m[:port]
+        end
+
         h.each do |k, v|
           @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
         end
@@ -77,12 +87,17 @@ module Goliath
         @env[REQUEST_URI]     = @parser.request_url
         @env[QUERY_STRING]    = @parser.query_string
         @env[HTTP_VERSION]    = @parser.http_version.join('.')
+        @env[SCRIPT_NAME]     = @parser.request_path
         @env[REQUEST_PATH]    = @parser.request_path
         @env[PATH_INFO]       = @parser.request_path
         @env[FRAGMENT]        = @parser.fragment
       end
 
       @state = :processing
+    end
+
+    def port=(port_num)
+      @env[SERVER_PORT] = port_num
     end
 
     def parse(data)

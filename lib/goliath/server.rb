@@ -30,6 +30,7 @@ module Goliath
         load_plugins
 
         EM.start_server(address, port, Goliath::Connection) do |conn|
+          conn.port = port
           conn.app = app
           conn.logger = logger
           conn.status = status

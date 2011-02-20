@@ -43,7 +43,9 @@ web-services. Request processing is synchronous, and all processing is asynchron
 
 Goliath uses its own event based server built on top of EventMachine.
 As shown in the above example, to start the server, you just need to
-have Ruby execute your Goliath API file.
+have Ruby execute your Goliath API file. For that, you can pass the
+files to the Ruby executable or set a Ruby shebang line in your API
+implementation.
 
 The server accepts some optional parameters described below:
 

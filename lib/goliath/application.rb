@@ -68,6 +68,15 @@ module Goliath
       end
     end
 
+    # Returns the application server options based on the options parser.
+    # Make sure to call Application.options_parser before calling this method
+    # otherwise the returned value will be nil.
+    #
+    # @return [NilClass, Hash]
+    def self.options
+      @options
+    end
+
     def self.show_options(opts)
       puts opts
 
