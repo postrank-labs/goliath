@@ -16,7 +16,7 @@ suspend and later resume the processing without requiring the developer to write
 any additional code.
 
 Goliath exposes a raw, bare-metal Rack-like API for developing high throughput
-web-services. Request processing is synchronous, and all processing is asynchronous.
+web-services. Request handling is synchronous, and all processing is asynchronous.
 
 ## Installation & Prerequisites
 
@@ -60,13 +60,16 @@ Server options:
     -v, --verbose                    Enable verbose logging (default: false)
     -h, --help                       Display help message
 
-Note that the default environment could be set in your code using the +Goliath.env=+ method call.
+Note that the default environment could be set in your code using the Goliath.env= method call.
 
 Here is an example of how to start a production Goliath API daemonized
 and on port 92010. If not set, the default goliath pid and log files will be used.
 
     $ ruby awesome_api.rb -e production -p 92010 -d
 
+The server will automatically load the API matching the file name. 
+If your api file is named awesome_api.rb, the server will expect that
+you have an AwesomeApi class inheriting from Goliath::API
 
 ## Guides
 

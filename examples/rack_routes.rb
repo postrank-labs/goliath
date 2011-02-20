@@ -3,6 +3,15 @@ $:<< '../lib' << 'lib'
 
 require 'goliath'
 
+# Example demonstrating how to have an API acting as a router.
+# RackRoutes defines multiple uris and how to map them accordingly.
+# Some of these routes are redirected to other Goliath API.
+#
+# The reason why only the last API is being used by the Goliath Server
+# is because its name matches the filename.
+# All the APIs are available but by default the server will use the one
+# matching the file name.
+
 # Our custom Goliath API
 class HelloWorld < Goliath::API
   def response(env)
