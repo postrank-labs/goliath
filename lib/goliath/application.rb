@@ -106,7 +106,16 @@ module Goliath
         klass.middlewares.each do |mw|
           use(*(mw[0..1].compact), &mw[2])
         end
-        run app
+
+        # If you use map you can't use run as
+        # the rack builder will blowup.
+        if klass.maps.empty?
+          run app
+        else
+          klass.maps.each do |mp|
+            map(mp.first, &mp.last)
+          end
+        end
       end
 
       runner.load_plugins(klass.plugins)

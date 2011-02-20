@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 $:<< '../lib' << 'lib'
 
-require 'logger'
 require 'goliath'
 
 # Our custom Goliath API
@@ -17,10 +16,9 @@ class Bonjour < Goliath::API
   end
 end
 
-
-router = Rack::Builder.new do
+class RackRoutes < Goliath::API
   map '/version' do
-    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
+    run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end
 
   map "/hello_world" do
@@ -31,24 +29,7 @@ router = Rack::Builder.new do
     run Bonjour.new
   end
 
-  map "/" do
-    run Proc.new {|env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
+  map '/' do
+    run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
   end
-
-end
-
-Goliath::Application.options_parser.parse!(ARGV)
-options =  Goliath::Application.options
-
-# We have to start our own server
-server = Goliath::Server.new(options[:address], options[:port])
-server.logger = Logger.new(STDOUT)
-server.app = router
-puts "Starting server: #{server.address}:#{server.port}"
-server.start
-
-
-at_exit do
-  puts "Ciao!"
-  exit
 end
