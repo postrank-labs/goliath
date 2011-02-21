@@ -30,10 +30,7 @@ describe Goliath::Rack::Formatters::JSON do
       @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
 
       status, header, body = @js.call({})
-      b = ''
-      b = body.collect { |item| item }.join('')
-
-      lambda { JSON.parse(b)['a'].should == 1 }.should_not raise_error Exception
+      lambda { JSON.parse(body)['a'].should == 1 }.should_not raise_error Exception
     end
 
     it "doesn't format to json if the type is not application/json" do
