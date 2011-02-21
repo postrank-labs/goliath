@@ -1,5 +1,4 @@
-require 'goliath/request'
-require 'goliath/response'
+require 'http/parser'
 
 module Goliath
   # @private
@@ -7,6 +6,22 @@ module Goliath
     attr_accessor :app, :request, :response, :port, :logger, :status, :config, :options
 
     AsyncResponse = [-1, {}, []].freeze
+
+    def post_init
+      @parser = Http::Parser.new
+      @parser.on_headers_complete = proc do |h|
+        session!
+        @session.request.parse_header(h, @parser)
+      end
+
+      @parser.on_body = proc do |data|
+        @session.request.parse(data)
+      end
+
+      @parser.on_message_complete = proc do
+        @session.process
+      end
+    end
 
     def session!
       @session = Goliath::Session.new(self)
@@ -23,13 +38,7 @@ module Goliath
 
     def receive_data(data)
       begin
-        session! if @session.nil?
-        request.parse(data)
-
-        if request.finished?
-          @session.process
-          session!
-        end
+        @parser << data
       rescue HTTP::Parser::Error => e
         terminate_request
       end

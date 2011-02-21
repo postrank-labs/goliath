@@ -1,12 +1,10 @@
 require 'stringio'
 require 'goliath/env'
-require 'http/parser'
 
 module Goliath
   # @private
   class Request
     attr_accessor :env, :body
-    attr_reader :parser
 
     INITIAL_BODY = ''
     # Force external_encoding of request's body to ASCII_8BIT
@@ -66,34 +64,6 @@ module Goliath
       @env[RACK_RUN_ONCE]     = false
       @env[OPTIONS]           = options
 
-      @parser = Http::Parser.new
-
-      @parser.on_body = proc { |data| body << data }
-      @parser.on_message_complete = proc { @state = :finished }
-
-      @parser.on_headers_complete = proc do |h|
-        # Extract the server port if defined in the host
-        m = HOST_PORT_REGEXP.match(h['Host'])
-        if m && m[:host]
-          h['Host'] = m[:host]
-          @env[SERVER_PORT] ||= m[:port]
-        end
-
-        h.each do |k, v|
-          @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
-        end
-
-        @env[STATUS]          = @parser.status_code
-        @env[REQUEST_METHOD]  = @parser.http_method
-        @env[REQUEST_URI]     = @parser.request_url
-        @env[QUERY_STRING]    = @parser.query_string
-        @env[HTTP_VERSION]    = @parser.http_version.join('.')
-        @env[SCRIPT_NAME]     = @parser.request_path
-        @env[REQUEST_PATH]    = @parser.request_path
-        @env[PATH_INFO]       = @parser.request_path
-        @env[FRAGMENT]        = @parser.fragment
-      end
-
       @state = :processing
     end
 
@@ -101,9 +71,40 @@ module Goliath
       @env[SERVER_PORT] = port_num
     end
 
+    def parse_header(h, parser)
+      # Extract the server port if defined in the host
+      m = HOST_PORT_REGEXP.match(h['Host'])
+
+      if m && m[:host]
+        h['Host'] = m[:host]
+        @env[SERVER_PORT] ||= m[:port]
+      end
+
+      h.each do |k, v|
+        @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
+      end
+
+      @env[STATUS]          = parser.status_code
+      @env[REQUEST_METHOD]  = parser.http_method
+      @env[REQUEST_URI]     = parser.request_url
+      @env[QUERY_STRING]    = parser.query_string
+      @env[HTTP_VERSION]    = parser.http_version.join('.')
+      @env[SCRIPT_NAME]     = parser.request_path
+      @env[REQUEST_PATH]    = parser.request_path
+      @env[PATH_INFO]       = parser.request_path
+      @env[FRAGMENT]        = parser.fragment
+
+      p [:parsed_header, @env]
+
+    end
+
     def parse(data)
-      parser << data
-      body.rewind if finished?
+      body << data
+    end
+
+    def finish
+      @state = :finished
+      body.rewind
     end
 
     def finished?
@@ -117,8 +118,8 @@ module Goliath
         when '1.1' then
           (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
 
-        # HTTP 1.0: all requests are non keep-alive, client must
-        # send a Connection: Keep-Alive to indicate otherwise
+          # HTTP 1.0: all requests are non keep-alive, client must
+          # send a Connection: Keep-Alive to indicate otherwise
         when '1.0' then
           (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
       end

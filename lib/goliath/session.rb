@@ -1,5 +1,7 @@
-module Goliath
+require 'goliath/request'
+require 'goliath/response'
 
+module Goliath
   class Session
 
     attr_accessor :app, :request, :response, :port
@@ -20,6 +22,7 @@ module Goliath
     end
 
     def process
+      @request.finish
       @request.port = port.to_s
       post_process(@app.call(@request.env))
 
