@@ -68,6 +68,15 @@ module Goliath
       end
     end
 
+    # Returns the application server options based on the options parser.
+    # Make sure to call Application.options_parser before calling this method
+    # otherwise the returned value will be nil.
+    #
+    # @return [NilClass, Hash]
+    def self.options
+      @options
+    end
+
     def self.show_options(opts)
       puts opts
 
@@ -97,7 +106,16 @@ module Goliath
         klass.middlewares.each do |mw|
           use(*(mw[0..1].compact), &mw[2])
         end
-        run app
+
+        # If you use map you can't use run as
+        # the rack builder will blowup.
+        if klass.maps.empty?
+          run app
+        else
+          klass.maps.each do |mp|
+            map(mp.first, &mp.last)
+          end
+        end
       end
 
       runner.load_plugins(klass.plugins)

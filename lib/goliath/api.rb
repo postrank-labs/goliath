@@ -58,6 +58,26 @@ module Goliath
       def plugin(name, *args)
         plugins.push([name, args])
       end
+
+      # Returns the router maps configured for the API
+      #
+      # @return [Array] array contains [path, block]
+      def maps
+        @maps ||= []
+      end
+
+      # Specify a router map to be used by the API
+      #
+      # @example
+      #  map '/version' do
+      #    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
+      #  end
+      #
+      # @param name [String] The URL path to map
+      # @param block The code to execute
+      def map(name, &block)
+        maps.push([name, block])
+      end
     end
 
     # Default stub method to add options into the option parser.

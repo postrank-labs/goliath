@@ -61,6 +61,8 @@ module Goliath
           Process.setsid
           exit if fork
 
+          @pid_file ||= './goliath.pid'
+          @log_file ||= File.expand_path('goliath.log')
           store_pid(Process.pid)
 
           Dir.chdir(File.dirname(__FILE__))

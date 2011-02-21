@@ -4,7 +4,7 @@ require 'goliath/response'
 module Goliath
   # @private
   class Connection < EM::Connection
-    attr_accessor :app, :request, :response
+    attr_accessor :app, :request, :response, :port
     attr_reader :logger, :status, :config, :options
 
     AsyncResponse = [-1, {}, []].freeze
@@ -31,6 +31,7 @@ module Goliath
     end
 
     def process
+      @request.port = port.to_s
       post_process(@app.call(@request.env))
 
     rescue Exception => e
