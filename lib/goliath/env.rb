@@ -4,10 +4,20 @@ module Goliath
   # Goliath::Env also provides access to the logger, configuration information
   # and anything else set into the config data during initialization.
   class Env < Hash
+    include Constants
+
     # Create a new Goliath::Env object
     #
     # @return [Goliath::Env] The Goliath::Env object
     def initialize
+      self[SERVER_SOFTWARE]   = SERVER
+      self[SERVER_NAME]       = LOCALHOST
+      self[RACK_VERSION]      = RACK_VERSION_NUM
+      self[RACK_ERRORS]       = STDERR
+      self[RACK_MULTITHREAD]  = false
+      self[RACK_MULTIPROCESS] = false
+      self[RACK_RUN_ONCE]     = false
+
       self[:start_time] = Time.now.to_f
       self[:time] = Time.now.to_f
       self[:trace] = []
@@ -51,7 +61,7 @@ module Goliath
     #
     # @param blk The block to execute.
     def on_close(&blk)
-      self[Goliath::Request::ASYNC_CLOSE].callback &blk
+      self[ASYNC_CLOSE].callback &blk
     end
 
     # If the API is a streaming API this will send the provided data to the client.
@@ -60,13 +70,13 @@ module Goliath
     #
     # @param data [String] The data to send to the client.
     def stream_send(data)
-      self[Goliath::Request::STREAM_SEND].call(data)
+      self[STREAM_SEND].call(data)
     end
 
     # If the API is a streaming API this will be executed by the API to signal that
     # the stream is complete. This will close the connection with the client.
     def stream_close
-      self[Goliath::Request::STREAM_CLOSE].call
+      self[STREAM_CLOSE].call
     end
 
     # @param name [Symbol] The method to check if we respond to it.

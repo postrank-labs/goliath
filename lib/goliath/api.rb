@@ -15,8 +15,6 @@ module Goliath
   #  end
   #
   class API
-    GOLIATH_ENV = 'goliath.env'
-
     class << self
       # Retrieves the middlewares defined by this API server
       #
@@ -99,7 +97,7 @@ module Goliath
     #
     # @return [Goliath::Env] The current environment data for the request
     def env
-      Thread.current[GOLIATH_ENV]
+      Thread.current[Goliath::Constants::GOLIATH_ENV]
     end
 
     # The API will proxy missing calls to the env object if possible.
@@ -130,20 +128,20 @@ module Goliath
     def call(env)
       Fiber.new {
         begin
-          Thread.current[GOLIATH_ENV] = env
+          Thread.current[Goliath::Constants::GOLIATH_ENV] = env
           status, headers, body = response(env)
 
           if body == Goliath::Response::STREAMING
-            env[Goliath::Request::STREAM_START].call(status, headers)
+            env[Goliath::Constants::STREAM_START].call(status, headers)
           else
-            env[Goliath::Request::ASYNC_CALLBACK].call([status, headers, body])
+            env[Goliath::Constants::ASYNC_CALLBACK].call([status, headers, body])
           end
 
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))
 
-          env[Goliath::Request::ASYNC_CALLBACK].call([400, {}, {:error => e.message}])
+          env[Goliath::Constants::ASYNC_CALLBACK].call([400, {}, {:error => e.message}])
         end
       }.resume
 

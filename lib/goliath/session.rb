@@ -42,18 +42,20 @@ module Goliath
     end
 
     def post_process(results)
-      results = results.to_a
-      return if async_response?(results)
+      begin
+        results = results.to_a
+        return if async_response?(results)
 
-      @response.status, @response.headers, @response.body = *results
-      log_request(:sync, @response)
-      send_response
+        @response.status, @response.headers, @response.body = *results
+        log_request(:sync, @response)
+        send_response
 
-    rescue Exception => e
-      logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
+      rescue Exception => e
+        logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
 
-    ensure
-      @conn.terminate_request if not async_response?(results) or not persistent?
+      ensure
+        @conn.terminate_request if not async_response?(results) or not persistent?
+      end
     end
 
     def send_response

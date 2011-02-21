@@ -1,77 +1,24 @@
-require 'stringio'
 require 'goliath/env'
 
 module Goliath
   # @private
   class Request
+    include Constants
+
     attr_accessor :env, :body
-
-    INITIAL_BODY = ''
-    # Force external_encoding of request's body to ASCII_8BIT
-    INITIAL_BODY.encode!(Encoding::ASCII_8BIT) if INITIAL_BODY.respond_to?(:encode)
-
-    SERVER_SOFTWARE = 'SERVER_SOFTWARE'.freeze
-    SERVER          = 'Goliath'
-
-    HTTP_PREFIX     = 'HTTP_'.freeze
-    LOCALHOST       = 'localhost'
-    LOGGER          = 'logger'.freeze
-    STATUS          = 'status'.freeze
-    CONFIG          = 'config'.freeze
-    OPTIONS         = 'options'.freeze
-
-    RACK_INPUT      = 'rack.input'.freeze
-    RACK_VERSION    = 'rack.version'.freeze
-    RACK_ERRORS     = 'rack.errors'.freeze
-    RACK_MULTITHREAD = 'rack.multithread'.freeze
-    RACK_MULTIPROCESS = 'rack.multiprocess'.freeze
-    RACK_RUN_ONCE   = 'rack.run_once'.freeze
-    RACK_VERSION_NUM = [1, 0].freeze
-
-    ASYNC_CALLBACK  = 'async.callback'.freeze
-    ASYNC_CLOSE     = 'async.close'.freeze
-
-    STREAM_START    = 'stream.start'.freeze
-    STREAM_SEND     = 'stream.send'.freeze
-    STREAM_CLOSE    = 'stream.close'.freeze
-
-    SERVER_NAME     = 'SERVER_NAME'.freeze
-    SERVER_PORT     = 'SERVER_PORT'
-    SCRIPT_NAME     = 'SCRIPT_NAME'
-    REMOTE_ADDR     = 'REMOTE_ADDR'.freeze
-    CONTENT_LENGTH  = 'CONTENT_LENGTH'.freeze
-    REQUEST_METHOD  = 'REQUEST_METHOD'.freeze
-    REQUEST_URI     = 'REQUEST_URI'.freeze
-    QUERY_STRING    = 'QUERY_STRING'.freeze
-    HTTP_VERSION    = 'HTTP_VERSION'.freeze
-    REQUEST_PATH    = 'REQUEST_PATH'.freeze
-    PATH_INFO       = 'PATH_INFO'.freeze
-    FRAGMENT        = 'FRAGMENT'.freeze
-    CONNECTION      = 'CONNECTION'.freeze
-
-    HOST_PORT_REGEXP = /(?<host>.*?):(?<port>.*)/
 
     def initialize(options = {})
       @body = StringIO.new(INITIAL_BODY.dup)
+
       @env = Goliath::Env.new
-      @env[SERVER_SOFTWARE]   = SERVER
-      @env[SERVER_NAME]       = LOCALHOST
-      @env[RACK_INPUT]        = body
-      @env[RACK_VERSION]      = RACK_VERSION_NUM
-      @env[RACK_ERRORS]       = STDERR
-      @env[RACK_MULTITHREAD]  = false
-      @env[RACK_MULTIPROCESS] = false
-      @env[RACK_RUN_ONCE]     = false
-      @env[OPTIONS]           = options
+      @env[RACK_INPUT] = @body
+      @env[OPTIONS] = options
 
       @state = :processing
     end
 
-    def port=(port_num)
-      @env[SERVER_PORT] = port_num
-    end
-
     def parse_header(h, parser)
+      # TODO: why? we should always know the port of the server...
       # Extract the server port if defined in the host
       m = HOST_PORT_REGEXP.match(h['Host'])
 
@@ -93,9 +40,6 @@ module Goliath
       @env[REQUEST_PATH]    = parser.request_path
       @env[PATH_INFO]       = parser.request_path
       @env[FRAGMENT]        = parser.fragment
-
-      p [:parsed_header, @env]
-
     end
 
     def parse(data)
@@ -126,6 +70,7 @@ module Goliath
     end
 
     def content_length; env[CONTENT_LENGTH].to_i; end
+    def port=(port_num); env[SERVER_PORT] = port_num; end
 
     def logger=(logger) env[LOGGER] = logger; end
     def logger;         env[LOGGER] end

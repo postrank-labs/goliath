@@ -1,11 +1,13 @@
 require 'eventmachine'
 require 'http/parser'
 require 'async_rack'
+require 'stringio'
 
 require 'goliath/version'
 require 'goliath/goliath'
 require 'goliath/runner'
 require 'goliath/server'
+require 'goliath/constants'
 require 'goliath/connection'
 require 'goliath/session'
 require 'goliath/request'
