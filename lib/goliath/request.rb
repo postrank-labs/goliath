@@ -50,8 +50,6 @@ module Goliath
     PATH_INFO       = 'PATH_INFO'.freeze
     FRAGMENT        = 'FRAGMENT'.freeze
 
-    HOST_PORT_REGEXP = /(?<host>.*?):(?<port>.*)/
-
     def initialize(options = {})
       @body = StringIO.new(INITIAL_BODY.dup)
       @env = Goliath::Env.new
@@ -71,13 +69,9 @@ module Goliath
       @parser.on_message_complete = proc { @state = :finished }
 
       @parser.on_headers_complete = proc do |h|
-        # Extract the server port if defined in the host
-        m = HOST_PORT_REGEXP.match(h['Host'])
-        if m && m[:host]
-          h['Host'] = m[:host]
-          @env[SERVER_PORT] ||= m[:port]
-        end
-
+        # Note that in some cases, the Host header includes the port.
+        # Goliath sets its port directly based on the server info instead
+        # of relying on the response parsing. 
         h.each do |k, v|
           @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
         end
