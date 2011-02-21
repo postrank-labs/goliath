@@ -10,30 +10,17 @@ module Goliath
     def post_init
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
-        session!
-        @session.request.parse_header(h, @parser)
+        @request = Goliath::Request.new(self, app, logger, status, config, options, port)
+        @request.parse_header(h, @parser)
       end
 
       @parser.on_body = proc do |data|
-        @session.request.parse(data)
+        @request.parse(data)
       end
 
       @parser.on_message_complete = proc do
-        @session.process
+        @request.process
       end
-    end
-
-    def session!
-      @session = Goliath::Session.new(self)
-      @session.app = app
-      @session.logger = logger
-      @session.status = status
-      @session.config = config
-      @session.options = options
-    end
-
-    def request
-      @session.request
     end
 
     def receive_data(data)
@@ -45,14 +32,14 @@ module Goliath
     end
 
     def unbind
-      @session.request.async_close.succeed unless @session.request.async_close.nil?
-      @session.response.body.fail if @session.response.body.respond_to?(:fail)
+      @request.succeed
+      @request.response.body.fail if @request.response.body.respond_to?(:fail)
     end
 
     def terminate_request
+      @request.succeed
+      @request.response.close rescue nil
       close_connection_after_writing rescue nil
-      @session.request.async_close.succeed
-      @session.response.close rescue nil
     end
 
     def remote_address

@@ -5,28 +5,40 @@ module Goliath
   class Request
     include Constants
 
-    attr_accessor :env, :body
+    attr_accessor :app, :port, :response, :env, :body
+    attr_accessor :logger, :status, :config, :options
 
-    def initialize(options = {})
+    def initialize(conn, app, logger, status, config, options, port)
+      @conn = conn
+      @app  = app
+
       @body = StringIO.new(INITIAL_BODY.dup)
+      @response = Goliath::Response.new
 
       @env = Goliath::Env.new
-      @env[RACK_INPUT] = @body
-      @env[OPTIONS] = options
+      @env[RACK_INPUT]  = body
+      @env[OPTIONS]     = options
+      @env[SERVER_PORT] = port
+      @env[LOGGER]      = logger
+      @env[OPTIONS]     = options
+      @env[STATUS]      = status
+      @env[CONFIG]      = config
+      @env[REMOTE_ADDR] = conn.remote_address
+
+      @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
+      @env[ASYNC_CALLBACK] = method(:async_process)
+
+      @env[STREAM_SEND]  = proc { @conn.send_data(data) }
+      @env[STREAM_CLOSE] = proc { @conn.terminate_request }
+      @env[STREAM_START] = proc do
+        @conn.send_data(@response.head)
+        @conn.send_data(@response.headers_output)
+      end
 
       @state = :processing
     end
 
     def parse_header(h, parser)
-      # TODO: why? we should always know the port of the server...
-      # Extract the server port if defined in the host
-      m = HOST_PORT_REGEXP.match(h['Host'])
-
-      if m && m[:host]
-        h['Host'] = m[:host]
-        @env[SERVER_PORT] ||= m[:port]
-      end
-
       h.each do |k, v|
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
       end
@@ -43,58 +55,86 @@ module Goliath
     end
 
     def parse(data)
-      body << data
-    end
-
-    def finish
-      @state = :finished
-      body.rewind
+      @body << data
     end
 
     def finished?
       @state == :finished
     end
 
-    def keep_alive?
-      case @env[HTTP_VERSION]
-        # HTTP 1.1: all requests are persistent requests, client
-        # must send a Connection:close header to indicate otherwise
-        when '1.1' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+    def succeed
+      @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
+    end
 
-          # HTTP 1.0: all requests are non keep-alive, client must
-          # send a Connection: Keep-Alive to indicate otherwise
-        when '1.0' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+    #
+    # Request processing
+    #
+
+    def process
+      begin
+        @state = :finished
+        post_process(@app.call(@env))
+
+      rescue Exception => e
+        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+        post_process([500, {}, 'An error happened'])
       end
     end
 
-    def content_length; env[CONTENT_LENGTH].to_i; end
-    def port=(port_num); env[SERVER_PORT] = port_num; end
+    def post_process(results)
+      begin
+        results = results.to_a
+        return if async_response?(results)
 
-    def logger=(logger) env[LOGGER] = logger; end
-    def logger;         env[LOGGER] end
+        @response.status, @response.headers, @response.body = *results
+        log_request(:sync, @response)
+        send_response
 
-    def options=(options) env[OPTIONS] = options; end
+      rescue Exception => e
+        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
 
-    def status=(status) env[STATUS] = status; end
-    def status;         env[STATUS]; end
-
-    def config=(config) env[CONFIG] = config; end
-    def config;         env[CONFIG]; end
-
-    def remote_address=(address) env[REMOTE_ADDR] = address; end
-    def remote_address;          env[REMOTE_ADDR]; end
-
-    def async_close;    env[ASYNC_CLOSE]; end
-    def async_callback; env[ASYNC_CALLBACK]; end
-    def async_callback=(callback)
-      env[ASYNC_CALLBACK] = callback
-      env[ASYNC_CLOSE] = EM::DefaultDeferrable.new
+      ensure
+        @conn.terminate_request if not async_response?(results) or not keep_alive?
+      end
     end
 
-    def stream_start=(callback) env[STREAM_START] = callback; end
-    def stream_send=(callback)  env[STREAM_SEND] = callback; end
-    def stream_close=(callback) env[STREAM_CLOSE] = callback; end
+    def async_process(results)
+      @response.status, @response.headers, @response.body = *results
+      log_request(:async, @response)
+
+      send_response
+      @conn.terminate_request if not keep_alive?
+    end
+
+    def send_response
+      @response.each { |chunk| @conn.send_data(chunk) }
+    end
+
+    private
+
+      def async_response?(results)
+        results && results.first == Goliath::Connection::AsyncResponse.first
+      end
+
+      def keep_alive?
+        case @env[HTTP_VERSION]
+          # HTTP 1.1: all requests are persistent requests, client
+          # must send a Connection:close header to indicate otherwise
+          when '1.1' then
+            (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+
+            # HTTP 1.0: all requests are non keep-alive, client must
+            # send a Connection: Keep-Alive to indicate otherwise
+          when '1.0' then
+            (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+        end
+      end
+
+      def log_request(type, response)
+        @env[LOGGER].info("#{type} status: #{@response.status}, " +
+                          "Content-Length: #{@response.headers['Content-Length']}, " +
+                          "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+      end
+
   end
 end
