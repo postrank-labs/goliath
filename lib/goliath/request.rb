@@ -13,7 +13,7 @@ module Goliath
       @body = StringIO.new(INITIAL_BODY.dup)
       @env[RACK_INPUT] = body
 
-      @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
+      # @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
       @env[ASYNC_CALLBACK] = method(:async_process)
 
       @env[STREAM_SEND]  = proc { @conn.send_data(data) }
@@ -50,9 +50,9 @@ module Goliath
       @state == :finished
     end
 
-    def succeed
-      @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
-    end
+    # def succeed
+      # @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
+    # end
 
     #
     # Request processing

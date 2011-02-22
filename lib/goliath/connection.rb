@@ -45,12 +45,12 @@ module Goliath
     end
 
     def unbind
-      @request.succeed
+      # @request.succeed
       @request.response.body.fail if @request.response.body.respond_to?(:fail)
     end
 
     def terminate_request
-      @request.succeed
+      # @request.succeed
       @request.response.close rescue nil
       close_connection_after_writing rescue nil
     end
