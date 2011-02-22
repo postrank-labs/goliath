@@ -1,16 +1,29 @@
 require 'http/parser'
+require 'goliath/env'
 
 module Goliath
   # @private
   class Connection < EM::Connection
-    attr_accessor :app, :request, :response, :port, :logger, :status, :config, :options
+    include Constants
+
+    attr_accessor :app, :request, :port, :logger, :status, :config, :options
 
     AsyncResponse = [-1, {}, []].freeze
 
     def post_init
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
-        @request = Goliath::Request.new(self, app, logger, status, config, options, port)
+
+        @env = Goliath::Env.new
+        @env[OPTIONS]     = options
+        @env[SERVER_PORT] = port
+        @env[LOGGER]      = logger
+        @env[OPTIONS]     = options
+        @env[STATUS]      = status
+        @env[CONFIG]      = config
+        @env[REMOTE_ADDR] = remote_address
+
+        @request = Goliath::Request.new(@app, self, @env)
         @request.parse_header(h, @parser)
       end
 

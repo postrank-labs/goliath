@@ -1,3 +1,5 @@
+require 'goliath/constants'
+
 module Goliath
   # Holds information for the current request.
   #

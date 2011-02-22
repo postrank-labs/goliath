@@ -1,29 +1,17 @@
-require 'goliath/env'
-
 module Goliath
   # @private
   class Request
     include Constants
+    attr_accessor :app, :conn, :env, :response, :body
 
-    attr_accessor :app, :port, :response, :env, :body
-    attr_accessor :logger, :status, :config, :options
-
-    def initialize(conn, app, logger, status, config, options, port)
-      @conn = conn
+    def initialize(app, conn, env)
       @app  = app
+      @conn = conn
+      @env  = env
 
-      @body = StringIO.new(INITIAL_BODY.dup)
       @response = Goliath::Response.new
-
-      @env = Goliath::Env.new
-      @env[RACK_INPUT]  = body
-      @env[OPTIONS]     = options
-      @env[SERVER_PORT] = port
-      @env[LOGGER]      = logger
-      @env[OPTIONS]     = options
-      @env[STATUS]      = status
-      @env[CONFIG]      = config
-      @env[REMOTE_ADDR] = conn.remote_address
+      @body = StringIO.new(INITIAL_BODY.dup)
+      @env[RACK_INPUT] = body
 
       @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
       @env[ASYNC_CALLBACK] = method(:async_process)
