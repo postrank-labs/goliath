@@ -13,17 +13,16 @@ module Goliath
     def post_init
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
+        env = Goliath::Env.new
+        env[OPTIONS]     = options
+        env[SERVER_PORT] = port
+        env[LOGGER]      = logger
+        env[OPTIONS]     = options
+        env[STATUS]      = status
+        env[CONFIG]      = config
+        env[REMOTE_ADDR] = remote_address
 
-        @env = Goliath::Env.new
-        @env[OPTIONS]     = options
-        @env[SERVER_PORT] = port
-        @env[LOGGER]      = logger
-        @env[OPTIONS]     = options
-        @env[STATUS]      = status
-        @env[CONFIG]      = config
-        @env[REMOTE_ADDR] = remote_address
-
-        @request = Goliath::Request.new(@app, self, @env)
+        @request = Goliath::Request.new(@app, self, env)
         @request.parse_header(h, @parser)
       end
 
