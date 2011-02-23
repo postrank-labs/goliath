@@ -40,7 +40,7 @@ module Goliath
       begin
         @parser << data
       rescue HTTP::Parser::Error => e
-        terminate_request
+        terminate_connection
       end
     end
 
@@ -49,7 +49,7 @@ module Goliath
       @request.response.body.fail if @request.response.body.respond_to?(:fail)
     end
 
-    def terminate_request
+    def terminate_connection
       # @request.succeed
       @request.response.close rescue nil
       close_connection_after_writing rescue nil

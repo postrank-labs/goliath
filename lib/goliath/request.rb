@@ -17,7 +17,7 @@ module Goliath
       @env[ASYNC_CALLBACK] = method(:async_process)
 
       @env[STREAM_SEND]  = proc { @conn.send_data(data) }
-      @env[STREAM_CLOSE] = proc { @conn.terminate_request }
+      @env[STREAM_CLOSE] = proc { @conn.terminate_connection }
       @env[STREAM_START] = proc do
         @conn.send_data(@response.head)
         @conn.send_data(@response.headers_output)
@@ -51,7 +51,7 @@ module Goliath
     end
 
     # def succeed
-      # @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
+    # @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
     # end
 
     #
@@ -82,7 +82,7 @@ module Goliath
         @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
 
       ensure
-        @conn.terminate_request if not async_response?(results) or not keep_alive?
+        @conn.terminate_connection if not async_response?(results) or not keep_alive?
       end
     end
 
@@ -91,7 +91,7 @@ module Goliath
       log_request(:async, @response)
 
       send_response
-      @conn.terminate_request if not keep_alive?
+      @conn.terminate_connection if not keep_alive?
     end
 
     def send_response
