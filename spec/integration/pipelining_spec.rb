@@ -42,16 +42,23 @@ describe 'HTTP Pipelining support' do
       server
 
       start = Time.now.to_f
+      res = []
+
       conn = EM::HttpRequest.new('http://localhost:9000')
       r1 = conn.aget :query => {:delay => 0.3}, :keepalive => true
       r2 = conn.aget :query => {:delay => 0.2}
 
       r1.errback  { fail }
-      r1.callback { |c| c.response.should match('0.3') }
+      r1.callback do |c|
+        res << c.response
+        c.response.should match('0.3')
+      end
 
       r2.errback  { fail }
       r2.callback do |c|
-        c.response.should match('0.2')
+        res << c.response
+
+        res.should == ['0.3', '0.2']
         (Time.now.to_f - start).should be_within(0.1).of(0.3)
 
         EM.stop
