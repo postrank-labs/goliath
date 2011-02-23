@@ -14,7 +14,7 @@ module Goliath
       @env[RACK_INPUT] = body
 
       # @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
-      @env[ASYNC_CALLBACK] = method(:async_process)
+      @env[ASYNC_CALLBACK] = method(:post_process)
 
       @env[STREAM_SEND]  = proc { @conn.send_data(data) }
       @env[STREAM_CLOSE] = proc { @conn.terminate_connection }
@@ -64,44 +64,33 @@ module Goliath
         post_process(@app.call(@env))
 
       rescue Exception => e
-        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-        post_process([500, {}, 'An error happened'])
+        server_exception(e)
       end
     end
 
     def post_process(results)
       begin
-        results = results.to_a
-        return if async_response?(results)
+        status, headers, body = results
+        return if status && status == Goliath::Connection::AsyncResponse.first
 
-        @response.status, @response.headers, @response.body = *results
-        log_request(:sync, @response)
-        send_response
+        @response.status, @response.headers, @response.body = status, headers, body
+        @response.each { |chunk| @conn.send_data(chunk) }
+        @env[LOGGER].info("Status: #{@response.status}, " +
+                          "Content-Length: #{@response.headers['Content-Length']}, " +
+                          "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+
+        @conn.terminate_connection if !keep_alive?
 
       rescue Exception => e
-        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-
-      ensure
-        @conn.terminate_connection if not async_response?(results) or not keep_alive?
+        server_exception(e)
       end
-    end
-
-    def async_process(results)
-      @response.status, @response.headers, @response.body = *results
-      log_request(:async, @response)
-
-      send_response
-      @conn.terminate_connection if not keep_alive?
-    end
-
-    def send_response
-      @response.each { |chunk| @conn.send_data(chunk) }
     end
 
     private
 
-      def async_response?(results)
-        results && results.first == Goliath::Connection::AsyncResponse.first
+      def server_exception(e)
+        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+        post_process([500, {}, 'An error happened'])
       end
 
       def keep_alive?
@@ -116,12 +105,6 @@ module Goliath
           when '1.0' then
             (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
         end
-      end
-
-      def log_request(type, response)
-        @env[LOGGER].info("#{type} status: #{@response.status}, " +
-                          "Content-Length: #{@response.headers['Content-Length']}, " +
-                          "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
       end
 
   end
