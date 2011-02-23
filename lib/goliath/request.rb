@@ -13,7 +13,7 @@ module Goliath
       @body = StringIO.new(INITIAL_BODY.dup)
       @env[RACK_INPUT] = body
 
-      # @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
+      @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
       @env[ASYNC_CALLBACK] = method(:post_process)
 
       @env[STREAM_SEND]  = proc { @conn.send_data(data) }
@@ -26,6 +26,9 @@ module Goliath
       @state = :processing
     end
 
+    # Invoked by connection when header parsing is complete.
+    # This method is invoked only once per request.
+    #
     def parse_header(h, parser)
       h.each do |k, v|
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
@@ -42,6 +45,15 @@ module Goliath
       @env[FRAGMENT]        = parser.fragment
     end
 
+    # Invoked by connection when new body data is
+    # parsed from the existing TCP stream.
+    #
+    # Note: in theory, we can make this stream the
+    # data into the processing step for async
+    # uploads, etc. This would also require additional
+    # callbacks for headers, etc.. Maybe something to
+    # explore later.
+    #
     def parse(data)
       @body << data
     end
@@ -50,14 +62,20 @@ module Goliath
       @state == :finished
     end
 
-    # def succeed
-    # @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
-    # end
-
+    # Invoked by connection when upstream client
+    # terminates the current TCP session.
     #
-    # Request processing
-    #
+    def close
+      @response.close rescue nil
+      @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
+    end
 
+    # Invoked by connection when the parsing of the
+    # HTTP request and body complete. From this point
+    # all synchronous middleware will run until either
+    # an immediate response is served, or an async
+    # response is indicated.
+    #
     def process
       begin
         @state = :finished
@@ -68,6 +86,10 @@ module Goliath
       end
     end
 
+    # Invoked by the app / middleware once the request
+    # is complete. A special async code is returned if
+    # the response is not ready yet.
+    #
     def post_process(results)
       begin
         status, headers, body = results
