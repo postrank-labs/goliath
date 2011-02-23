@@ -1,7 +1,3 @@
-require 'eventmachine'
-require 'http/parser'
-require 'async_rack'
-
 require 'goliath/version'
 require 'goliath/goliath'
 require 'goliath/runner'

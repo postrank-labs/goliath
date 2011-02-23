@@ -3,8 +3,7 @@ require 'goliath/runner'
 
 describe Goliath::Runner do
   before(:each) do
-    @r = Goliath::Runner.new
-    @r.set_options({})
+    @r = Goliath::Runner.new([], nil)
     @r.stub!(:store_pid)
 
     @log_mock = mock('logger').as_null_object
@@ -28,7 +27,7 @@ describe Goliath::Runner do
 
     describe 'logging' do
       before(:each) do
-        @r = Goliath::Runner.new
+        @r = Goliath::Runner.new([], nil)
       end
 
       describe 'without setting up file logger' do
@@ -37,13 +36,13 @@ describe Goliath::Runner do
         end
 
         it 'configures the logger' do
-          log = @r.setup_logger
+          log = @r.send(:setup_logger)
           log.should_not be_nil
         end
 
         [:debug, :warn, :info].each do |type|
           it "responds to #{type} messages" do
-            log = @r.setup_logger
+            log = @r.send(:setup_logger)
             log.respond_to?(type).should be_true
           end
         end
@@ -54,13 +53,13 @@ describe Goliath::Runner do
           end
 
           it 'sets the default log level' do
-            log = @r.setup_logger
+            log = @r.send(:setup_logger)
             log.level.should == Log4r::INFO
           end
 
           it 'sets debug when verbose' do
             @r.verbose = true
-            log = @r.setup_logger
+            log = @r.send(:setup_logger)
             log.level.should == Log4r::DEBUG
           end
         end
@@ -68,26 +67,26 @@ describe Goliath::Runner do
         describe 'file logger' do
           it "doesn't configure by default" do
             @r.should_not_receive(:setup_file_logger)
-            @r.setup_logger
+            log = @r.send(:setup_logger)
           end
 
           it 'configures if -l is provided' do
             @r.should_receive(:setup_file_logger)
             @r.log_file = 'out.log'
-            @r.setup_logger
+            log = @r.send(:setup_logger)
           end
         end
 
         describe 'stdout logger' do
           it "doesn't configure by default" do
             @r.should_not_receive(:setup_stdout_logger)
-            @r.setup_logger
+            log = @r.send(:setup_logger)
           end
 
           it 'configures if -s is provided' do
             @r.should_receive(:setup_stdout_logger)
             @r.log_stdout = true
-            @r.setup_logger
+            log = @r.send(:setup_logger)
           end
         end
       end
@@ -99,7 +98,7 @@ describe Goliath::Runner do
         FileUtils.should_receive(:mkdir_p).with('/my/log/dir')
 
         @r.log_file = '/my/log/dir/log.txt'
-        @r.setup_file_logger(log_mock, nil)
+        @r.send(:setup_file_logger, log_mock, nil)
       end
     end
 
@@ -110,7 +109,7 @@ describe Goliath::Runner do
       Goliath::Server.should_receive(:new).and_return(server_mock)
 
       @r.stub!(:load_config).and_return({})
-      @r.run_server
+      @r.send(:run_server)
     end
 
     it 'configures the server' do
@@ -119,19 +118,12 @@ describe Goliath::Runner do
 
       @r.app = 'my_app'
 
-      opts = {:address => '10.2.1.1',
-              :port => '2020',
-              :daemonize => true,
-              :verbose => true,
-              :log_file => '/my.log',
-              :pid_file => '/my.pid'}
-      Goliath::Server.should_receive(:new).with(opts[:address], opts[:port]).and_return(server_mock)
+      Goliath::Server.should_receive(:new).and_return(server_mock)
 
       server_mock.should_receive(:logger=).with(@log_mock)
       server_mock.should_receive(:app=).with('my_app')
 
-      @r.set_options(opts)
-      @r.run_server
+      @r.send(:run_server)
     end
   end
 end

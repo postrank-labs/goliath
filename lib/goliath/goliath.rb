@@ -1,3 +1,7 @@
+require 'eventmachine'
+require 'http/parser'
+require 'async_rack'
+
 # The Goliath Framework
 module Goliath
   module_function

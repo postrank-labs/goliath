@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 $:<< '../lib' << 'lib'
 
-require 'logger'
-require 'goliath'
+require 'goliath/api'
+require 'goliath/runner'
 
 # Example demonstrating how to use a custom rack builder with the
 # Goliath server and mixing Goliath APIs with normal Rack end points.
@@ -27,7 +27,7 @@ end
 
 # Rack builder acting as a router
 router = Rack::Builder.new do
-  
+
   # Rack end point
   map '/version' do
     run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
@@ -50,20 +50,7 @@ router = Rack::Builder.new do
 
 end
 
-# Use the Goliath API to extract the server options
-Goliath::Application.options_parser.parse!(ARGV)
-options =  Goliath::Application.options
+runner = Goliath::Runner.new(ARGV, nil)
+runner.app = router
+runner.run
 
-# We have to start our own server since we are using a custom Rack
-# builder. However using the option parser makes that trivial.
-server = Goliath::Server.new(options[:address], options[:port])
-server.logger = Logger.new(STDOUT)
-server.app = router
-puts "Starting server on: #{server.address}:#{server.port}"
-server.start
-
-
-at_exit do
-  puts "Thanks for testing Goliath, ciao!"
-  exit
-end
