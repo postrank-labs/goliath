@@ -8,7 +8,7 @@ require 'goliath/server'
 
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 
-describe Echo do
+describe 'HTTP Keep-Alive support' do
   let(:app) do
     ::Rack::Builder.new do
       Echo.middlewares.each do |mw|

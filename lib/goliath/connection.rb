@@ -11,8 +11,13 @@ module Goliath
     AsyncResponse = [-1, {}, []].freeze
 
     def post_init
+      @current = nil
+      @requests = []
+      @pending  = []
+
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
+
         env = Goliath::Env.new
         env[OPTIONS]     = options
         env[SERVER_PORT] = port
@@ -22,16 +27,27 @@ module Goliath
         env[CONFIG]      = config
         env[REMOTE_ADDR] = remote_address
 
-        @request = Goliath::Request.new(@app, self, env)
-        @request.parse_header(h, @parser)
+        r = Goliath::Request.new(@app, self, env)
+        r.parse_header(h, @parser)
+
+        @requests.push r
       end
 
       @parser.on_body = proc do |data|
-        @request.parse(data)
+        @requests.first.parse(data)
       end
 
       @parser.on_message_complete = proc do
-        @request.process
+        req = @requests.shift
+
+        if @current.nil?
+          @current = req
+          @current.succeed
+        else
+          @pending.push req
+        end
+
+        req.process
       end
     end
 
@@ -44,12 +60,18 @@ module Goliath
     end
 
     def unbind
-      @request.close
+      @requests.map {|r| r.close }
     end
 
-    def terminate_connection
-      @request.close
-      close_connection_after_writing rescue nil
+    def terminate_request(keep_alive)
+      if req = @pending.shift
+        @current = req
+        @current.succeed
+      else
+        @current = nil
+      end
+
+      close_connection_after_writing rescue nil if !keep_alive
     end
 
     def remote_address
