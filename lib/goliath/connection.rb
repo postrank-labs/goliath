@@ -6,7 +6,8 @@ module Goliath
   class Connection < EM::Connection
     include Constants
 
-    attr_accessor :app, :request, :port, :logger, :status, :config, :options
+    attr_accessor :app, :port, :logger, :status, :config, :options
+    attr_reader   :parser
 
     AsyncResponse = [-1, {}, []].freeze
 
@@ -55,7 +56,7 @@ module Goliath
       begin
         @parser << data
       rescue HTTP::Parser::Error => e
-        terminate_connection
+        terminate_request(false)
       end
     end
 
