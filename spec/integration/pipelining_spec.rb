@@ -11,12 +11,10 @@ class Interleaving < Goliath::API
   use Goliath::Rack::Params
 
   def response(env)
-    f = Fiber.current
-    delay = env.params['delay'].to_f
-    EM.add_timer(delay) { f.resume }
-    Fiber.yield
+    delay = env.params['delay']
+    EM::Synchrony.sleep(delay.to_f)
 
-    [200, {}, delay.to_s]
+    [200, {}, delay]
   end
 end
 
