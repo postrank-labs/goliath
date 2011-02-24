@@ -18,7 +18,7 @@ module Goliath
       @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
       @env[ASYNC_CALLBACK] = method(:post_process)
 
-      @env[STREAM_SEND]  = proc { @conn.send_data(data) }
+      @env[STREAM_SEND]  = proc { |data| @conn.send_data(data) }
       @env[STREAM_CLOSE] = proc { @conn.terminate_request(false) }
       @env[STREAM_START] = proc do
         @conn.send_data(@response.head)
