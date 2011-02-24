@@ -40,7 +40,7 @@ describe 'HTTP Keep-Alive support' do
         r2 = conn.get :query => {:echo => 'test2'}
         r2.errback { fail }
         r2.callback do |c|
-          b = JSON.parse(c.response)
+          b = Yajl::Parser.parse(c.response)
           b['response'].should == 'test2'
 
           EM.stop
