@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'goliath/rack/formatters/xml'
+require 'nokogiri'
 
 describe Goliath::Rack::Formatters::XML do
   it 'accepts an app' do

@@ -10,3 +10,4 @@ Gemfile.lock
 .yardoc
 .livereload
 *.watchr
+*.rbc

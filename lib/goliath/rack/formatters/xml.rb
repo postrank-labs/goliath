@@ -27,9 +27,7 @@ module Goliath
         end
 
         def post_process(status, headers, body)
-          if xml_response?(headers)
-            body = StringIO.new(to_xml(body, false))
-          end
+          body = to_xml(body, false) if xml_response?(headers)
           [status, headers, body]
         end
 

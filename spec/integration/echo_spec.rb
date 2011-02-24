@@ -31,7 +31,7 @@ describe Echo do
 
       req = EM::HttpRequest.new('http://localhost:9000').get :query => {:echo => 'test'}
       req.callback do |c|
-        b = JSON.parse(c.response)
+        b = Yajl::Parser.parse(c.response)
         b['response'].should == 'test'
         EM.stop
       end
@@ -48,7 +48,7 @@ describe Echo do
 
       req = EM::HttpRequest.new('http://localhost:9000').get
       req.callback do |c|
-        b = JSON.parse(c.response)
+        b = Yajl::Parser.parse(c.response)
         b['error'].should_not be_nil
         b['error'].should == 'Echo identifier missing'
         EM.stop
