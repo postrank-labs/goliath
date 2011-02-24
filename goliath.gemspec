@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>=1.9.2'
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.1'
-  s.add_dependency 'em-synchrony'
+  s.add_dependency 'em-synchrony', '>= 0.3.0.beta.1'
   s.add_dependency 'http_parser.rb'
   s.add_dependency 'log4r'
 
