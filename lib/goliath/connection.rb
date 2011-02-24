@@ -21,7 +21,7 @@ module Goliath
 
         env = Goliath::Env.new
         env[OPTIONS]     = options
-        env[SERVER_PORT] = port
+        env[SERVER_PORT] = port.to_s
         env[LOGGER]      = logger
         env[OPTIONS]     = options
         env[STATUS]      = status
