@@ -9,7 +9,7 @@ $:<< '../lib' << 'lib'
 # being parsed by the Rack::Params middleware. This allows us to transparently
 # rewrite incoming requests before any processing is done on it.
 #
-# curl -s -H "Accept-Encoding: gzip,deflate" localhost:9000?gziped=test | gunzip
+# curl -s -H "Accept-Encoding: gzip,deflate" -H "Connection: close" localhost:9000?gziped=test | gunzip
 #
 
 require 'rack/deflater'
@@ -18,7 +18,6 @@ require 'goliath'
 require 'yajl'
 
 class Gziped < Goliath::API
-
   # if client requested, compress the response
   use ::Rack::Deflater
 
