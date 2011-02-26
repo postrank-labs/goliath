@@ -11,3 +11,4 @@ Gemfile.lock
 .livereload
 *.watchr
 *.rbc
+.rvmrc
