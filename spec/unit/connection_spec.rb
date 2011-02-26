@@ -48,6 +48,10 @@ describe Goliath::Connection do
     end
 
     it "closes the connection when a parse error is received" do
+      current_mock = mock("current").as_null_object
+      current_mock.should_receive(:close)
+
+      @c.instance_variable_set("@current", current_mock)
       lambda { @c.receive_data("bad data") }.should_not raise_error
     end
   end

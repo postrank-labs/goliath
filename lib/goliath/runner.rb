@@ -39,6 +39,10 @@ module Goliath
     # @return [Object] The rack application the server will execute
     attr_accessor :app
 
+    # The API application
+    # @return [Object] The API application the server will execute
+    attr_accessor :api
+
     # The plugins the server will execute
     # @return [Array] The list of plugins to be executed by the server
     attr_accessor :plugins
@@ -60,6 +64,7 @@ module Goliath
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
 
+      @api = api
       @address = options.delete(:address)
       @port = options.delete(:port)
 
@@ -213,6 +218,7 @@ module Goliath
        server = Goliath::Server.new(@address, @port)
        server.logger = log
        server.app = @app
+       server.api = @api
        server.plugins = @plugins || []
        server.options = @server_options
        server.start

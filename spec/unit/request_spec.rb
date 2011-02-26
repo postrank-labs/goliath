@@ -23,10 +23,6 @@ describe Goliath::Request do
       @r.env['async.callback'].should_not be_nil
     end
 
-    it 'initializes an async close callback' do
-      @r.env['async.close'].should_not be_nil
-    end
-
     it 'initializes request' do
       @r.instance_variable_get("@state").should == :processing
     end

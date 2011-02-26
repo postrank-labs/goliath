@@ -22,8 +22,6 @@ module Goliath
       @response = Goliath::Response.new
       @body = StringIO.new(INITIAL_BODY.dup)
       @env[RACK_INPUT] = body
-
-      @env[ASYNC_CLOSE]    = EM::DefaultDeferrable.new
       @env[ASYNC_CALLBACK] = method(:post_process)
 
       @env[STREAM_SEND]  = proc { |data| @conn.send_data(data) }
@@ -56,6 +54,12 @@ module Goliath
       @env[REQUEST_PATH]    = parser.request_path
       @env[PATH_INFO]       = parser.request_path
       @env[FRAGMENT]        = parser.fragment
+
+      begin
+        @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
+      rescue Exception => e
+        server_exception(e)
+      end
     end
 
     # Invoked by connection when new body data is
@@ -70,7 +74,15 @@ module Goliath
     # @param data [String] The received data
     # @return [Nil]
     def parse(data)
-      @body << data
+      begin
+        if @env[ASYNC_BODY]
+          @env[ASYNC_BODY].call(@env, data)
+        else
+          @body << data
+        end
+      rescue Exception => e
+        server_exception(e)
+      end
     end
 
     # Called to determine if the request has received all data from the client
@@ -86,7 +98,12 @@ module Goliath
     # @return [Nil]
     def close
       @response.close rescue nil
-      @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
+
+      begin
+        @env[ASYNC_CLOSE].call(@env) if @env[ASYNC_CLOSE]
+      rescue Exception => e
+        server_exception(e)
+      end
     end
 
     # Invoked by connection when the parsing of the

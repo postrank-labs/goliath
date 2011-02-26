@@ -52,20 +52,6 @@ module Goliath
       self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
 
-    # The on_close block will be executed when the connection to the client is closed.
-    # This is useful in streaming servers where we may have setup an EM::Channel or some
-    # timer that we need to be able to cancel.
-    #
-    # @example
-    #  env.on_close do
-    #    env.logger.info "Connection closed."
-    #  end
-    #
-    # @param blk The block to execute.
-    def on_close(&blk)
-      self[ASYNC_CLOSE].callback &blk
-    end
-
     # If the API is a streaming API this will send the provided data to the client.
     # There will be no processing done on the data when this is called so it's the
     # APIs responsibility to have the data formatted as needed.

@@ -23,6 +23,10 @@ module Goliath
     # @return [Object] The rack application the server will execute
     attr_accessor :app
 
+    # The API application
+    # @return [Object] The API application the server will execute
+    attr_accessor :api
+
     # Server status information
     # @return [Hash] Server status information
     attr_accessor :status
@@ -76,6 +80,7 @@ module Goliath
         EM.start_server(address, port, Goliath::Connection) do |conn|
           conn.port = port
           conn.app = app
+          conn.api = api
           conn.logger = logger
           conn.status = status
           conn.config = config

@@ -9,7 +9,7 @@ module Goliath
   class Connection < EM::Connection
     include Constants
 
-    attr_accessor :app, :port, :logger, :status, :config, :options
+    attr_accessor :app, :api, :port, :logger, :status, :config, :options
     attr_reader   :parser
 
     AsyncResponse = [-1, {}, []].freeze
@@ -30,6 +30,10 @@ module Goliath
         env[STATUS]      = status
         env[CONFIG]      = config
         env[REMOTE_ADDR] = remote_address
+
+        env[ASYNC_HEADERS] = @api.method(:on_headers) if @api.respond_to? :on_headers
+        env[ASYNC_BODY]    = @api.method(:on_body) if @api.respond_to? :on_body
+        env[ASYNC_CLOSE]   = @api.method(:on_close) if @api.respond_to? :on_close
 
         r = Goliath::Request.new(@app, self, env)
         r.parse_header(h, @parser)

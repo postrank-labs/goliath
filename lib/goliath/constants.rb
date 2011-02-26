@@ -24,6 +24,8 @@ module Goliath
     RACK_VERSION_NUM = [1, 0]
 
     ASYNC_CALLBACK  = 'async.callback'
+    ASYNC_HEADERS   = 'async.headers'
+    ASYNC_BODY      = 'async.body'
     ASYNC_CLOSE     = 'async.close'
 
     STREAM_START    = 'stream.start'
