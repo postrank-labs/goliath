@@ -1,3 +1,8 @@
+require 'eventmachine'
+require 'goliath/constants'
+require 'async_rack'
+require 'stringio'
+
 module Goliath
   # Goliath::Request is responsible for processing a request and returning
   # the result back to the client.
