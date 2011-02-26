@@ -28,21 +28,25 @@ end
 router = Rack::Builder.new do
   # Rack end point
   map '/version' do
+    use ::Rack::ContentLength
     run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end
 
   # map the /hello_world uri to our Goliath API
   map "/hello_world" do
+    use ::Rack::ContentLength
     run HelloWorld.new
   end
 
   # map the /bonjour uri to our other Goliath API
   map "/bonjour" do
+    use ::Rack::ContentLength
     run Bonjour.new
   end
 
   # catch the root route and return a 404
   map "/" do
+    use ::Rack::ContentLength
     run Proc.new {|env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
   end
 end
