@@ -14,6 +14,10 @@ $:<< '../lib' << 'lib'
 require 'goliath'
 
 class Stream < Goliath::API
+  def on_close(env)
+    env.logger.info "Connection closed."
+  end
+
   def response(env)
     i = 0
     pt = EM.add_periodic_timer(1) do
@@ -26,10 +30,6 @@ class Stream < Goliath::API
 
       env.stream_send("!! BOOM !!\n")
       env.stream_close
-    end
-
-    env.on_close do
-      env.logger.info "Connection closed."
     end
 
     [200, {}, Goliath::Response::STREAMING]
