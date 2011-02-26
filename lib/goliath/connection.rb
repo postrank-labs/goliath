@@ -64,7 +64,9 @@ module Goliath
     end
 
     def unbind
-      @requests.map { |r| r.close }
+      @requests.map {|r| r.close }
+      @pending.map  {|r| r.close }
+      @current.close if @current
     end
 
     def terminate_request(keep_alive)
@@ -72,6 +74,7 @@ module Goliath
         @current = req
         @current.succeed
       else
+        @current.close
         @current = nil
       end
 
