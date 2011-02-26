@@ -29,10 +29,10 @@ module Goliath
         end
 
         def post_process(status, headers, body)
-          body = to_html(body, false) if html_response?(headers)
+          body = [to_html(body, false)] if html_response?(headers)
           [status, headers, body]
         end
-        
+
         def html_response?(headers)
           headers['Content-Type'] =~ %r{^text/html}
         end
@@ -47,7 +47,7 @@ module Goliath
           when "String" then string_to_html(content)
           else string_to_html(content)
           end
-        
+
           html_string += html_footer unless fragment
           html_string
         end

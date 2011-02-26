@@ -27,7 +27,7 @@ module Goliath
         end
 
         def post_process(status, headers, body)
-          body = to_xml(body, false) if xml_response?(headers)
+          body = [to_xml(body, false)] if xml_response?(headers)
           [status, headers, body]
         end
 

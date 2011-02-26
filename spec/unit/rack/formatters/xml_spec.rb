@@ -31,7 +31,7 @@ describe Goliath::Rack::Formatters::XML do
       @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
 
       status, header, body = @xml.call({})
-      lambda { Nokogiri.parse(body).search('a').inner_text.should == '1' }.should_not raise_error Exception
+      lambda { Nokogiri.parse(body.first).search('a').inner_text.should == '1' }.should_not raise_error Exception
     end
 
     it 'generates arrays correctly' do
@@ -39,7 +39,7 @@ describe Goliath::Rack::Formatters::XML do
 
       status, header, body = @xml.call({})
       lambda {
-        doc = Nokogiri.parse(body)
+        doc = Nokogiri.parse(body.first)
         doc.search('item').first.inner_text.should == '1'
         doc.search('item').last.inner_text.should == '2'
       }.should_not raise_error Exception
