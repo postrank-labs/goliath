@@ -1,4 +1,5 @@
 module Goliath
+  # Constants used by the system to access data.
   module Constants
     INITIAL_BODY = ''
     # Force external_encoding of request's body to ASCII_8BIT
@@ -44,7 +45,5 @@ module Goliath
     CONNECTION      = 'CONNECTION'
 
     GOLIATH_ENV     = 'goliath.env'
-
-    HOST_PORT_REGEXP = /(?<host>.*?):(?<port>.*)/
   end
 end

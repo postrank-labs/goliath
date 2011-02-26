@@ -1,4 +1,7 @@
 module Goliath
+  # Goliath::Request is responsible for processing a request and returning
+  # the result back to the client.
+  #
   # @private
   class Request
     include EM::Deferrable
@@ -31,6 +34,9 @@ module Goliath
     # Invoked by connection when header parsing is complete.
     # This method is invoked only once per request.
     #
+    # @param h [Hash] Request headers
+    # @param parser [Http::Parser] The parsed used to parse the request
+    # @return [Nil]
     def parse_header(h, parser)
       h.each do |k, v|
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
@@ -50,16 +56,21 @@ module Goliath
     # Invoked by connection when new body data is
     # parsed from the existing TCP stream.
     #
-    # Note: in theory, we can make this stream the
+    # @note In theory, we can make this stream the
     # data into the processing step for async
     # uploads, etc. This would also require additional
     # callbacks for headers, etc.. Maybe something to
     # explore later.
     #
+    # @param data [String] The received data
+    # @return [Nil]
     def parse(data)
       @body << data
     end
 
+    # Called to determine if the request has received all data from the client
+    #
+    # @return [Boolean] True if all data is received, false otherwise
     def finished?
       @state == :finished
     end
@@ -67,6 +78,7 @@ module Goliath
     # Invoked by connection when upstream client
     # terminates the current TCP session.
     #
+    # @return [Nil]
     def close
       @response.close rescue nil
       @env[ASYNC_CLOSE].succeed if @env[ASYNC_CLOSE]
@@ -78,6 +90,7 @@ module Goliath
     # an immediate response is served, or an async
     # response is indicated.
     #
+    # @return [Nil]
     def process
       begin
         @state = :finished
@@ -105,6 +118,8 @@ module Goliath
     # so the actual time to serve both requests in scenario
     # above, should be ~1s + data transfer time.
     #
+    # @param results [Array] The status, headers and body to return to the client
+    # @return [Nil]
     def post_process(results)
       begin
         status, headers, body = results
@@ -131,24 +146,30 @@ module Goliath
 
     private
 
-      def server_exception(e)
-        @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-        post_process([500, {}, 'An error happened'])
+    # Handles logging server exceptions
+    #
+    # @param e [Exception] The exception to log
+    # @return [Nil]
+    def server_exception(e)
+      @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+      post_process([500, {}, 'An error happened'])
+    end
+
+    # Used to determine if the connection should  be kept open
+    #
+    # @return [Boolean] True to keep the connection open, false otherwise
+    def keep_alive
+      case @env[HTTP_VERSION]
+        # HTTP 1.1: all requests are persistent requests, client
+        # must send a Connection:close header to indicate otherwise
+        when '1.1' then
+          (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+
+          # HTTP 1.0: all requests are non keep-alive, client must
+          # send a Connection: Keep-Alive to indicate otherwise
+        when '1.0' then
+          (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
       end
-
-      def keep_alive
-        case @env[HTTP_VERSION]
-          # HTTP 1.1: all requests are persistent requests, client
-          # must send a Connection:close header to indicate otherwise
-          when '1.1' then
-            (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
-
-            # HTTP 1.0: all requests are non keep-alive, client must
-            # send a Connection: Keep-Alive to indicate otherwise
-          when '1.0' then
-            (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
-        end
-      end
-
+    end
   end
 end

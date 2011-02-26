@@ -2,6 +2,9 @@ require 'http/parser'
 require 'goliath/env'
 
 module Goliath
+  # The Goliath::Connection class handles sending and receiving data
+  # from the client.
+  #
   # @private
   class Connection < EM::Connection
     include Constants
@@ -80,6 +83,5 @@ module Goliath
     rescue Exception
       nil
     end
-
   end
 end
