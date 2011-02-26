@@ -16,7 +16,8 @@ suspend and later resume the processing without requiring the developer to write
 any additional code.
 
 Goliath exposes a raw, bare-metal Rack-like API for developing high throughput
-web-services. Request handling is synchronous, and all processing is asynchronous.
+web-services. Both request processing and response processing can be done in
+fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
 
 ## Installation & Prerequisites
 
@@ -39,13 +40,13 @@ web-services. Request handling is synchronous, and all processing is asynchronou
     > ruby echo.rb -sv
     > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
 
+See examples directory for more, hands-on examples of building Goliath powered web-services.
+
 ## Goliath Server
 
 Goliath uses its own event based server built on top of EventMachine.
-As shown in the above example, to start the server, you just need to
-have Ruby execute your Goliath API file. For that, you can pass the
-files to the Ruby executable or set a Ruby shebang line in your API
-implementation.
+As shown in the example above, to start the server, you just need to
+have Ruby to execute your Goliath API file.
 
 The server accepts some optional parameters described below:
 
@@ -67,7 +68,7 @@ and on port 92010. If not set, the default goliath pid and log files will be use
 
     $ ruby awesome_api.rb -e production -p 92010 -d
 
-The server will automatically load the API matching the file name. 
+The server will automatically load the API matching the file name.
 If your api file is named awesome_api.rb, the server will expect that
 you have an AwesomeApi class inheriting from Goliath::API
 
