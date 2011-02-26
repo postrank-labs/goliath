@@ -24,11 +24,13 @@ module Goliath
       @env[RACK_INPUT] = body
       @env[ASYNC_CALLBACK] = method(:post_process)
 
-      @env[STREAM_SEND]  = proc { |data| @conn.send_data(data) }
-      @env[STREAM_CLOSE] = proc { @conn.terminate_request(false) }
+      @env[STREAM_SEND]  = proc { |data| callback { @conn.send_data(data) } }
+      @env[STREAM_CLOSE] = proc { callback { @conn.terminate_request(false) } }
       @env[STREAM_START] = proc do
-        @conn.send_data(@response.head)
-        @conn.send_data(@response.headers_output)
+        callback do
+          @conn.send_data(@response.head)
+          @conn.send_data(@response.headers_output)
+        end
       end
 
       @state = :processing
