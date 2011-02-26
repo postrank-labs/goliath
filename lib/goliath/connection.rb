@@ -34,7 +34,7 @@ module Goliath
         r = Goliath::Request.new(@app, self, env)
         r.parse_header(h, @parser)
 
-        @requests.push r
+        @requests.push(r)
       end
 
       @parser.on_body = proc do |data|
@@ -48,7 +48,7 @@ module Goliath
           @current = req
           @current.succeed
         else
-          @pending.push req
+          @pending.push(req)
         end
 
         req.process
@@ -64,7 +64,7 @@ module Goliath
     end
 
     def unbind
-      @requests.map {|r| r.close }
+      @requests.map { |r| r.close }
     end
 
     def terminate_request(keep_alive)

@@ -24,10 +24,8 @@ class Bonjour < Goliath::API
   end
 end
 
-
 # Rack builder acting as a router
 router = Rack::Builder.new do
-
   # Rack end point
   map '/version' do
     run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
@@ -47,7 +45,6 @@ router = Rack::Builder.new do
   map "/" do
     run Proc.new {|env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
   end
-
 end
 
 runner = Goliath::Runner.new(ARGV, nil)
