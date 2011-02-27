@@ -1,2 +1,3 @@
 _site
 .yardoc
+Gemfile.lock
