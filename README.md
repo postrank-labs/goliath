@@ -1,23 +1,10 @@
 # Goliath
 
-Goliath is an open source version of the non-blocking Ruby web server framework
-powering PostRank. It is a lightweight framework designed to meet the following
-goals: bare metal performance, Rack like API and middleware support, simple
-configuration, fully asynchronous processing, and readable and maintainable
-code (read: no callbacks).
+Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
 
-The framework is powered by an EventMachine reactor under the hood and Ryan
-Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over
-other asynchronous frameworks is the fact that by leveraging Ruby Fibers introduced
-in Ruby 1.9+, it can untangle the complicated callback-based code into a format
-we are all familiar and comfortable with: linear execution. Each Goliath request
-is executed in its own Ruby Fiber and all asynchronous I/O operations can transparently
-suspend and later resume the processing without requiring the developer to write
-any additional code.
+The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution.
 
-Goliath exposes a raw, bare-metal Rack-like API for developing high throughput
-web-services. Both request processing and response processing can be done in
-fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
+Each Goliath request is executed in its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
 
 ## Installation & Prerequisites
 
@@ -28,7 +15,7 @@ fully asynchronous fashion: streaming uploads, firehose API's, request/response,
 
     require 'goliath'
 
-    class Echo < Goliath::API
+    class Hello < Goliath::API
       # reload code on every request in dev environment
       use ::Rack::Reloader, 0 if Goliath.dev?
 
@@ -37,7 +24,7 @@ fully asynchronous fashion: streaming uploads, firehose API's, request/response,
       end
     end
 
-    > ruby echo.rb -sv
+    > ruby hello.rb -sv
     > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
 
 See examples directory for more, hands-on examples of building Goliath powered web-services.
