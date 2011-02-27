@@ -1,75 +1,76 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset='utf-8'>
+  <head>
+    <meta charset='utf-8'>
+    <title>Goliathb</title>
+    <link href="/stylesheets/screen.css" media="screen" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <a href="http://github.com/postrank-labs/goliath"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <title>postrank-labs/goliath @ GitHub</title>
+    <div id="container">
+      <h1><a href="http://github.com/postrank-labs/goliath">Goliath</a>
+        <span class="small">by <a href="http://github.com/postrank-labs">postrank-labs</a></span></h1>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #e3e3e3;
-      font-family: "Helvetica,Arial,FreeSans";
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #1c1c1c; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #1c1c1c; }
-    h3 { text-align: center; color: #1c1c1c; }
-    a { color: #1c1c1c; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
-</head>
+      <div class="description">
+        <p>Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank.
+           It is a lightweight framework designed to meet the following goals: bare metal performance,
+           Rack like API and middleware support, simple configuration, fully asynchronous processing,
+           and readable and maintainable code (read: no callbacks).</p>
 
-<body>
-  <a href="http://github.com/postrank-labs/goliath"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+        <p>The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser
+           (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is
+           the fact that by leveraging Ruby Fibers introduced in Ruby 1.9+, it can untangle the complicated
+           callback-based code into a format we are all familiar and comfortable with: linear execution.</p>
 
-  <div id="container">
+        <p>Each Goliath request is executed in its own Ruby Fiber and all asynchronous I/O operations can
+           transparently suspend and later resume the processing without requiring the developer to write
+           any additional code.</p>
 
-    <div class="download">
-      <a href="http://github.com/postrank-labs/goliath/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/postrank-labs/goliath/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+        <p>Goliath exposes a raw, bare-metal Rack-like API for developing high throughput web-services.
+           Both request processing and response processing can be done in fully asynchronous fashion:
+           streaming uploads, firehose API's, request/response, and so on.</p>
+      </div>
+
+      <h2>Installation &amp; Prerequisites</h2>
+      <p>
+        <ul>
+          <li>Ruby 1.9.x +</li>
+          <li>gem install goliath</li>
+        </ul>
+      </p>
+
+      <h2>Getting Started</h2>
+      <pre><code>require 'goliath'
+
+class Echo < Goliath::API
+  # reload code on every request in dev environment
+  use ::Rack::Reloader, 0 if Goliath.dev?
+
+  def response(env)
+    [200, {}, "Hello World"]
+  end
+end
+
+> ruby echo.rb -sv
+> [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.</code></pre>
+
+      <h2>Discussion and Support</h2>
+      <p>
+        <ul>
+          <li><a href="https://github.com/postrank-labs/goliath/issues">Issues</a></li>
+          <li><a href="http://groups.google.com/group/goliath-io">Mailing List</a></li>
+        </ul>
+      </p>
+
+      <h2>Contributing</h2>
+      <p>You can clone the project with <a href="http://git-scm.com">Git</a> by running:
+         <pre>$ git clone git://github.com/postrank-labs/goliath</pre>
+      </p>
+
+      <div class="footer">
+        &copy; 2011 PostRank Inc.
+      </div>
     </div>
-
-    <h1><a href="http://github.com/postrank-labs/goliath">Goliath</a>
-      <span class="small">by <a href="http://github.com/postrank-labs">postrank-labs</a></span></h1>
-
-    <div class="description">
-      Goliath is a non-blocking Ruby web server framework
-    </div>
-
-    <h2>Authors</h2>
-<p>dan sinclair (dj2@everburning.com)<br/>Ilya Grigorik (ilya@igvita.com)<br/>Matt Aimonetti (mattaimonetti@gmail.com)<br/><br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/postrank-labs/goliath/zipball/master">zip</a> or
-      <a href="http://github.com/postrank-labs/goliath/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/postrank-labs/goliath</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/postrank-labs/goliath">postrank-labs/goliath</a>
-    </div>
-
-  </div>
-
-  
-</body>
+  </body>
 </html>
