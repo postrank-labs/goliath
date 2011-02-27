@@ -12,3 +12,4 @@ Gemfile.lock
 *.watchr
 *.rbc
 .rvmrc
+_site
