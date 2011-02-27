@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Module: Goliath</title>
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index (G)</a> &raquo; 
+    
+    
+    <span class="title">Goliath</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Goliath
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/goliath/goliath.rb<span class="defines">,<br />
+  lib/goliath/env.rb,<br /> lib/goliath/api.rb,<br /> lib/goliath/server.rb,<br /> lib/goliath/runner.rb,<br /> lib/goliath/request.rb,<br /> lib/goliath/headers.rb,<br /> lib/goliath/version.rb,<br /> lib/goliath/response.rb,<br /> lib/goliath/constants.rb,<br /> lib/goliath/connection.rb,<br /> lib/goliath/rack/jsonp.rb,<br /> lib/goliath/rack/tracer.rb,<br /> lib/goliath/rack/params.rb,<br /> lib/goliath/application.rb,<br /> lib/goliath/rack/render.rb,<br /> lib/goliath/rack/heartbeat.rb,<br /> lib/goliath/plugins/latency.rb,<br /> lib/goliath/http_status_codes.rb,<br /> lib/goliath/rack/formatters/xml.rb,<br /> lib/goliath/rack/formatters/html.rb,<br /> lib/goliath/rack/formatters/json.rb,<br /> lib/goliath/rack/validation_error.rb,<br /> lib/goliath/rack/default_mime_type.rb,<br /> lib/goliath/rack/validation/numeric_range.rb,<br /> lib/goliath/rack/validation/boolean_value.rb,<br /> lib/goliath/rack/validation/request_method.rb,<br /> lib/goliath/rack/validation/default_params.rb,<br /> lib/goliath/rack/validation/required_value.rb,<br /> lib/goliath/rack/validation/required_param.rb</span>
+</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+The Goliath Framework
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+   
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Goliath/Constants.html" title="Goliath::Constants (module)">Constants</a></span>, <span class='object_link'><a href="Goliath/Plugin.html" title="Goliath::Plugin (module)">Plugin</a></span>, <span class='object_link'><a href="Goliath/Rack.html" title="Goliath::Rack (module)">Rack</a></span>, <span class='object_link'><a href="Goliath/Validation.html" title="Goliath::Validation (module)">Validation</a></span>
+    
+   
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Goliath/API.html" title="Goliath::API (class)">API</a></span>, <span class='object_link'><a href="Goliath/Env.html" title="Goliath::Env (class)">Env</a></span>, <span class='object_link'><a href="Goliath/Runner.html" title="Goliath::Runner (class)">Runner</a></span>
+    
+  
+</p>
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="VERSION-constant" class="">VERSION =
+          <div class="docstring">
+  <div class="discussion">
+    <p>
+The current version of Goliath
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0.9.0</span><span class='tstring_end'>'</span></span></pre></dd>
+      
+        <dt id="HTTP_STATUS_CODES-constant" class="">HTTP_STATUS_CODES =
+          <div class="docstring">
+  <div class="discussion">
+    <p>
+Every standard HTTP code mapped to the appropriate message.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Author:</h3>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'><p>
+Mongrel.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='int'>100</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Continue</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>101</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Switching Protocols</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>200</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>OK</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>201</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Created</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>202</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Accepted</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>203</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Non-Authoritative Information</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>204</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>No Content</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>205</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Reset Content</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>206</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Partial Content</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>300</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Multiple Choices</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>301</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Moved Permanently</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>302</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Moved Temporarily</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>303</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>See Other</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>304</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Not Modified</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>305</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Use Proxy</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>400</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Bad Request</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>401</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Unauthorized</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>402</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Payment Required</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>403</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Forbidden</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>404</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Not Found</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>405</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Method Not Allowed</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>406</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Not Acceptable</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>407</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Proxy Authentication Required</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>408</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Request Time-out</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>409</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Conflict</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>410</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Gone</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>411</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Length Required</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>412</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Precondition Failed</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>413</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Request Entity Too Large</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>414</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Request-URI Too Large</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>415</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Unsupported Media Type</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>500</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Internal Server Error</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>501</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Not Implemented</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>502</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Bad Gateway</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>503</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Service Unavailable</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>504</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Gateway Time-out</span><span class='tstring_end'>'</span></span><span class='comma'>,</span>
+  <span class='int'>505</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>HTTP Version not supported</span><span class='tstring_end'>'</span></span>
+<span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dev%3F-instance_method" title="#dev? (instance method)">- (Boolean) <strong>dev?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Determines if we are in the development environment.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#env-instance_method" title="#env (instance method)">- (String) <strong>env</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Retrieves the current goliath environment.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#env%3D-instance_method" title="#env= (instance method)">- (Object) <strong>env=</strong>(env) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Sets the current goliath environment.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#prod%3F-instance_method" title="#prod? (instance method)">- (Boolean) <strong>prod?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Determines if we are in the production environment.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#test%3F-instance_method" title="#test? (instance method)">- (Boolean) <strong>test?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Determines if we are in the test environment.
+</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="dev?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>dev?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Determines if we are in the development environment
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+true if current environemnt is development, false otherwise
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id dev?'>dev?</span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>development</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="env-instance_method">
+  
+    - (<tt>String</tt>) <strong>env</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Retrieves the current goliath environment
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+the current environment
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14
+15
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 14</span>
+
+<span class='kw'>def</span> <span class='id env'>env</span>
+  <span class='ivar'>@env</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="env=-instance_method">
+  
+    - (<tt>Object</tt>) <strong>env=</strong>(env) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Sets the current goliath environment
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>env</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+the environment string of [dev|prod|test]
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23
+24
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 21</span>
+
+<span class='kw'>def</span> <span class='id env='>env=</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
+  <span class='kw'>case</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>dev</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>development</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>prod</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>production</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="prod?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>prod?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Determines if we are in the production environment
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+true if current environemnt is production, false otherwise
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id prod?'>prod?</span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>production</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="test?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>test?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Determines if we are in the test environment
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+true if current environemnt is test, false otherwise
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id test?'>test?</span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Sat Feb 26 20:40:25 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.4 (ruby-1.9.2).
+</div>
+
+  </body>
+</html>

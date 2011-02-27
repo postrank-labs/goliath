@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Documentation by YARD 0.6.4</title>
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html" title="Index">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><div id='filecontents'><h1>Goliath</h1>
+
+<p>Goliath is an open source version of the non-blocking Ruby web server framework
+powering PostRank. It is a lightweight framework designed to meet the following
+goals: bare metal performance, Rack like API and middleware support, simple
+configuration, fully asynchronous processing, and readable and maintainable
+code (read: no callbacks).</p>
+
+<p>The framework is powered by an EventMachine reactor under the hood and Ryan
+Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over
+other asynchronous frameworks is the fact that by leveraging Ruby Fibers introduced
+in Ruby 1.9+, it can untangle the complicated callback-based code into a format
+we are all familiar and comfortable with: linear execution. Each Goliath request
+is executed in its own Ruby Fiber and all asynchronous I/O operations can transparently
+suspend and later resume the processing without requiring the developer to write
+any additional code.</p>
+
+<p>Goliath exposes a raw, bare-metal Rack-like API for developing high throughput
+web-services. Both request processing and response processing can be done in
+fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.</p>
+
+<h2>Installation &amp; Prerequisites</h2>
+
+<ul>
+<li>Ruby 1.9.x +</li>
+<li><strong>gem install goliath</strong></li>
+</ul>
+
+
+<h2>Getting Started: Hello World</h2>
+
+<pre class="code">require 'goliath'
+
+class Echo &lt; Goliath::API
+  # reload code on every request in dev environment
+  use ::Rack::Reloader, 0 if Goliath.dev?
+
+  def response(env)
+    [200, {}, &quot;Hello World&quot;]
+  end
+end
+
+&gt; ruby echo.rb -sv
+&gt; [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
+</pre>
+
+<p>See examples directory for more, hands-on examples of building Goliath powered web-services.</p>
+
+<h2>Goliath Server</h2>
+
+<p>Goliath uses its own event based server built on top of EventMachine.
+As shown in the example above, to start the server, you just need to
+have Ruby to execute your Goliath API file.</p>
+
+<p>The server accepts some optional parameters described below:</p>
+
+<p>Server options:</p>
+
+<pre class="code">-e, --environment NAME           Set the execution environment (prod, dev or test) (default: development)
+-a, --address HOST               Bind to HOST address (default: 0.0.0.0)
+-p, --port PORT                  Use PORT (default: 9000)
+-l, --log FILE                   Log to file (default: off)
+-s, --stdout                     Log to stdout (default: false)
+-P, --pid FILE                   Pid file (default: off)
+-d, --daemonize                  Run daemonized in the background (default: false)
+-v, --verbose                    Enable verbose logging (default: false)
+-h, --help                       Display help message
+</pre>
+
+<p>Note that the default environment could be set in your code using the Goliath.env= method call.</p>
+
+<p>Here is an example of how to start a production Goliath API daemonized
+and on port 92010. If not set, the default goliath pid and log files will be used.</p>
+
+<pre class="code">$ ruby awesome_api.rb -e production -p 92010 -d
+</pre>
+
+<p>The server will automatically load the API matching the file name.
+If your api file is named awesome_api.rb, the server will expect that
+you have an AwesomeApi class inheriting from Goliath::API</p>
+
+<h2>Guides</h2>
+
+<ul>
+<li><a href="https://github.com/postrank-labs/goliath/wiki/Middleware">Middleware</a></li>
+<li><a href="https://github.com/postrank-labs/goliath/wiki/Configuration">Configuration</a></li>
+<li><a href="https://github.com/postrank-labs/goliath/wiki/Plugins">Plugins</a></li>
+</ul>
+
+
+<p>Hands-on applications:</p>
+
+<ul>
+<li><a href="https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing">Asynchronous HTTP, MySQL, etc</a></li>
+<li><a href="https://github.com/postrank-labs/goliath/wiki/Streaming">Streaming with Goliath</a></li>
+<li><a href="https://github.com/postrank-labs/goliath/tree/master/examples">Examples</a></li>
+</ul>
+
+
+<h2>Discussion and Support</h2>
+
+<ul>
+<li><a href="https://github.com/postrank-labs/goliath">Source</a></li>
+<li><a href="https://github.com/postrank-labs/goliath/issues">Issues</a></li>
+<li><a href="http://groups.google.com/group/goliath-io">Mailing List</a></li>
+</ul>
+
+
+<h2>License &amp; Acknowledgments</h2>
+
+<p>Goliath is distributed under the MIT license, for full details please see the LICENSE file.</p></div></div>
+    
+    <div id="footer">
+  Generated on Sat Feb 26 20:40:25 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.4 (ruby-1.9.2).
+</div>
+
+  </body>
+</html>
