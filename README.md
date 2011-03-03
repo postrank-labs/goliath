@@ -1,15 +1,22 @@
 # Goliath
 
-Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
+Goliath is an open source version of the non-blocking (asynchronous) Ruby web server framework powering PostRank. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
 
-The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution.
+The framework is powered by an EventMachine reactor, a high-performance HTTP parser and Ruby 1.9 runtime. The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution, which leads to more maintainable and  readable code.
 
-Each Goliath request is executed in its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
+Each HTTP request within Goliath is executed in its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
 
 ## Installation & Prerequisites
 
-* Ruby 1.9.x +
-* **gem install goliath**
+* Install Ruby 1.9 (via RVM or natively)
+
+        $> gem install rvm
+        $> rvm install 1.9.2
+        $> rvm use 1.9.2
+
+* Install Goliath:
+
+        $> gem install goliath
 
 ## Getting Started: Hello World
 
@@ -29,46 +36,38 @@ Each Goliath request is executed in its own Ruby fiber and all asynchronous I/O 
 
 See examples directory for more, hands-on examples of building Goliath powered web-services.
 
-## Goliath Server
+## Performance: MRI, JRuby, Rubinius
 
-Goliath uses its own event based server built on top of EventMachine.
-As shown in the example above, to start the server, you just need to
-have Ruby to execute your Goliath API file.
+Goliath is not tied to a single Ruby runtime - it is able to run on MRI Ruby, JRuby and Rubinius today. Depending on which platform you are working with, you will see different performance characteristics. At the moment, we recommend MRI Ruby 1.9.2 as the best performing VM: a roundtrip through the full Goliath stack on MRI 1.9.2p136 takes ~0.33ms (~3000 req/s).
 
-The server accepts some optional parameters described below:
+JRuby performance (with 1.9 mode enabled) is currently much worse than MRI Ruby 1.9.2, due to the fact that all JRuby fibers are mapped to native Java threads. However, there is [very promising](http://classparser.blogspot.com/2010/04/jruby-coroutines-really-fast.html), existing work that promises to make JRuby fibers even faster than those of MRI Ruby. Once this functionality is built into JRuby ([JRUBY-5461](http://jira.codehaus.org/browse/JRUBY-5461)), JRuby may well take the performance crown. At the moment, without the MLVM support, a request through the full Goliath stack takes ~6ms (166 req/s).
 
-Server options:
-    -e, --environment NAME           Set the execution environment (prod, dev or test) (default: development)
-    -a, --address HOST               Bind to HOST address (default: 0.0.0.0)
-    -p, --port PORT                  Use PORT (default: 9000)
-    -l, --log FILE                   Log to file (default: off)
-    -s, --stdout                     Log to stdout (default: false)
-    -P, --pid FILE                   Pid file (default: off)
-    -d, --daemonize                  Run daemonized in the background (default: false)
-    -v, --verbose                    Enable verbose logging (default: false)
-    -h, --help                       Display help message
+Rubinius + Goliath performance is tough to pin down - there is a lot of room for optimization within the Rubinius VM. Currently, requests can take as little as 0.2ms and later spike to 50ms+. Stay tuned!
 
-Note that the default environment could be set in your code using the Goliath.env= method call.
+Goliath has been in production at PostRank for over a year, serving a sustained 500 requests/s for internal and external applications. Many of the Goliath processes have been running for months at a time (read: no memory leaks) and have served hundreds of gigabytes of data without restarts. To scale up and provide failover and redundancy, our individual Goliath servers at PostRank are usually deployed behind a reverse proxy (such as HAProxy).
 
-Here is an example of how to start a production Goliath API daemonized
-and on port 92010. If not set, the default goliath pid and log files will be used.
+## FAQ
 
-    $ ruby awesome_api.rb -e production -p 92010 -d
+* How does Goliath compare to other Ruby async app-servers like Thin?
+    * They are similar (both use Eventmachine reactor), but also very different. Goliath is able to run on different Ruby platforms (see above), uses a different HTTP parser, supports HTTP keepalive & pipelining, and offers a fully asynchronous API for both request and response processing.
 
-The server will automatically load the API matching the file name.
-If your api file is named awesome_api.rb, the server will expect that
-you have an AwesomeApi class inheriting from Goliath::API
+* How does Goliath compare to Mongrel, Passenger, Unicorn?
+    * Mongrel is a threaded web-server, and both Passenger and Unicorn fork an entire VM to isolate each request from each other. By contrast, Goliath builds a single instance of the Rack app and runs all requests in parallel through a single VM, which leads to a much smaller memory footprint and less overhead.
+
+* How do I deploy Goliath in production?
+    * We recommend deploying Goliath behind a reverse proxy such as HAProxy, Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between then within the reverse proxy.
 
 ## Guides
 
+* [Server Options](https://github.com/postrank-labs/goliath/wiki/Server)
 * [Middleware](https://github.com/postrank-labs/goliath/wiki/Middleware)
 * [Configuration](https://github.com/postrank-labs/goliath/wiki/Configuration)
 * [Plugins](https://github.com/postrank-labs/goliath/wiki/Plugins)
 
-Hands-on applications:
+### Hands-on applications:
 
 * [Asynchronous HTTP, MySQL, etc](https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing)
-* [Streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
+* [Response streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
 
 ## Discussion and Support
