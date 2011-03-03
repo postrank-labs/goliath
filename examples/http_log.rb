@@ -16,21 +16,24 @@ require 'pp'
 
 class HttpLog < Goliath::API
   use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Params
+
+  def on_headers(env, headers)
+    env.logger.info 'proxying new request: ' + headers.inspect
+    env['client-headers'] = headers
+  end
 
   def response(env)
     start_time = Time.now.to_f
 
-    client_headers = extract_headers
-    params = {:head => client_headers, :query => env.params}
+    params = {:head => env['client-headers'], :query => env.params}
 
     req = EM::HttpRequest.new("#{forwarder}#{env[Goliath::Request::REQUEST_PATH]}")
     resp = case(env[Goliath::Request::REQUEST_METHOD])
-    when 'GET'  then req.get(params)
-    when 'POST' then req.post(params.merge(:body => env[Goliath::Request::RACK_INPUT].read))
-    when 'HEAD' then req.head(params)
-    else p "UNKNOWN METHOD #{env[Goliath::Request::REQUEST_METHOD]}"
+      when 'GET'  then req.get(params)
+      when 'POST' then req.post(params.merge(:body => env[Goliath::Request::RACK_INPUT].read))
+      when 'HEAD' then req.head(params)
+      else p "UNKNOWN METHOD #{env[Goliath::Request::REQUEST_METHOD]}"
     end
 
     process_time = Time.now.to_f - start_time
@@ -40,20 +43,9 @@ class HttpLog < Goliath::API
       response_headers[to_http_header(k)] = v
     end
 
-    record(process_time, resp, client_headers, response_headers)
+    record(process_time, resp, env['client-headers'], response_headers)
 
     [resp.response_header.status, response_headers, resp.response]
-  end
-
-  # Grab the HTTP headers out of the environment so we can forward
-  # them off to the destination server.
-  def extract_headers
-    headers = {}
-    env.each_pair do |k, v|
-      next unless k =~ /^#{Goliath::Request::HTTP_PREFIX}(.*)$/
-      headers[to_http_header($1)] = v
-    end
-    headers
   end
 
   # Need to convert from the CONTENT_TYPE we'll get back from the server
