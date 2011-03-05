@@ -1,7 +1,9 @@
 body {
   margin-top: 1.0em;
-  background-color: #e3e3e3;
-  font-family: "Helvetica,Arial,FreeSans";
+  background-color: #fff;
+  font-family: Georgia, serif;
+  font-size: 11pt;
+  line-height: 15pt;
   color: #000000;
 }
 
@@ -10,6 +12,8 @@ body {
   width: 700px;
 }
 
+a { color: #f38b00; }
+
 h1 {
   font-size: 3.8em;
   color: #1c1c1c;
@@ -17,27 +21,30 @@ h1 {
 }
 
 h1 .small { font-size: 0.4em; }
-h1 a { text-decoration: none }
+h1 a {
+  text-decoration: none;
+  font-family: Calibri, sans-serif;
+}
 
 h2 {
   font-size: 1.5em;
+  font-family: Calibri, sans-serif;
   color: #1c1c1c;
 }
-
-h3 {
-  text-align: center;
-  color: #1c1c1c;
-}
-
-a { color: #1c1c1c; }
 
 .description {
-  font-size: 1.2em;
+  font-size: 1.1em;
   margin-bottom: 30px;
   margin-top: 30px;
 }
 
 .download { float: right; }
+
+.gist {
+  font-size: 0.8em;
+}
+
+.gist pre { color: #000;}
 
 pre {
   background: #000;
@@ -54,7 +61,7 @@ hr {
 
 .footer {
   text-align: center;
+  font-size: 0.9em;
   padding-top: 30px;
   font-style: italic;
 }
-

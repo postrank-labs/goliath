@@ -13,54 +13,54 @@
         <span class="small">by <a href="http://github.com/postrank-labs">postrank-labs</a></span></h1>
 
       <div class="description">
-        <p>Goliath is an open source version of the non-blocking Ruby web server framework powering PostRank.
-           It is a lightweight framework designed to meet the following goals: bare metal performance,
-           Rack like API and middleware support, simple configuration, fully asynchronous processing,
-           and readable and maintainable code (read: no callbacks).</p>
+        <p>Goliath is an open source version of the non-blocking (asynchronous) Ruby web server framework powering <a href="http://postrank.com">PostRank</a>. It is a lightweight framework designed to meet the following goals: bare metal performance, <a href="http://rack.rubyforge.org/">Rack API</a> and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).</p>
 
-        <p>The framework is powered by an EventMachine reactor under the hood and Ryan Dahl's HTTP parser
-           (same as node.js). The one major advantage Goliath has over other asynchronous frameworks is
-           the fact that by leveraging Ruby Fibers introduced in Ruby 1.9+, it can untangle the complicated
-           callback-based code into a format we are all familiar and comfortable with: linear execution.</p>
+        <p>The framework is powered by an <a href="github.com/eventmachine/eventmachine">EventMachine</a> reactor, a high-performance <a href="https://github.com/tmm1/http_parser.rb">HTTP parser</a> and Ruby 1.9 runtime. One major major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging <a href="http://www.ruby-doc.org/core-1.9/classes/Fiber.html">Ruby fibers</a> introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution, which leads to more maintainable and readable code.</p>
 
-        <p>Each Goliath request is executed in its own Ruby Fiber and all asynchronous I/O operations can
+        <p>Each Goliath request is executed in its own Ruby fiber and all asynchronous I/O operations can
            transparently suspend and later resume the processing without requiring the developer to write
-           any additional code.</p>
-
-        <p>Goliath exposes a raw, bare-metal Rack-like API for developing high throughput web-services.
-           Both request processing and response processing can be done in fully asynchronous fashion:
-           streaming uploads, firehose API's, request/response, and so on.</p>
+           any additional code. Both <b>request processing and response processing can be done in fully asynchronous
+           fashion</b>: <a href="https://github.com/postrank-labs/goliath/blob/master/examples/async_upload.rb">streaming uploads</a>, <a href="https://github.com/postrank-labs/goliath/blob/master/examples/stream.rb">firehose API's</a>, <a href="https://github.com/postrank-labs/goliath/blob/master/examples/echo.rb">request/response</a>, and <a href="https://github.com/postrank-labs/goliath/tree/master/examples">so on</a>.</p>
       </div>
 
       <h2>Installation &amp; Prerequisites</h2>
       <p>
+        Install Ruby 1.9 (via RVM or natively):
         <ul>
-          <li>Ruby 1.9.x +</li>
+          <li>gem install rvm</li>
+          <li>rvm install 1.9.2</li>
+          <li>rvm use 1.9.2</li>
+        </ul>
+      </p>
+
+      <p>
+        Install Goliath:
+        <ul>
           <li>gem install goliath</li>
         </ul>
       </p>
 
       <h2>Getting Started</h2>
-      <pre><code>require 'goliath'
 
-class Echo < Goliath::API
-  # reload code on every request in dev environment
-  use ::Rack::Reloader, 0 if Goliath.dev?
+      <script src="https://gist.github.com/845866.js?file=hello.rb"></script>
 
-  def response(env)
-    [200, {}, "Hello World"]
-  end
-end
+      <h2>Performance: MRI, JRuby, Rubinius</h2>
 
-> ruby echo.rb -sv
-> [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.</code></pre>
+      <p>Goliath is not tied to a single Ruby runtime - it is able to run on MRI Ruby, JRuby and Rubinius today. Depending on which platform you are working with, you will see different performance characteristics. At the moment, <b>we recommend MRI Ruby 1.9.2 as the best performing VM</b>: a roundtrip through the full Goliath stack on MRI 1.9.2p136 takes ~0.33ms (~3000 req/s).</p>
+
+      <p>JRuby performance (with 1.9 mode enabled) is currently much worse than MRI Ruby 1.9.2, due to the fact that all JRuby fibers are mapped to native Java threads. However, there is <a href="http://classparser.blogspot.com/2010/04/jruby-coroutines-really-fast.html">very promising</a>, existing work that promises to make JRuby fibers even faster than those of MRI Ruby. Once this functionality is built into JRuby (<a href="http://jira.codehaus.org/browse/JRUBY-5461">JRUBY-5461</a>), JRuby may well take the performance crown. At the moment, without the MLVM support, a request through the full Goliath stack takes ~6ms (166 req/s).
+
+      <p>Rubinius + Goliath performance is tough to pin down - there is a lot of room for optimization within the Rubinius VM. Currently, requests can take as little as 0.2ms and later spike to 50ms+. Stay tuned!</p>
+
+      <p>Goliath has been in production at PostRank for over a year, serving a sustained 500 requests/s for internal and external applications. Many of the Goliath processes have been running for months at a time (read: no memory leaks) and have served hundreds of gigabytes of data without restarts. To scale up and provide failover and redundancy, our individual Goliath servers at PostRank are usually deployed behind a reverse proxy (such as HAProxy).</p>
 
       <h2>Discussion and Support</h2>
       <p>
         <ul>
+          <li><a href="https://github.com/postrank-labs/goliath/tree/master/examples">API Examples</a></li>
           <li><a href="doc/index.html">Documentation</a></li>
-          <li><a href="https://github.com/postrank-labs/goliath/issues">Issues</a></li>
           <li><a href="http://groups.google.com/group/goliath-io">Mailing List</a></li>
+          <li><a href="https://github.com/postrank-labs/goliath/issues">Issues</a></li>
         </ul>
       </p>
 
@@ -74,4 +74,11 @@ end
       </div>
     </div>
   </body>
+
+  <script type="text/javascript" src="http://include.reinvigorate.net/re_.js"></script>
+  <script type="text/javascript">
+    try {
+      reinvigorate.track("4808p-4h52v7p6su");
+    } catch(err) {}
+  </script>
 </html>
