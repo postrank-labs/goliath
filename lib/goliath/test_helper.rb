@@ -34,23 +34,22 @@ module Goliath
       end
     end
 
-    def hookup_request_callbacks(req, &blk)
+    def hookup_request_callbacks(req, errback, &blk)
       req.callback &blk
       req.callback { stop }
-      req.errback do |c|
-        fail 'HTTP request failed'
-        stop
-      end
+
+      req.errback &errback if errback
+      req.errback { stop }
     end
 
-    def get_request(request_data = {}, &blk)
+    def get_request(request_data = {}, errback = nil, &blk)
       req = EM::HttpRequest.new('http://localhost:9000').get(request_data)
-      hookup_request_callbacks(req, &blk)
+      hookup_request_callbacks(req, errback, &blk)
     end
 
-    def post_request(request_data = {}, &blk)
+    def post_request(request_data = {}, errback = nil, &blk)
       req = EM::HttpRequest.new('http://localhost:9000').post(request_data)
-      hookup_request_callbacks(req, &blk)
+      hookup_request_callbacks(req, errback, &blk)
     end
   end
 end
