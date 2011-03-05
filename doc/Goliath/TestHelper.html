@@ -1,0 +1,934 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Module: Goliath::TestHelper</title>
+<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (T)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../Goliath.html" title="Goliath (module)">Goliath</a></span></span>
+     &raquo; 
+    <span class="title">TestHelper</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Goliath::TestHelper
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/goliath/test_helper.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Methods to help with testing Goliath APIs
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h3>Examples:</h3>
+    
+      <h4><div class='inline'></div></h4>
+      <pre class="example code"><span class='id describe'>describe</span> <span class='const'>Echo</span> <span class='kw'>do</span>
+  <span class='id include'>include</span> <span class='const'>Goliath</span><span class='op'>::</span><span class='const'>TestHelper</span>
+
+  <span class='id let'>let</span><span class='lparen'>(</span><span class='symbol'>:err</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>Proc</span><span class='period'>.</span><span class='id new'>new</span> <span class='lbrace'>{</span> <span class='id fail'>fail</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>API request failed</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
+  <span class='id it'>it</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>returns the echo param</span><span class='tstring_end'>'</span></span> <span class='kw'>do</span>
+    <span class='id with_api'>with_api</span><span class='lparen'>(</span><span class='const'>Echo</span><span class='rparen'>)</span> <span class='kw'>do</span>
+      <span class='id get_request'>get_request</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='symbol'>:query</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span><span class='symbol'>:echo</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span><span class='rbrace'>}</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id err'>err</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id c'>c</span><span class='op'>|</span>
+        <span class='id b'>b</span> <span class='op'>=</span> <span class='const'>Yajl</span><span class='op'>::</span><span class='const'>Parser</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id c'>c</span><span class='period'>.</span><span class='id response'>response</span><span class='rparen'>)</span>
+        <span class='id b'>b</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>response</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id should'>should</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    
+  </div>
+
+</div>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#build_app-instance_method" title="#build_app (instance method)">- (Object) <strong>build_app</strong>(klass) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Builds the rack middleware chain for the given API.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get_request-instance_method" title="#get_request (instance method)">- (Object) <strong>get_request</strong>(request_data = {}, errback = nil, &amp;blk) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Make a GET request the currently launched API.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hookup_request_callbacks-instance_method" title="#hookup_request_callbacks (instance method)">- (Nil) <strong>hookup_request_callbacks</strong>(req, errback, &amp;blk) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  <span class="private note title">Private</span>
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Helper method to setup common callbacks for various request methods.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#post_request-instance_method" title="#post_request (instance method)">- (Object) <strong>post_request</strong>(request_data = {}, errback = nil, &amp;blk) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Make a POST request the currently launched API.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server-instance_method" title="#server (instance method)">- (Nil) <strong>server</strong>(api) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Launches an instance of a given API server.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stop-instance_method" title="#stop (instance method)">- (Nil) <strong>stop</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Stops the launched API.
+</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_api-instance_method" title="#with_api (instance method)">- (Object) <strong>with_api</strong>(api, &amp;blk) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Wrapper for launching API and executing given code block.
+</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="build_app-instance_method">
+  
+    - (<tt>Object</tt>) <strong>build_app</strong>(klass) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Builds the rack middleware chain for the given API
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Class</tt>)</span>
+      
+      
+        <span class='name'>klass</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The API class to build the middlewares for
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The Rack middleware chain
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32
+33
+34
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id build_app'>build_app</span><span class='lparen'>(</span><span class='id klass'>klass</span><span class='rparen'>)</span>
+  <span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Builder</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>do</span>
+    <span class='id klass'>klass</span><span class='period'>.</span><span class='id middlewares'>middlewares</span><span class='period'>.</span><span class='id each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id mw'>mw</span><span class='op'>|</span>
+      <span class='id use'>use</span><span class='lparen'>(</span><span class='op'>*</span><span class='lparen'>(</span><span class='id mw'>mw</span><span class='lbracket'>[</span><span class='int'>0</span><span class='op'>..</span><span class='int'>1</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id compact'>compact</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id mw'>mw</span><span class='lbracket'>[</span><span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+    <span class='id run'>run</span> <span class='id klass'>klass</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="get_request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>get_request</strong>(request_data = {}, errback = nil, &amp;blk) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Make a GET request the currently launched API.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>request_data</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Any data to pass to the GET request.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>errback</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An error handler to attach
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>blk</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The callback block to execute
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96
+97</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 94</span>
+
+<span class='kw'>def</span> <span class='id get_request'>get_request</span><span class='lparen'>(</span><span class='id request_data'>request_data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id errback'>errback</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://localhost:9000</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
+  <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="hookup_request_callbacks-instance_method">
+  
+    - (<tt>Nil</tt>) <strong>hookup_request_callbacks</strong>(req, errback, &amp;blk) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong> 
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+<p>
+Helper method to setup common callbacks for various request methods. The
+given err and callback handlers will be attached and a callback to stop the
+reactor will be added.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>EM::HttpRequest</tt>)</span>
+      
+      
+        <span class='name'>req</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The HTTP request to augment
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>errback</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An error handler to attach
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>blk</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The callback handler to attach
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Nil</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+81
+82
+83
+84
+85
+86
+87</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 81</span>
+
+<span class='kw'>def</span> <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id req'>req</span><span class='period'>.</span><span class='id callback'>callback</span> <span class='op'>&amp;</span><span class='id blk'>blk</span>
+  <span class='id req'>req</span><span class='period'>.</span><span class='id callback'>callback</span> <span class='lbrace'>{</span> <span class='id stop'>stop</span> <span class='rbrace'>}</span>
+
+  <span class='id req'>req</span><span class='period'>.</span><span class='id errback'>errback</span> <span class='op'>&amp;</span><span class='id errback'>errback</span> <span class='kw'>if</span> <span class='id errback'>errback</span>
+  <span class='id req'>req</span><span class='period'>.</span><span class='id errback'>errback</span> <span class='lbrace'>{</span> <span class='id stop'>stop</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="post_request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>post_request</strong>(request_data = {}, errback = nil, &amp;blk) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Make a POST request the currently launched API.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>request_data</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+Any data to pass to the POST request.
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>errback</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+An error handler to attach
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>blk</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The callback block to execute
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 104</span>
+
+<span class='kw'>def</span> <span class='id post_request'>post_request</span><span class='lparen'>(</span><span class='id request_data'>request_data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id errback'>errback</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://localhost:9000</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id post'>post</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
+  <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="server-instance_method">
+  
+    - (<tt>Nil</tt>) <strong>server</strong>(api) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Launches an instance of a given API server. The server will launch on the
+default settings of localhost port 9000.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Class</tt>)</span>
+      
+      
+        <span class='name'>api</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The API class to launch
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Nil</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46
+47
+48
+49
+50</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 44</span>
+
+<span class='kw'>def</span> <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+  <span class='id s'>s</span> <span class='op'>=</span> <span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id logger'>logger</span> <span class='op'>=</span> <span class='id mock'>mock</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>log</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id as_null_object'>as_null_object</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id api'>api</span> <span class='op'>=</span> <span class='id api'>api</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id app'>app</span> <span class='op'>=</span> <span class='id build_app'>build_app</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id start'>start</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="stop-instance_method">
+  
+    - (<tt>Nil</tt>) <strong>stop</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Stops the launched API
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Nil</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+55
+56
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 55</span>
+
+<span class='kw'>def</span> <span class='id stop'>stop</span>
+  <span class='const'>EM</span><span class='period'>.</span><span class='id stop'>stop</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="with_api-instance_method">
+  
+    - (<tt>Object</tt>) <strong>with_api</strong>(api, &amp;blk) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+  <div class="note notetag">
+    <strong>Note:</strong> 
+    <div class='inline'><p>
+This will not return until stop is called.
+</p>
+</div>
+  </div>
+
+<p>
+Wrapper for launching API and executing given code block. This will start
+the EventMachine reactor running.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Class</tt>)</span>
+      
+      
+        <span class='name'>api</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The API class to launch
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Proc</tt>)</span>
+      
+      
+        <span class='name'>blk</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The code to execute after the server is launched.
+</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+65
+66
+67
+68
+69
+70</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 65</span>
+
+<span class='kw'>def</span> <span class='id with_api'>with_api</span><span class='lparen'>(</span><span class='id api'>api</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+  <span class='const'>EM</span><span class='period'>.</span><span class='id synchrony'>synchrony</span> <span class='kw'>do</span>
+    <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+    <span class='id blk'>blk</span><span class='period'>.</span><span class='id call'>call</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Fri Mar  4 22:34:27 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.4 (ruby-1.9.2).
+</div>
+
+  </body>
+</html>
