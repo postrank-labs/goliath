@@ -1,2 +1,5 @@
 _site
 .yardoc
+.bundle
+.rvmrc
+Gemfile.lock
