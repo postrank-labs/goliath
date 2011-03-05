@@ -2,7 +2,7 @@ require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 
 describe Echo do
-  include Goliath::RspecHelper
+  include Goliath::TestHelper
 
   it 'returns the echo param' do
     with_api(Echo) do

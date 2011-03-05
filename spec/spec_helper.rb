@@ -3,4 +3,4 @@ require 'bundler'
 Bundler.setup
 Bundler.require
 
-require 'goliath/rspec_helper'
+require 'goliath/test_helper'

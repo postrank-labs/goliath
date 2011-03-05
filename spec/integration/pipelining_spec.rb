@@ -12,7 +12,7 @@ class Interleaving < Goliath::API
 end
 
 describe 'HTTP Pipelining support' do
-  include Goliath::RspecHelper
+  include Goliath::TestHelper
 
   it 'serves multiple requests via single connection' do
     with_api(Interleaving) do

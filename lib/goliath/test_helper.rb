@@ -5,7 +5,7 @@ require 'goliath/server'
 require 'rack'
 
 module Goliath
-  module RspecHelper
+  module TestHelper
     def build_app(klass)
       ::Rack::Builder.new do
         klass.middlewares.each do |mw|

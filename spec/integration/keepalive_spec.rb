@@ -2,7 +2,7 @@ require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 
 describe 'HTTP Keep-Alive support' do
-  include Goliath::RspecHelper
+  include Goliath::TestHelper
 
   it 'serves multiple requests via single connection' do
     with_api(Echo) do
