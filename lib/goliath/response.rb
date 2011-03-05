@@ -77,7 +77,7 @@ module Goliath
 
     # Yields each portion of the response
     #
-    # @yields [String] The header line, headers and body content
+    # @yield [String] The header line, headers and body content
     # @return [Nil]
     def each
       yield head
