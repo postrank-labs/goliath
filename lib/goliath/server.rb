@@ -96,7 +96,8 @@ module Goliath
     # @param file [String] The file to load, if not set will use the basename of $0
     # @return [Nil]
     def load_config(file = nil)
-      file ||= "#{config_dir}/#{File.basename($0)}"
+      api_name = api.class.to_s.gsub(/(.)([A-Z])/,'\1_\2').downcase!
+      file ||= "#{config_dir}/#{api_name}.rb"
       return unless File.exists?(file)
 
       eval(IO.read(file))
@@ -106,7 +107,11 @@ module Goliath
     #
     # @return [String] THe full path to the config directory
     def config_dir
-      "#{File.expand_path(File.dirname($0))}/config"
+      if Goliath.test?
+        "#{File.expand_path(ENV['PWD'])}/config"
+      else
+        "#{File.expand_path(File.dirname($0))}/config"
+      end
     end
 
     # Import callback for configuration files
