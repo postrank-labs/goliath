@@ -44,12 +44,14 @@ module Goliath
     # will launch on the default settings of localhost port 9000.
     #
     # @param api [Class] The API class to launch
+    # @param port [Integer] The port to run the server on
     # @return [Nil]
-    def server(api)
+    def server(api, port = 9000)
       s = Goliath::Server.new
       s.logger = mock('log').as_null_object
       s.api = api.new
       s.app = build_app(api)
+      s.port = port
       s.start
     end
 
