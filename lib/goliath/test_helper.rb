@@ -23,6 +23,10 @@ module Goliath
   #   end
   #
   module TestHelper
+    def self.included(mod)
+      Goliath.env = 'test'
+    end
+
     # Builds the rack middleware chain for the given API
     #
     # @param klass [Class] The API class to build the middlewares for
