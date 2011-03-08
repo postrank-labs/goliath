@@ -20,7 +20,8 @@ module Goliath
       #
       # @return [Array] array contains [middleware class, args, block]
       def middlewares
-        @middlewares ||= [[::Rack::ContentLength, nil, nil]]
+        @middlewares ||= [[::Rack::ContentLength, nil, nil],
+                          [Goliath::Rack::DefaultResponseFormat, nil, nil]]
       end
 
       # Specify a middleware to be used by the API

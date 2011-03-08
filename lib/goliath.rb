@@ -14,6 +14,7 @@ require 'goliath/response'
 require 'goliath/headers'
 require 'goliath/http_status_codes'
 
+require 'goliath/rack/default_response_format'
 require 'goliath/rack/heartbeat'
 require 'goliath/rack/params'
 require 'goliath/rack/render'
