@@ -70,6 +70,11 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 * [Response streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
 
+## Coverage
+
+* [Goliath: Non-blocking, Ruby 1.9 Web Server](http://www.igvita.com/2011/03/08/goliath-non-blocking-ruby-19-web-server)
+* [Stage left: Enter Goliath - HTTP Proxy + MongoDB](http://everburning.com/news/stage-left-enter-goliath/)
+
 ## Discussion and Support
 
 * [Source](https://github.com/postrank-labs/goliath)
