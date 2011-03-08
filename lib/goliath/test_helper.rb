@@ -53,6 +53,7 @@ module Goliath
       s.app = build_app(api)
       s.port = port
       s.start
+      s
     end
 
     # Stops the launched API
@@ -70,7 +71,7 @@ module Goliath
     # @note This will not return until stop is called.
     def with_api(api, &blk)
       EM.synchrony do
-        server(api)
+        @api_server = server(api)
         blk.call
       end
     end
