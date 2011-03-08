@@ -102,4 +102,36 @@ describe Goliath::Server do
       @s.start
     end
   end
+
+  context 'config parsing' do
+    context 'environment' do
+      it 'executes the block if the environment matches the provided string' do
+        Goliath.env = 'dev'
+        block_run = false
+        @s.environment('development') { block_run = true }
+        block_run.should be_true
+      end
+
+      it 'does not execute the block if the environment does not match' do
+        Goliath.env = 'dev'
+        block_run = false
+        @s.environment('test') { block_run = true }
+        block_run.should be_false
+      end
+
+      it 'accepts an array of environments' do
+        Goliath.env = 'dev'
+        block_run = false
+        @s.environment(['development', 'test']) { block_run = true }
+        block_run.should be_true
+      end
+
+      it 'does not run the block if the environment is not in the array' do
+        Goliath.env = 'prod'
+        block_run = false
+        @s.environment(['development', 'test']) { block_run = true }
+        block_run.should be_false
+      end
+    end
+  end
 end

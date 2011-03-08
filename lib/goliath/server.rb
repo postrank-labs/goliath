@@ -126,11 +126,12 @@ module Goliath
 
     # The environment block handling for configuration files
     #
-    # @param type [String] The environment load the config block for
+    # @param type [String|Array] The environment(s) to load the config block for
     # @param blk [Block] The configuration data to load
     # @return [Nil]
     def environment(type, &blk)
-      blk.call if type.to_sym == Goliath.env.to_sym
+      types = [type].flatten.collect { |t| t.to_sym }
+      blk.call if types.include?(Goliath.env.to_sym)
     end
 
     # Executes the run method of all set plugins
