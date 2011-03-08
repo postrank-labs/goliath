@@ -98,7 +98,8 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = nil, &blk)
-      req = EM::HttpRequest.new('http://localhost:9000').get(request_data)
+      path = request_data.delete(:path) || ''
+      req = EM::HttpRequest.new("http://localhost:9000#{path}").get(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -108,7 +109,8 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def post_request(request_data = {}, errback = nil, &blk)
-      req = EM::HttpRequest.new('http://localhost:9000').post(request_data)
+      path = request_data.delete(:path) || ''
+      req = EM::HttpRequest.new("http://localhost:9000#{path}").post(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
   end
