@@ -55,7 +55,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
     * Mongrel is a threaded web-server, and both Passenger and Unicorn fork an entire VM to isolate each request from each other. By contrast, Goliath builds a single instance of the Rack app and runs all requests in parallel through a single VM, which leads to a much smaller memory footprint and less overhead.
 
 * How do I deploy Goliath in production?
-    * We recommend deploying Goliath behind a reverse proxy such as HAProxy, Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between then within the reverse proxy.
+    * We recommend deploying Goliath behind a reverse proxy such as HAProxy, Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
 
 ## Guides
 
