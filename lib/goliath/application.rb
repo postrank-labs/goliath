@@ -45,7 +45,9 @@ module Goliath
     # @return [Nil]
     def self.run!
       file = File.basename(app_file, '.rb')
-      klass = Kernel.const_get(camel_case(file))
+      klass = begin Kernel.const_get(camel_case(file)) rescue NameError
+        raise NameError, "Class #{camel_case(file)} not found."
+      end
       api = klass.new
 
       runner = Goliath::Runner.new(ARGV, api)
