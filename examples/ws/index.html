@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket ...</title>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'></script>
+    <script>
+      function debug(str)
+      {
+        $("#debug").append("<p>" + str + "</p>");
+      };
+
+      $(document).ready(function()
+      {
+        if (!("WebSocket" in window))
+        {
+          alert("Sorry, WebSockets unavailable.");
+          return;
+        }
+
+        var ws = new WebSocket("ws://localhost:9000/");
+        ws.onmessage = function(evt) { $("#msg").append("<p>" + evt.data + "</p>"); };
+        ws.onclose = function() { debug("socket closed"); };
+        ws.onopen = function()
+        {
+          debug("connected...");
+          ws.send("hello server");
+          ws.send("hello again");
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <div id="debug"></div>
+    <div id="msg"></div>
+  </body>
+</html>
