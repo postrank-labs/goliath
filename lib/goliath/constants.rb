@@ -45,6 +45,7 @@ module Goliath
     PATH_INFO       = 'PATH_INFO'
     FRAGMENT        = 'FRAGMENT'
     CONNECTION      = 'CONNECTION'
+    UPGRADE_DATA    = 'UPGRADE_DATA'
 
     GOLIATH_ENV     = 'goliath.env'
   end

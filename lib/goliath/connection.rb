@@ -46,22 +46,45 @@ module Goliath
       end
 
       @parser.on_message_complete = proc do
-        req = @requests.shift
+        unless @parser.upgrade?
+          req = @requests.shift
 
-        if @current.nil?
-          @current = req
-          @current.succeed
-        else
-          @pending.push(req)
+          if @current.nil?
+            @current = req
+            @current.succeed
+          else
+            @pending.push(req)
+          end
+
+          req.process
         end
-
-        req.process
       end
     end
 
     def receive_data(data)
       begin
         @parser << data
+
+        if @parser.upgrade?
+          req = @requests.first
+          return unless req
+
+          if req.env[UPGRADE_DATA]
+            req.parse(data)
+          else
+            req.env[UPGRADE_DATA] = @parser.upgrade_data
+
+            if @current.nil?
+              @current = req
+              @current.succeed
+            else
+              @pending.push(req)
+            end
+
+            req.process
+          end
+        end
+
       rescue HTTP::Parser::Error => e
         terminate_request(false)
       end
