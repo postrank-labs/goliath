@@ -3,7 +3,7 @@ require 'goliath/rack/params'
 
 describe Goliath::Rack::Params do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error
   end
 
   describe 'with middleware' do

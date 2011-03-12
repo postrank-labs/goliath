@@ -7,12 +7,12 @@ describe Goliath::Env do
   end
 
   it 'responds to []=' do
-    lambda { @env['test'] = 'blah' }.should_not raise_error(Exception)
+    lambda { @env['test'] = 'blah' }.should_not raise_error
   end
 
   it 'responds to []' do
     @env['test'] = 'blah'
-    lambda { @env['test'].should == 'blah' }.should_not raise_error(Exception)
+    lambda { @env['test'].should == 'blah' }.should_not raise_error
   end
 
   context '#method_missing' do

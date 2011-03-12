@@ -3,12 +3,12 @@ require 'goliath/rack/validation/required_param'
 
 describe Goliath::Rack::Validation::RequiredParam do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Validation::RequiredParam.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredParam.new('my app') }.should_not raise_error
   end
 
   it 'accepts options on create' do
     opts = { :type => 1, :key => 2 }
-    lambda { Goliath::Rack::Validation::RequiredParam.new('my app', opts) }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredParam.new('my app', opts) }.should_not raise_error
   end
 
   it 'defaults type and key' do
