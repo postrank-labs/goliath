@@ -2,8 +2,6 @@ require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/valid')
 
 describe Valid do
-  include Goliath::TestHelper
-
   let(:err) { Proc.new { fail "API request failed" } }
 
   it 'returns OK with param' do
