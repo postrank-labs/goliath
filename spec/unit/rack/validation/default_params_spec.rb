@@ -4,15 +4,15 @@ require 'goliath/rack/validation/default_params'
 describe Goliath::Rack::Validation::DefaultParams do
   it 'accepts an app' do
     opts = {:defaults => ['title'], :key => 'fields'}
-    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', opts) }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', opts) }.should_not raise_error
   end
 
   it 'requires defaults to be set' do
-    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:key => 'test'}) }.should raise_error(Exception)
+    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:key => 'test'}) }.should raise_error
   end
 
   it 'requires key to be set' do
-    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:defaults => 'test'}) }.should raise_error(Exception)
+    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:defaults => 'test'}) }.should raise_error
   end
 
   describe 'with middleware' do

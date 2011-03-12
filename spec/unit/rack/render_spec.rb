@@ -13,7 +13,7 @@ describe Goliath::Rack::Render do
   let(:render) { Goliath::Rack::Render.new(app) }
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Render.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Render.new('my app') }.should_not raise_error
   end
 
   it 'returns the status, body and app headers' do

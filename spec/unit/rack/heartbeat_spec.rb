@@ -4,7 +4,7 @@ require 'goliath/env'
 
 describe Goliath::Rack::Heartbeat do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Heartbeat.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Heartbeat.new('my app') }.should_not raise_error
   end
 
   describe 'with the middleware' do

@@ -3,12 +3,12 @@ require 'goliath/rack/validation/required_value'
 
 describe Goliath::Rack::Validation::RequiredValue do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Validation::RequiredValue.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredValue.new('my app') }.should_not raise_error
   end
 
   it 'accepts options on create' do
     opts = { :key => 2, :values => ["foo", "bar"] }
-    lambda { Goliath::Rack::Validation::RequiredValue.new('my app', opts) }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredValue.new('my app', opts) }.should_not raise_error
   end
 
 

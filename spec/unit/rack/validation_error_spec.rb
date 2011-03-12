@@ -3,7 +3,7 @@ require 'goliath/rack/validation_error'
 
 describe Goliath::Rack::ValidationError do
   it 'accepts an app' do
-    lambda { Goliath::Rack::ValidationError.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::ValidationError.new('my app') }.should_not raise_error
   end
 
   describe 'with middleware' do

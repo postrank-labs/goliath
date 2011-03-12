@@ -2,8 +2,6 @@ require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 
 describe Echo do
-  include Goliath::TestHelper
-
   let(:err) { Proc.new { fail "API request failed" } }
 
   it 'returns the echo param' do
