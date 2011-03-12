@@ -20,16 +20,30 @@
         var ws = new WebSocket("ws://localhost:9000/");
         ws.onmessage = function(evt) { $("#msg").append("<p>" + evt.data + "</p>"); };
         ws.onclose = function() { debug("socket closed"); };
-        ws.onopen = function()
+        ws.onopen = function() { debug("connected..."); };
+
+        $('#submit').click(function()
         {
-          debug("connected...");
-          ws.send("hello server");
-          ws.send("hello again");
-        };
+          var nick = $('#nick').val();
+          var msg = $('#message').val();
+
+          ws.send(nick + ": " + msg);
+          return false;
+        });
+
       });
     </script>
   </head>
   <body>
+    <form>
+      <label>Nick</label>
+      <input type='text' autofocus='true' id='nick' name='nick' value='anon' size='20' /><br />
+
+      <label>Message</label>
+      <input type='text' autofocus='true' id='message' name='message' value='' size='80' />&nbsp;
+      <input type='submit' id='submit' />
+    </form>
+
     <div id="debug"></div>
     <div id="msg"></div>
   </body>
