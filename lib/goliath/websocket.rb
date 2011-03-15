@@ -24,23 +24,8 @@ module Goliath
       request['Query'] = env[QUERY_STRING]
 
       old_stream_send = env[STREAM_SEND]
-      env[STREAM_SEND] = proc do |data|
-        if env.handler
-          env.handler.send_text_frame(data)
-        else
-          env.logger.error "Trying to send data to websocket before opened"
-        end
-      end
-
-      old_close = env[STREAM_CLOSE]
-      env[STREAM_CLOSE] = proc do
-        if env.handler
-          env.handler.close_websocket
-        else
-          old.call
-        end
-      end
-
+      env[STREAM_SEND]  = proc { |data| env.handler.send_text_frame(data) }
+      env[STREAM_CLOSE] = proc { env.handler.close_websocket }
       env[STREAM_START] = proc { }
 
       conn = Class.new do
