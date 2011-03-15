@@ -73,7 +73,7 @@ module Goliath
         env['handler'] = EM::WebSocket::HandlerFactory.build_with_request(conn, request,
                                                                           upgrade_data, false, false)
       rescue Exception => e
-        return [404, {}, {:error => "Couldn't understand headers ..."}]
+        return [500, {}, {:error => "Upgrade failed"}]
       end
 
       env['handler'].run
