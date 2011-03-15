@@ -10,7 +10,7 @@ module Goliath
     def on_error(env, error) ; end
 
     def on_headers(env, headers)
-      env['request-headers'] = headers
+      env['goliath.request-headers'] = headers
     end
 
     def on_body(env, data)
@@ -18,7 +18,7 @@ module Goliath
     end
 
     def response(env)
-      request = {}.merge(env['request-headers'])
+      request = {}.merge(env['goliath.request-headers'])
       request['Path'] = env[REQUEST_PATH]
       request['Method'] = env[REQUEST_METHOD]
       request['Query'] = env[QUERY_STRING]
