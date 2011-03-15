@@ -46,18 +46,16 @@ module Goliath
       end
 
       @parser.on_message_complete = proc do
-        unless @parser.upgrade?
-          req = @requests.shift
+        req = @requests.shift
 
-          if @current.nil?
-            @current = req
-            @current.succeed
-          else
-            @pending.push(req)
-          end
-
-          req.process
+        if @current.nil?
+          @current = req
+          @current.succeed
+        else
+          @pending.push(req)
         end
+
+        req.process if !@parser.upgrade?
       end
     end
 
@@ -66,22 +64,11 @@ module Goliath
         @parser << data
 
         if @parser.upgrade?
-          req = @requests.first
-          return unless req
-
-          if req.env[UPGRADE_DATA]
-            req.parse(data)
+          if !@current.env[UPGRADE_DATA]
+            @current.env[UPGRADE_DATA] = @parser.upgrade_data
+            @current.process
           else
-            req.env[UPGRADE_DATA] = @parser.upgrade_data
-
-            if @current.nil?
-              @current = req
-              @current.succeed
-            else
-              @pending.push(req)
-            end
-
-            req.process
+            @current.parse(data)
           end
         end
 
