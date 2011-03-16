@@ -118,6 +118,7 @@ module Goliath
     def process
       begin
         @state = :finished
+        @env['rack.input'].rewind if @env['rack.input']
         post_process(@app.call(@env))
 
       rescue Exception => e
