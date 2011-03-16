@@ -22,4 +22,13 @@ describe Echo do
       end
     end
   end
+
+  it 'echos POST data' do
+    with_api(Echo) do
+      post_request({:body => {'echo' => 'test'}}, err) do |c|
+        b = Yajl::Parser.parse(c.response)
+        b['response'].should == 'test'
+      end
+    end
+  end
 end
