@@ -58,6 +58,7 @@ module Goliath
       @address = address
       @port = port
 
+      @options = {}
       @status = {}
       @config = {}
       @plugins = []
