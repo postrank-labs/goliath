@@ -22,7 +22,12 @@ module Goliath
       def retrieve_params(env)
         params = {}
         params.merge!(::Rack::Utils.parse_query(env['QUERY_STRING']))
-        params.merge!(::Rack::Utils.parse_query(env['rack.input'].read)) unless env['rack.input'].nil?
+
+        if env['rack.input']
+          params.merge!(::Rack::Utils.parse_query(env['rack.input'].read))
+          env['rack.input'].rewind
+        end
+
         params
       end
     end
