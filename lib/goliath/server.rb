@@ -77,6 +77,8 @@ module Goliath
         load_config
         load_plugins
 
+        EM.set_effective_user(options[:user]) if options[:user]
+
         EM.start_server(address, port, Goliath::Connection) do |conn|
           conn.port = port
           conn.app = app
@@ -87,7 +89,6 @@ module Goliath
           conn.options = options
         end
 
-        EM.set_effective_user("nobody") if Goliath.prod?
       end
     end
 

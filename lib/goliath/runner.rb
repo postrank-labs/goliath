@@ -102,6 +102,7 @@ module Goliath
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
 
+        opts.on('-u', '--user USER', "Run as specified user") {|v| @options[:user] = v }
         opts.on('-l', '--log FILE', "Log to file (default: off)") { |file| @options[:log_file] = file }
         opts.on('-s', '--stdout', "Log to stdout (default: #{@options[:log_stdout]})") { |v| @options[:log_stdout] = v }
 
