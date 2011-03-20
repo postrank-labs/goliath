@@ -112,7 +112,7 @@ module Goliath
       if Goliath.test?
         "#{File.expand_path(ENV['PWD'])}/config"
       else
-        "#{File.expand_path(File.dirname($0))}/config"
+        File.expand_path('./config')
       end
     end
 
