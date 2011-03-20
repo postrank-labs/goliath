@@ -47,10 +47,15 @@ module Goliath
     # @param port [Integer] The port to run the server on
     # @return [Nil]
     def server(api, port = 9000)
+      op = OptionParser.new
+      o = Hash.new
+
       s = Goliath::Server.new
       s.logger = mock('log').as_null_object
       s.api = api.new
       s.app = build_app(api)
+      s.api.options_parser(op, o)
+      s.options = o
       s.port = port
       s.start
       s
