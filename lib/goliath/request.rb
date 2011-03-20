@@ -154,7 +154,7 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-            @env[LOGGER].info("Status: #{@response.status}, " +
+            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
                               "Content-Length: #{@response.headers['Content-Length']}, " +
                               "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
 
@@ -176,7 +176,7 @@ module Goliath
     # @param e [Exception] The exception to log
     # @return [Nil]
     def server_exception(e)
-      @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+      @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
       post_process([500, {}, 'An error happened'])
     end
 

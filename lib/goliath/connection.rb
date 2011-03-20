@@ -24,7 +24,7 @@ module Goliath
 
         env = Goliath::Env.new
         env[SERVER_PORT] = port.to_s
-        env[LOGGER]      = logger
+        env[RACK_LOGGER] = logger
         env[OPTIONS]     = options
         env[STATUS]      = status
         env[CONFIG]      = config

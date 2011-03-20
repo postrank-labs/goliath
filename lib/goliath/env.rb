@@ -67,6 +67,13 @@ module Goliath
       self[STREAM_CLOSE].call
     end
 
+    # Convenience method for accessing the rack.logger item in the environment.
+    #
+    # @return [Logger] The logger object
+    def logger
+      self[RACK_LOGGER]
+    end
+
     # @param name [Symbol] The method to check if we respond to it.
     # @return [Boolean] True if the Env responds to the method, false otherwise
     def respond_to?(name)
