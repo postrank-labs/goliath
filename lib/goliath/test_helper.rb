@@ -45,17 +45,17 @@ module Goliath
     #
     # @param api [Class] The API class to launch
     # @param port [Integer] The port to run the server on
-    # @return [Nil]
-    def server(api, port = 9000)
+    # @param options [Hash] The options hash to provide to the server
+    # @return [Goliath::Server] The executed server
+    def server(api, port = 9000, options = {})
       op = OptionParser.new
-      o = Hash.new
 
       s = Goliath::Server.new
       s.logger = mock('log').as_null_object
       s.api = api.new
       s.app = build_app(api)
-      s.api.options_parser(op, o)
-      s.options = o
+      s.api.options_parser(op, options)
+      s.options = options
       s.port = port
       s.start
       s
@@ -72,11 +72,12 @@ module Goliath
     # will start the EventMachine reactor running.
     #
     # @param api [Class] The API class to launch
+    # @param options [Hash] The options to pass to the server
     # @param blk [Proc] The code to execute after the server is launched.
     # @note This will not return until stop is called.
-    def with_api(api, &blk)
+    def with_api(api, options = {}, &blk)
       EM.synchrony do
-        @api_server = server(api)
+        @api_server = server(api, 9000, options)
         blk.call
       end
     end
