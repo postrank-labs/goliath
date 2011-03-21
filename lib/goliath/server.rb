@@ -75,7 +75,7 @@ module Goliath
 
         EM.epoll
 
-        load_config
+        load_config(options[:config])
         load_plugins
 
         EM.set_effective_user(options[:user]) if options[:user]
@@ -109,11 +109,8 @@ module Goliath
     #
     # @return [String] THe full path to the config directory
     def config_dir
-      if Goliath.test?
-        "#{File.expand_path(ENV['PWD'])}/config"
-      else
-        File.expand_path('./config')
-      end
+      dir = options[:config] ? File.dirname(options[:config]) : './config'
+      File.expand_path(dir)
     end
 
     # Import callback for configuration files

@@ -106,6 +106,7 @@ module Goliath
         opts.on('-l', '--log FILE', "Log to file (default: off)") { |file| @options[:log_file] = file }
         opts.on('-s', '--stdout', "Log to stdout (default: #{@options[:log_stdout]})") { |v| @options[:log_stdout] = v }
 
+        opts.on('-c', '--config FILE', "Config file (default: ./config/<server>.rb)") { |v| @options[:config] = v }
         opts.on('-P', '--pid FILE', "Pid file (default: off)") { |file| @options[:pid_file] = file }
         opts.on('-d', '--daemonize', "Run daemonized in the background (default: #{@options[:daemonize]})") { |v| @options[:daemonize] = v }
         opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
