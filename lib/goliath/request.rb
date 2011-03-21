@@ -47,7 +47,6 @@ module Goliath
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
       end
 
-      @env[STATUS]          = parser.status_code
       @env[REQUEST_METHOD]  = parser.http_method
       @env[REQUEST_URI]     = parser.request_url
       @env[QUERY_STRING]    = parser.query_string
