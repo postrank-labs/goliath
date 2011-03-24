@@ -47,6 +47,10 @@ module Goliath
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
       end
 
+      %w(CONTENT_TYPE CONTENT_LENGTH).each do |name|
+        @env[name] = @env.delete("HTTP_#{name}") if @env["HTTP_#{name}"]
+      end
+
       @env[REQUEST_METHOD]  = parser.http_method
       @env[REQUEST_URI]     = parser.request_url
       @env[QUERY_STRING]    = parser.query_string
