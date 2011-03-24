@@ -40,6 +40,27 @@ describe Goliath::Rack::Params do
       ret['foo'].should == %w(bar baz foos)
     end
 
+    it 'parses multipart data' do
+      @env[Goliath::Constants::CONTENT_TYPE] = 'multipart/boundary="AaB03x"'
+      @env['rack.input'] = StringIO.new
+      @env['rack.input'] <<"--AaB03x\r
+Content-Disposition: form-data; name=\"submit-name\"\r
+\r
+Larry\r
+--AaB03x\r
+Content-Disposition: form-data; name=\"submit-name-with-content\"\r
+\r
+Berry\r
+--AaB03x--\r
+"
+
+      @env[Goliath::Constants::CONTENT_LENGTH] = @env['rack.input'].length
+
+      ret = @params.retrieve_params(@env)
+      ret['submit-name'].should == 'Larry'
+      ret['submit-name-with-content'].should == 'Berry'
+    end
+
     it 'combines query string and post body params' do
       @env['QUERY_STRING'] = "baz=bar"
 

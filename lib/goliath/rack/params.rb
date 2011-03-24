@@ -24,8 +24,13 @@ module Goliath
         params.merge!(::Rack::Utils.parse_query(env['QUERY_STRING']))
 
         if env['rack.input']
-          params.merge!(::Rack::Utils.parse_query(env['rack.input'].read))
-          env['rack.input'].rewind
+          post_params = ::Rack::Utils::Multipart.parse_multipart(env)
+          unless post_params
+            post_params = ::Rack::Utils.parse_query(env['rack.input'].read)
+            env['rack.input'].rewind
+          end
+
+          params.merge!(post_params)
         end
 
         params
