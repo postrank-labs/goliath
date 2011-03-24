@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'em-mongo'
   s.add_development_dependency 'yajl-ruby'
   s.add_development_dependency 'rack-rewrite'
+  s.add_development_dependency 'multipart_body'
 
   s.add_development_dependency 'yard'
   s.add_development_dependency 'bluecloth'
