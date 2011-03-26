@@ -74,6 +74,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 
 * [Goliath: Non-blocking, Ruby 1.9 Web Server](http://www.igvita.com/2011/03/08/goliath-non-blocking-ruby-19-web-server)
 * [Stage left: Enter Goliath - HTTP Proxy + MongoDB](http://everburning.com/news/stage-left-enter-goliath/)
+* [InfoQ: Meet the Goliath of Ruby Application Servers](http://www.infoq.com/articles/meet-goliath)
 
 ## Discussion and Support
 
