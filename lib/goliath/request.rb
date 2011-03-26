@@ -51,6 +51,12 @@ module Goliath
         @env[name] = @env.delete("HTTP_#{name}") if @env["HTTP_#{name}"]
       end
 
+      if @env['HTTP_HOST']
+        name, port = @env['HTTP_HOST'].split(':')
+        @env[SERVER_NAME] = name if name
+        @env[SERVER_PORT] = port if port
+      end
+
       @env[REQUEST_METHOD]  = parser.http_method
       @env[REQUEST_URI]     = parser.request_url
       @env[QUERY_STRING]    = parser.query_string
