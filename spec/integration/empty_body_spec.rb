@@ -7,14 +7,13 @@ class Empty < Goliath::API
 end
 
 describe 'Empty body API' do
+  let(:err) { Proc.new { fail "API request failed" } }
+
   it 'serves a 201 with no body' do
     with_api(Empty) do
-      http = EM::HttpRequest.new('http://localhost:9000').get
-      http.errback { fail }
-      http.callback do |c|
+      get_request({}, err) do |c|
         c.response_header.status.should == 201
         c.response_header['CONTENT_LENGTH'].should == '0'
-        stop
       end
     end
   end
