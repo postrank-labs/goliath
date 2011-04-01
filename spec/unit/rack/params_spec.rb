@@ -38,7 +38,7 @@ describe Goliath::Rack::Params do
       ret['baz'].should == 'bonkey'
     end
 
-    it 'parses arrays of data' do
+    it 'parses the last value for a query param' do
       @env['QUERY_STRING'] = 'foo=bar&foo=baz&foo=foos'
 
       ret = @params.retrieve_params(@env)
