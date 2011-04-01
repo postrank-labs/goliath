@@ -26,7 +26,7 @@ module Goliath
         if env['rack.input']
           post_params = ::Rack::Utils::Multipart.parse_multipart(env)
           unless post_params
-            post_params = ::Rack::Utils.parse_query(env['rack.input'].read)
+            post_params = ::Rack::Utils.parse_nested_query(env['rack.input'].read)
             env['rack.input'].rewind
           end
 

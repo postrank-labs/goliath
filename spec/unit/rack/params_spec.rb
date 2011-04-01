@@ -30,12 +30,13 @@ describe Goliath::Rack::Params do
 
     it 'parses the post body' do
       @env['rack.input'] = StringIO.new
-      @env['rack.input'] << "foo=bar&baz=bonkey"
+      @env['rack.input'] << "foo=bar&baz=bonkey&zonk[donk]=monk"
       @env['rack.input'].rewind
 
       ret = @params.retrieve_params(@env)
       ret['foo'].should == 'bar'
       ret['baz'].should == 'bonkey'
+      ret['zonk'].should == {'donk' => 'monk'}
     end
 
     it 'parses the last value for a query param' do
