@@ -21,7 +21,7 @@ module Goliath
 
       def retrieve_params(env)
         params = {}
-        params.merge!(::Rack::Utils.parse_query(env['QUERY_STRING']))
+        params.merge!(::Rack::Utils.parse_nested_query(env['QUERY_STRING']))
 
         if env['rack.input']
           post_params = ::Rack::Utils::Multipart.parse_multipart(env)

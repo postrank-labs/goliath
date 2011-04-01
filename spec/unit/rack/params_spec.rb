@@ -21,6 +21,13 @@ describe Goliath::Rack::Params do
       ret['baz'].should == 'bonkey'
     end
 
+    it 'parses the nested query string' do
+      @env['QUERY_STRING'] = 'foo[bar]=baz'
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].should == {'bar' => 'baz'}
+    end
+
     it 'parses the post body' do
       @env['rack.input'] = StringIO.new
       @env['rack.input'] << "foo=bar&baz=bonkey"
@@ -35,9 +42,7 @@ describe Goliath::Rack::Params do
       @env['QUERY_STRING'] = 'foo=bar&foo=baz&foo=foos'
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].is_a?(Array).should be_true
-      ret['foo'].length.should == 3
-      ret['foo'].should == %w(bar baz foos)
+      ret['foo'].should == "foos"
     end
 
     it 'parses multipart data' do
