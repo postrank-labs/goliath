@@ -119,8 +119,22 @@ module Goliath
     #
     # @param blk [Block] The application block to load
     # @return [Object] The Rack application
-    def load_app(&blk)
-      @app = ::Rack::Builder.app(&blk)
+    def load_app(klass)
+      @app = ::Rack::Builder.app do
+        klass.middlewares.each do |mw|
+          use(*(mw[0..1].compact), &mw[2])
+        end
+
+        # If you use map you can't use run as
+        # the rack builder will blowup.
+        if klass.maps.empty?
+          run api
+        else
+          klass.maps.each do |mp|
+            map(mp.first, &mp.last)
+          end
+        end
+      end
     end
 
     # Stores the list of plugins to be used by the server

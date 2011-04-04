@@ -10,6 +10,30 @@ describe Goliath::Runner do
     @r.stub!(:setup_logger).and_return(@log_mock)
   end
 
+  describe "routing" do
+    class HelloWorld < Goliath::API
+      def call(env)
+        [200, {}, "hello world!"]
+      end
+    end
+
+    class RackRoutes < Goliath::API
+      map "/hello_world" do
+        run HelloWorld.new
+      end
+    end
+    
+    it "should resolve routes with a non localhost HTTP_HOST" do
+      url_map = @r.load_app(RackRoutes)
+      env = Goliath::Env.new
+      env["PATH_INFO"] = "/hello_world"
+      env["SCRIPT_NAME"] = "/hello_world"
+      env["HTTP_HOST"] = "10.0.1.4:9000"
+      result = url_map.call(env)
+      result.should == [200, {"Content-Length"=>"12"}, ["hello world!"]]
+    end
+  end
+
   describe 'server execution' do
     describe 'daemonization' do
       it 'daemonizes if specified' do

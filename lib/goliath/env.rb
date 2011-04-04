@@ -13,7 +13,6 @@ module Goliath
     # @return [Goliath::Env] The Goliath::Env object
     def initialize
       self[SERVER_SOFTWARE]   = SERVER
-      self[SERVER_NAME]       = LOCALHOST
       self[RACK_VERSION]      = RACK_VERSION_NUM
       self[RACK_ERRORS]       = STDERR
       self[RACK_MULTITHREAD]  = false
