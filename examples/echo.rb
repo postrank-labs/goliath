@@ -9,10 +9,6 @@ require 'goliath/plugins/latency'
 require 'yajl'
 
 class Echo < Goliath::API
-
-  # reload code on every request in dev environment
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Params             # parse & merge query and body parameters
   use Goliath::Rack::DefaultMimeType    # cleanup accepted media types
   use Goliath::Rack::Formatters::JSON   # JSON output formatter

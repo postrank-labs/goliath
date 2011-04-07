@@ -19,8 +19,6 @@ class User < ActiveRecord::Base
 end
 
 class Srv < Goliath::API
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
   use Goliath::Rack::Formatters::JSON

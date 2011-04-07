@@ -12,8 +12,6 @@ require 'goliath'
 # rabbitmqctl set_permissions -p /test test ".*" ".*" ".*"
 
 class ContentStream < Goliath::API
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Formatters::JSON
   use Goliath::Rack::Params
 

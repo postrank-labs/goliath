@@ -15,7 +15,6 @@ require 'em-synchrony/em-http'
 require 'pp'
 
 class HttpLog < Goliath::API
-  use ::Rack::Reloader, 0 if Goliath.dev?
   use Goliath::Rack::Params
 
   def on_headers(env, headers)

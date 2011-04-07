@@ -10,7 +10,6 @@ $:<< '../lib' << 'lib'
 require 'goliath'
 
 class ConfTest < Goliath::API
-
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
   use Goliath::Rack::Formatters::JSON
