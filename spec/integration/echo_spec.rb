@@ -1,6 +1,7 @@
 require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 require 'multipart_body'
+require 'yajl'
 
 describe Echo do
   let(:err) { Proc.new { fail "API request failed" } }
@@ -46,4 +47,16 @@ describe Echo do
     end
   end
 
+  it 'echos application/json POST body data' do
+    with_api(Echo) do
+      body = Yajl::Encoder.encode({'echo' => 'My Echo'})
+      head = {'content-type' => 'application/json'}
+
+      post_request({:body => body.to_s,
+                    :head => head}, err) do |c|
+        b = Yajl::Parser.parse(c.response)
+        b['response'].should == 'My Echo'
+      end
+    end
+  end
 end

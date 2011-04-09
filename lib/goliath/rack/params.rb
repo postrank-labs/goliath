@@ -1,3 +1,4 @@
+require 'multi_json'
 require 'rack/utils'
 
 module Goliath
@@ -26,8 +27,17 @@ module Goliath
         if env['rack.input']
           post_params = ::Rack::Utils::Multipart.parse_multipart(env)
           unless post_params
-            post_params = ::Rack::Utils.parse_nested_query(env['rack.input'].read)
+            body = env['rack.input'].read
             env['rack.input'].rewind
+
+            post_params = case(env['CONTENT_TYPE'])
+            when %r{^application/x-www-form-urlencoded} then
+              ::Rack::Utils.parse_nested_query(body)
+            when %r{^application/json} then
+              MultiJson.decode(body)
+            else
+              {}
+            end
           end
 
           params.merge!(post_params)

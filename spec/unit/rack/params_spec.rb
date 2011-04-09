@@ -10,6 +10,7 @@ describe Goliath::Rack::Params do
     before(:each) do
       @app = mock('app').as_null_object
       @env = {}
+      @env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded; charset=utf-8'
       @params = Goliath::Rack::Params.new(@app)
     end
 
@@ -118,6 +119,39 @@ Berry\r
       status.should == 200
       headers.should == app_headers
       body.should == app_body
+    end
+
+    context 'content type' do
+      it "parses application/x-www-form-urlencoded" do
+        @env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded; charset=utf-8'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << "foos=bonkey"
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret['foos'].should == 'bonkey'
+      end
+
+      it "parses json" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar"}|
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret['foo'].should == 'bar'
+      end
+
+
+      it "doesn't parse unknown content types" do
+        @env['CONTENT_TYPE'] = 'fake/form -- type'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar"}|
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret.should == {}
+      end
     end
   end
 end
