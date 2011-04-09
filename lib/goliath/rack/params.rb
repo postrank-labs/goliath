@@ -3,6 +3,9 @@ require 'rack/utils'
 
 module Goliath
   module Rack
+    URL_ENCODED = %r{^application/x-www-form-urlencoded}
+    JSON_ENCODED = %r{^application/json}
+
     # A middle ware to parse params. This will parse both the
     # query string parameters and the body and place them into
     # the _params_ hash of the Goliath::Env for the request.
@@ -31,9 +34,9 @@ module Goliath
             env['rack.input'].rewind
 
             post_params = case(env['CONTENT_TYPE'])
-            when %r{^application/x-www-form-urlencoded} then
+            when URL_ENCODED then
               ::Rack::Utils.parse_nested_query(body)
-            when %r{^application/json} then
+            when JSON_ENCODED then
               MultiJson.decode(body)
             else
               {}
