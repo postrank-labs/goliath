@@ -20,10 +20,20 @@ module Goliath
       #
       # @return [Array] array contains [middleware class, args, block]
       def middlewares
+        if Goliath.dev? && @middlewares
+          reloader_found = false
+          @middlewares.each do |mw|
+             if mw.first == ::Rack::Reloader
+              reloader_found = true
+               break
+             end
+           end
+
+          @middlewares.unshift([::Rack::Reloader, 0, nil]) unless reloader_found
+        end
         return @middlewares if @middlewares
 
         @middlewares = []
-        use(::Rack::Reloader, 0) if Goliath.dev?
         use(::Rack::ContentLength, nil)
         use(::Goliath::Rack::DefaultResponseFormat, nil)
         @middlewares
