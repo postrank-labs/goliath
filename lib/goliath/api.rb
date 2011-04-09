@@ -21,16 +21,10 @@ module Goliath
       # @return [Array] array contains [middleware class, args, block]
       def middlewares
         if Goliath.dev? && @middlewares
-          reloader_found = false
-          @middlewares.each do |mw|
-             if mw.first == ::Rack::Reloader
-              reloader_found = true
-               break
-             end
-           end
-
-          @middlewares.unshift([::Rack::Reloader, 0, nil]) unless reloader_found
+          reloader = @middlewares.detect {|mw| mw.first == ::Rack::Reloader}
+          @middlewares.unshift([::Rack::Reloader, 0, nil]) if !reloader
         end
+
         return @middlewares if @middlewares
 
         @middlewares = []
