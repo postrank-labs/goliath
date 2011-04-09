@@ -31,6 +31,7 @@ module Goliath
 
           @middlewares.unshift([::Rack::Reloader, 0, nil])
         end
+        @middlewares
       end
 
       # Specify a middleware to be used by the API
