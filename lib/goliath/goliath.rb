@@ -19,7 +19,7 @@ module Goliath
   #
   # @param [String] env the environment string of [dev|prod|test]
   def env=(env)
-    case(env)
+    case(env.to_s)
     when 'dev'  then @env = :development
     when 'prod' then @env = :production
     when 'test' then @env = :test

@@ -20,16 +20,15 @@ module Goliath
       #
       # @return [Array] array contains [middleware class, args, block]
       def middlewares
-        if Goliath.dev? && @middlewares
-          reloader = @middlewares.detect {|mw| mw.first == ::Rack::Reloader}
-          @middlewares.unshift([::Rack::Reloader, 0, nil]) if !reloader
-        end
+        @middlewares ||= []
+        @middlewares.unshift([::Goliath::Rack::DefaultResponseFormat, nil, nil])
+        @middlewares.unshift([::Rack::ContentLength, nil, nil])
 
-        return @middlewares if @middlewares
+        if Goliath.dev?
+           reloader = @middlewares.detect {|mw| mw.first == ::Rack::Reloader}
+           @middlewares.unshift([::Rack::Reloader, 0, nil]) if !reloader
+         end
 
-        @middlewares = []
-        use(::Rack::ContentLength, nil)
-        use(::Goliath::Rack::DefaultResponseFormat, nil)
         @middlewares
       end
 
@@ -46,7 +45,8 @@ module Goliath
       # @param args Any arguments to pass to the middeware
       # @param block A block to pass to the middleware
       def use(name, args = nil, &block)
-        middlewares.push([name, args, block])
+        @middlewares ||= []
+        @middlewares << [name, args, block]
       end
 
       # Returns the plugins configured for this API

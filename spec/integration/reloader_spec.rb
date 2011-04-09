@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+Goliath.env = 'dev'
+
 class ReloaderDev < Goliath::API
   use Goliath::Rack::Params
 end
