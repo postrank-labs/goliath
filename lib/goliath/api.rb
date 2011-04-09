@@ -22,6 +22,15 @@ module Goliath
       def middlewares
         @middlewares ||= [[::Rack::ContentLength, nil, nil],
                           [Goliath::Rack::DefaultResponseFormat, nil, nil]]
+
+        if Goliath.dev? && @middlewares.first[0] != ::Rack::Reloader
+          # We're doing a chdir into the app directory so that we're in the same
+          # place as the config. This screws with the $0 so force the basename into
+          # LOADED_FEATURES so we can reload correctly.
+          $LOADED_FEATURES.unshift(File.basename($0))
+
+          @middlewares.unshift([::Rack::Reloader, 0, nil])
+        end
       end
 
       # Specify a middleware to be used by the API
