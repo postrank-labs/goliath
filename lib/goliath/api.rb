@@ -42,15 +42,6 @@ module Goliath
       # @param args Any arguments to pass to the middeware
       # @param block A block to pass to the middleware
       def use(name, args = nil, &block)
-
-        # make sure we have LOADED_FEATURES setup to work if the user loads the reloader
-        if name == ::Rack::Reloader
-          # We're doing a chdir into the app directory so that we're in the same
-          # place as the config. This screws with the $0 so force the basename into
-          # LOADED_FEATURES so we can reload correctly.
-          $LOADED_FEATURES.unshift(File.basename($0))
-        end
-
         middlewares.push([name, args, block])
       end
 

@@ -136,7 +136,10 @@ module Goliath
     #
     # @return [Nil]
     def run
-      Dir.chdir(File.expand_path(File.dirname($0))) unless Goliath.test?
+      unless Goliath.test?
+        $LOADED_FEATURES.unshift(File.basename($0))
+        Dir.chdir(File.expand_path(File.dirname($0)))
+      end
 
       if @daemonize
         Process.fork do
