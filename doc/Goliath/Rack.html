@@ -60,7 +60,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/goliath/rack/jsonp.rb<span class="defines">,<br />
-  lib/goliath/rack/tracer.rb,<br /> lib/goliath/rack/render.rb,<br /> lib/goliath/rack/params.rb,<br /> lib/goliath/rack/heartbeat.rb,<br /> lib/goliath/rack/formatters/xml.rb,<br /> lib/goliath/rack/formatters/json.rb,<br /> lib/goliath/rack/formatters/html.rb,<br /> lib/goliath/rack/validation_error.rb,<br /> lib/goliath/rack/default_mime_type.rb,<br /> lib/goliath/rack/validation/boolean_value.rb,<br /> lib/goliath/rack/validation/numeric_range.rb,<br /> lib/goliath/rack/validation/required_param.rb,<br /> lib/goliath/rack/validation/default_params.rb,<br /> lib/goliath/rack/validation/request_method.rb,<br /> lib/goliath/rack/validation/required_value.rb</span>
+  lib/goliath/rack/tracer.rb,<br /> lib/goliath/rack/params.rb,<br /> lib/goliath/rack/render.rb,<br /> lib/goliath/rack/heartbeat.rb,<br /> lib/goliath/rack/formatters/xml.rb,<br /> lib/goliath/rack/formatters/html.rb,<br /> lib/goliath/rack/formatters/json.rb,<br /> lib/goliath/rack/validation_error.rb,<br /> lib/goliath/rack/default_mime_type.rb,<br /> lib/goliath/rack/default_response_format.rb,<br /> lib/goliath/rack/validation/boolean_value.rb,<br /> lib/goliath/rack/validation/numeric_range.rb,<br /> lib/goliath/rack/validation/required_value.rb,<br /> lib/goliath/rack/validation/request_method.rb,<br /> lib/goliath/rack/validation/default_params.rb,<br /> lib/goliath/rack/validation/required_param.rb</span>
 </dd>
   
 </dl>
@@ -74,10 +74,27 @@
     
    
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Rack/DefaultMimeType.html" title="Goliath::Rack::DefaultMimeType (class)">DefaultMimeType</a></span>, <span class='object_link'><a href="Rack/Heartbeat.html" title="Goliath::Rack::Heartbeat (class)">Heartbeat</a></span>, <span class='object_link'><a href="Rack/JSONP.html" title="Goliath::Rack::JSONP (class)">JSONP</a></span>, <span class='object_link'><a href="Rack/Params.html" title="Goliath::Rack::Params (class)">Params</a></span>, <span class='object_link'><a href="Rack/Render.html" title="Goliath::Rack::Render (class)">Render</a></span>, <span class='object_link'><a href="Rack/Tracer.html" title="Goliath::Rack::Tracer (class)">Tracer</a></span>, <span class='object_link'><a href="Rack/ValidationError.html" title="Goliath::Rack::ValidationError (class)">ValidationError</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Rack/DefaultMimeType.html" title="Goliath::Rack::DefaultMimeType (class)">DefaultMimeType</a></span>, <span class='object_link'><a href="Rack/DefaultResponseFormat.html" title="Goliath::Rack::DefaultResponseFormat (class)">DefaultResponseFormat</a></span>, <span class='object_link'><a href="Rack/Heartbeat.html" title="Goliath::Rack::Heartbeat (class)">Heartbeat</a></span>, <span class='object_link'><a href="Rack/JSONP.html" title="Goliath::Rack::JSONP (class)">JSONP</a></span>, <span class='object_link'><a href="Rack/Params.html" title="Goliath::Rack::Params (class)">Params</a></span>, <span class='object_link'><a href="Rack/Render.html" title="Goliath::Rack::Render (class)">Render</a></span>, <span class='object_link'><a href="Rack/Tracer.html" title="Goliath::Rack::Tracer (class)">Tracer</a></span>, <span class='object_link'><a href="Rack/ValidationError.html" title="Goliath::Rack::ValidationError (class)">ValidationError</a></span>
     
   
 </p>
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="URL_ENCODED-constant" class="">URL_ENCODED =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^application/x-www-form-urlencoded</span><span class='regexp_end'>}</span></span></pre></dd>
+      
+        <dt id="JSON_ENCODED-constant" class="">JSON_ENCODED =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^application/json</span><span class='regexp_end'>}</span></span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -86,7 +103,7 @@
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  4 22:34:27 2011 by 
+  Generated on Mon Apr 11 12:32:32 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.9.2).
 </div>

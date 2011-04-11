@@ -209,12 +209,12 @@ A new instance of Params
       <pre class="lines">
 
 
-13
-14
-15</pre>
+17
+18
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id initialize'>initialize</span><span class='lparen'>(</span><span class='id app'>app</span><span class='rparen'>)</span>
   <span class='ivar'>@app</span> <span class='op'>=</span> <span class='id app'>app</span>
@@ -244,13 +244,13 @@ A new instance of Params
       <pre class="lines">
 
 
-17
-18
-19
-20</pre>
+21
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='id call'>call</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
   <span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>params</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id retrieve_params'>retrieve_params</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
@@ -274,20 +274,58 @@ A new instance of Params
       <pre class="lines">
 
 
-22
-23
-24
-25
 26
-27</pre>
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/rack/params.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id retrieve_params'>retrieve_params</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
   <span class='id params'>params</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-  <span class='id params'>params</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id parse_query'>parse_query</span><span class='lparen'>(</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>QUERY_STRING</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
-  <span class='id params'>params</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id parse_query'>parse_query</span><span class='lparen'>(</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rack.input</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id read'>read</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rack.input</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+  <span class='id params'>params</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id parse_nested_query'>parse_nested_query</span><span class='lparen'>(</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>QUERY_STRING</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+  <span class='kw'>if</span> <span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rack.input</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+    <span class='id post_params'>post_params</span> <span class='op'>=</span> <span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Utils</span><span class='op'>::</span><span class='const'>Multipart</span><span class='period'>.</span><span class='id parse_multipart'>parse_multipart</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
+    <span class='kw'>unless</span> <span class='id post_params'>post_params</span>
+      <span class='id body'>body</span> <span class='op'>=</span> <span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rack.input</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id read'>read</span>
+      <span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>rack.input</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id rewind'>rewind</span>
+
+      <span class='id post_params'>post_params</span> <span class='op'>=</span> <span class='kw'>case</span><span class='lparen'>(</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>CONTENT_TYPE</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+      <span class='kw'>when</span> <span class='const'>URL_ENCODED</span> <span class='kw'>then</span>
+        <span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id parse_nested_query'>parse_nested_query</span><span class='lparen'>(</span><span class='id body'>body</span><span class='rparen'>)</span>
+      <span class='kw'>when</span> <span class='const'>JSON_ENCODED</span> <span class='kw'>then</span>
+        <span class='const'>MultiJson</span><span class='period'>.</span><span class='id decode'>decode</span><span class='lparen'>(</span><span class='id body'>body</span><span class='rparen'>)</span>
+      <span class='kw'>else</span>
+        <span class='lbrace'>{</span><span class='rbrace'>}</span>
+      <span class='kw'>end</span>
+    <span class='kw'>end</span>
+
+    <span class='id params'>params</span><span class='period'>.</span><span class='id merge!'>merge!</span><span class='lparen'>(</span><span class='id post_params'>post_params</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
   <span class='id params'>params</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -300,7 +338,7 @@ A new instance of Params
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  4 22:34:27 2011 by 
+  Generated on Mon Apr 11 12:32:32 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.9.2).
 </div>

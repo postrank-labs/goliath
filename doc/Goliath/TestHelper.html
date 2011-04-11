@@ -205,7 +205,7 @@ Make a POST request the currently launched API.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#server-instance_method" title="#server (instance method)">- (Nil) <strong>server</strong>(api) </a>
+      <a href="#server-instance_method" title="#server (instance method)">- (Goliath::Server) <strong>server</strong>(api, port = 9000, options = {}) </a>
     
 
     
@@ -253,7 +253,7 @@ Stops the launched API.
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#with_api-instance_method" title="#with_api (instance method)">- (Object) <strong>with_api</strong>(api, &amp;blk) </a>
+      <a href="#with_api-instance_method" title="#with_api (instance method)">- (Object) <strong>with_api</strong>(api, options = {}, &amp;blk) </a>
     
 
     
@@ -347,17 +347,17 @@ The Rack middleware chain
       <pre class="lines">
 
 
-30
-31
-32
-33
 34
 35
 36
-37</pre>
+37
+38
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id build_app'>build_app</span><span class='lparen'>(</span><span class='id klass'>klass</span><span class='rparen'>)</span>
   <span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Builder</span><span class='period'>.</span><span class='id new'>new</span> <span class='kw'>do</span>
@@ -455,16 +455,18 @@ The callback block to execute
       <pre class="lines">
 
 
-94
-95
-96
-97</pre>
+107
+108
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id get_request'>get_request</span><span class='lparen'>(</span><span class='id request_data'>request_data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id errback'>errback</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
-  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://localhost:9000</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
+  <span class='id path'>path</span> <span class='op'>=</span> <span class='id request_data'>request_data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://localhost:9000</span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id get'>get</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
   <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -570,16 +572,16 @@ The callback handler to attach
       <pre class="lines">
 
 
-81
-82
-83
-84
-85
-86
-87</pre>
+94
+95
+96
+97
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 81</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
   <span class='id req'>req</span><span class='period'>.</span><span class='id callback'>callback</span> <span class='op'>&amp;</span><span class='id blk'>blk</span>
@@ -676,16 +678,18 @@ The callback block to execute
       <pre class="lines">
 
 
-104
-105
-106
-107</pre>
+118
+119
+120
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id post_request'>post_request</span><span class='lparen'>(</span><span class='id request_data'>request_data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id errback'>errback</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
-  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>http://localhost:9000</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id post'>post</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
+  <span class='id path'>path</span> <span class='op'>=</span> <span class='id request_data'>request_data</span><span class='period'>.</span><span class='id delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_end'>'</span></span>
+  <span class='id req'>req</span> <span class='op'>=</span> <span class='const'>EM</span><span class='op'>::</span><span class='const'>HttpRequest</span><span class='period'>.</span><span class='id new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://localhost:9000</span><span class='embexpr_beg'>#{</span><span class='id path'>path</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id post'>post</span><span class='lparen'>(</span><span class='id request_data'>request_data</span><span class='rparen'>)</span>
   <span class='id hookup_request_callbacks'>hookup_request_callbacks</span><span class='lparen'>(</span><span class='id req'>req</span><span class='comma'>,</span> <span class='id errback'>errback</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -696,7 +700,7 @@ The callback block to execute
       <div class="method_details ">
   <p class="signature " id="server-instance_method">
   
-    - (<tt>Nil</tt>) <strong>server</strong>(api) 
+    - (<tt><span class='object_link'><a href="Server.html" title="Goliath::Server (class)">Goliath::Server</a></span></tt>) <strong>server</strong>(api, port = 9000, options = {}) 
   
 
   
@@ -731,16 +735,60 @@ The API class to launch
       
     </li>
   
+    <li>
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <span class='name'>port</span>
+      
+      
+        <em class="default">(defaults to: <tt>9000</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The port to run the server on
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>options</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The options hash to provide to the server
+</p>
+</div>
+      
+    </li>
+  
 </ul>
 <h3>Returns:</h3>
 <ul class="return">
   
     <li>
       
-        <span class='type'>(<tt>Nil</tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Server.html" title="Goliath::Server (class)">Goliath::Server</a></span></tt>)</span>
       
       
       
+      
+        &mdash;
+        <div class='inline'><p>
+The executed server
+</p>
+</div>
       
     </li>
   
@@ -752,23 +800,35 @@ The API class to launch
       <pre class="lines">
 
 
-44
-45
-46
-47
-48
-49
-50</pre>
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 50</span>
 
-<span class='kw'>def</span> <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='comma'>,</span> <span class='id port'>port</span> <span class='op'>=</span> <span class='int'>9000</span><span class='comma'>,</span> <span class='id options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id op'>op</span> <span class='op'>=</span> <span class='const'>OptionParser</span><span class='period'>.</span><span class='id new'>new</span>
+
   <span class='id s'>s</span> <span class='op'>=</span> <span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Server</span><span class='period'>.</span><span class='id new'>new</span>
   <span class='id s'>s</span><span class='period'>.</span><span class='id logger'>logger</span> <span class='op'>=</span> <span class='id mock'>mock</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>log</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id as_null_object'>as_null_object</span>
   <span class='id s'>s</span><span class='period'>.</span><span class='id api'>api</span> <span class='op'>=</span> <span class='id api'>api</span><span class='period'>.</span><span class='id new'>new</span>
   <span class='id s'>s</span><span class='period'>.</span><span class='id app'>app</span> <span class='op'>=</span> <span class='id build_app'>build_app</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id api'>api</span><span class='period'>.</span><span class='id options_parser'>options_parser</span><span class='lparen'>(</span><span class='id op'>op</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id options'>options</span> <span class='op'>=</span> <span class='id options'>options</span>
+  <span class='id s'>s</span><span class='period'>.</span><span class='id port'>port</span> <span class='op'>=</span> <span class='id port'>port</span>
   <span class='id s'>s</span><span class='period'>.</span><span class='id start'>start</span>
+  <span class='id s'>s</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -812,12 +872,12 @@ Stops the launched API
       <pre class="lines">
 
 
-55
-56
-57</pre>
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id stop'>stop</span>
   <span class='const'>EM</span><span class='period'>.</span><span class='id stop'>stop</span>
@@ -830,7 +890,7 @@ Stops the launched API
       <div class="method_details ">
   <p class="signature " id="with_api-instance_method">
   
-    - (<tt>Object</tt>) <strong>with_api</strong>(api, &amp;blk) 
+    - (<tt>Object</tt>) <strong>with_api</strong>(api, options = {}, &amp;blk) 
   
 
   
@@ -876,6 +936,25 @@ The API class to launch
   
     <li>
       
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <span class='name'>options</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>
+The options to pass to the server
+</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='type'>(<tt>Proc</tt>)</span>
       
       
@@ -899,19 +978,19 @@ The code to execute after the server is launched.
       <pre class="lines">
 
 
-65
-66
-67
-68
-69
-70</pre>
+78
+79
+80
+81
+82
+83</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/test_helper.rb', line 78</span>
 
-<span class='kw'>def</span> <span class='id with_api'>with_api</span><span class='lparen'>(</span><span class='id api'>api</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id with_api'>with_api</span><span class='lparen'>(</span><span class='id api'>api</span><span class='comma'>,</span> <span class='id options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
   <span class='const'>EM</span><span class='period'>.</span><span class='id synchrony'>synchrony</span> <span class='kw'>do</span>
-    <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='rparen'>)</span>
+    <span class='ivar'>@api_server</span> <span class='op'>=</span> <span class='id server'>server</span><span class='lparen'>(</span><span class='id api'>api</span><span class='comma'>,</span> <span class='int'>9000</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
     <span class='id blk'>blk</span><span class='period'>.</span><span class='id call'>call</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -925,7 +1004,7 @@ The code to execute after the server is launched.
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  4 22:34:27 2011 by 
+  Generated on Mon Apr 11 12:32:32 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.9.2).
 </div>

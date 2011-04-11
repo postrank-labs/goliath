@@ -437,17 +437,17 @@ streaming server.
       <pre class="lines">
 
 
-112
-113
-114
-115
-116
-117
-118
-119</pre>
+122
+123
+124
+125
+126
+127
+128
+129</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 112</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='id method_missing'>method_missing</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id blk'>blk</span><span class='rparen'>)</span>
   <span class='id name'>name</span> <span class='op'>=</span> <span class='id name'>name</span><span class='period'>.</span><span class='id to_s'>to_s</span>
@@ -541,12 +541,12 @@ The code to execute
       <pre class="lines">
 
 
-76
-77
-78</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id map'>map</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id block'>block</span><span class='rparen'>)</span>
   <span class='id maps'>maps</span><span class='period'>.</span><span class='id push'>push</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id block'>block</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -599,12 +599,12 @@ array contains [path, block]
       <pre class="lines">
 
 
-63
-64
-65</pre>
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id maps'>maps</span>
   <span class='ivar'>@maps</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -659,13 +659,31 @@ array contains [middleware class, args, block]
 
 22
 23
-24</pre>
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id middlewares'>middlewares</span>
-  <span class='ivar'>@middlewares</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>ContentLength</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
+  <span class='ivar'>@middlewares</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@middlewares</span><span class='period'>.</span><span class='id unshift'>unshift</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='op'>::</span><span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>DefaultResponseFormat</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='ivar'>@middlewares</span><span class='period'>.</span><span class='id unshift'>unshift</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>ContentLength</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+  <span class='kw'>if</span> <span class='const'>Goliath</span><span class='period'>.</span><span class='id dev?'>dev?</span>
+     <span class='id reloader'>reloader</span> <span class='op'>=</span> <span class='ivar'>@middlewares</span><span class='period'>.</span><span class='id detect'>detect</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id mw'>mw</span><span class='op'>|</span> <span class='id mw'>mw</span><span class='period'>.</span><span class='id first'>first</span> <span class='op'>==</span> <span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Reloader</span><span class='rbrace'>}</span>
+     <span class='ivar'>@middlewares</span><span class='period'>.</span><span class='id unshift'>unshift</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='op'>::</span><span class='const'>Rack</span><span class='op'>::</span><span class='const'>Reloader</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id reloader'>reloader</span>
+   <span class='kw'>end</span>
+
+  <span class='ivar'>@middlewares</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -742,12 +760,12 @@ The arguments to the plugin
       <pre class="lines">
 
 
-56
-57
-58</pre>
+66
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id plugin'>plugin</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='op'>*</span><span class='id args'>args</span><span class='rparen'>)</span>
   <span class='id plugins'>plugins</span><span class='period'>.</span><span class='id push'>push</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id args'>args</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -800,12 +818,12 @@ array contains [plugin name, args]
       <pre class="lines">
 
 
-45
-46
-47</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id plugins'>plugins</span>
   <span class='ivar'>@plugins</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -908,15 +926,17 @@ A block to pass to the middleware
       <pre class="lines">
 
 
-38
-39
-40</pre>
+47
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id use'>use</span><span class='lparen'>(</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id args'>args</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id block'>block</span><span class='rparen'>)</span>
-  <span class='id middlewares'>middlewares</span><span class='period'>.</span><span class='id push'>push</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id args'>args</span><span class='comma'>,</span> <span class='id block'>block</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='ivar'>@middlewares</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@middlewares</span> <span class='op'>&lt;&lt;</span> <span class='lbracket'>[</span><span class='id name'>name</span><span class='comma'>,</span> <span class='id args'>args</span><span class='comma'>,</span> <span class='id block'>block</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -996,16 +1016,6 @@ An async response.
       <pre class="lines">
 
 
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
 138
 139
 140
@@ -1017,10 +1027,20 @@ An async response.
 146
 147
 148
-149</pre>
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id call'>call</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
   <span class='const'>Fiber</span><span class='period'>.</span><span class='id new'>new</span> <span class='lbrace'>{</span>
@@ -1102,12 +1122,12 @@ The current environment data for the request
       <pre class="lines">
 
 
-99
-100
-101</pre>
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id env'>env</span>
   <span class='const'>Thread</span><span class='period'>.</span><span class='id current'>current</span><span class='lbracket'>[</span><span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Constants</span><span class='op'>::</span><span class='const'>GOLIATH_ENV</span><span class='rbracket'>]</span>
@@ -1190,11 +1210,11 @@ The hash to insert the parsed options into
       <pre class="lines">
 
 
-91
-92</pre>
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 91</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 101</span>
 
 <span class='kw'>def</span> <span class='id options_parser'>options_parser</span><span class='lparen'>(</span><span class='id opts'>opts</span><span class='comma'>,</span> <span class='id options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -1272,13 +1292,13 @@ Array contains [Status code, Headers Hash, Body]
       <pre class="lines">
 
 
-159
-160
-161
-162</pre>
+169
+170
+171
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'lib/goliath/api.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id response'>response</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
   <span class='id env'>env</span><span class='period'>.</span><span class='id logger'>logger</span><span class='period'>.</span><span class='id error'>error</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>You need to implement response</span><span class='tstring_end'>'</span></span><span class='rparen'>)</span>
@@ -1294,7 +1314,7 @@ Array contains [Status code, Headers Hash, Body]
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  4 22:34:27 2011 by 
+  Generated on Mon Apr 11 12:32:32 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.9.2).
 </div>

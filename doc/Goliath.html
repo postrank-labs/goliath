@@ -60,7 +60,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/goliath/goliath.rb<span class="defines">,<br />
-  lib/goliath/env.rb,<br /> lib/goliath/api.rb,<br /> lib/goliath/server.rb,<br /> lib/goliath/runner.rb,<br /> lib/goliath/request.rb,<br /> lib/goliath/headers.rb,<br /> lib/goliath/version.rb,<br /> lib/goliath/response.rb,<br /> lib/goliath/constants.rb,<br /> lib/goliath/connection.rb,<br /> lib/goliath/rack/jsonp.rb,<br /> lib/goliath/rack/tracer.rb,<br /> lib/goliath/rack/render.rb,<br /> lib/goliath/rack/params.rb,<br /> lib/goliath/application.rb,<br /> lib/goliath/test_helper.rb,<br /> lib/goliath/rack/heartbeat.rb,<br /> lib/goliath/plugins/latency.rb,<br /> lib/goliath/http_status_codes.rb,<br /> lib/goliath/rack/formatters/xml.rb,<br /> lib/goliath/rack/formatters/json.rb,<br /> lib/goliath/rack/formatters/html.rb,<br /> lib/goliath/rack/validation_error.rb,<br /> lib/goliath/rack/default_mime_type.rb,<br /> lib/goliath/rack/validation/boolean_value.rb,<br /> lib/goliath/rack/validation/numeric_range.rb,<br /> lib/goliath/rack/validation/required_param.rb,<br /> lib/goliath/rack/validation/default_params.rb,<br /> lib/goliath/rack/validation/request_method.rb,<br /> lib/goliath/rack/validation/required_value.rb</span>
+  lib/goliath/env.rb,<br /> lib/goliath/api.rb,<br /> lib/goliath/server.rb,<br /> lib/goliath/runner.rb,<br /> lib/goliath/request.rb,<br /> lib/goliath/headers.rb,<br /> lib/goliath/version.rb,<br /> lib/goliath/response.rb,<br /> lib/goliath/constants.rb,<br /> lib/goliath/connection.rb,<br /> lib/goliath/rack/jsonp.rb,<br /> lib/goliath/rack/tracer.rb,<br /> lib/goliath/rack/params.rb,<br /> lib/goliath/test_helper.rb,<br /> lib/goliath/application.rb,<br /> lib/goliath/rack/render.rb,<br /> lib/goliath/rack/heartbeat.rb,<br /> lib/goliath/plugins/latency.rb,<br /> lib/goliath/http_status_codes.rb,<br /> lib/goliath/rack/formatters/xml.rb,<br /> lib/goliath/rack/formatters/html.rb,<br /> lib/goliath/rack/formatters/json.rb,<br /> lib/goliath/rack/validation_error.rb,<br /> lib/goliath/rack/default_mime_type.rb,<br /> lib/goliath/rack/default_response_format.rb,<br /> lib/goliath/rack/validation/boolean_value.rb,<br /> lib/goliath/rack/validation/numeric_range.rb,<br /> lib/goliath/rack/validation/required_value.rb,<br /> lib/goliath/rack/validation/request_method.rb,<br /> lib/goliath/rack/validation/default_params.rb,<br /> lib/goliath/rack/validation/required_param.rb</span>
 </dd>
   
 </dl>
@@ -108,7 +108,7 @@ The current version of Goliath
   
 </div>
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0.9.0</span><span class='tstring_end'>'</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>0.9.1</span><span class='tstring_end'>'</span></span></pre></dd>
       
         <dt id="HTTP_STATUS_CODES-constant" class="">HTTP_STATUS_CODES =
           <div class="docstring">
@@ -374,7 +374,7 @@ true if current environemnt is development, false otherwise
       <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id dev?'>dev?</span>
-  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>development</span><span class='tstring_end'>'</span></span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='symbol'>:development</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -496,10 +496,10 @@ the environment string of [dev|prod|test]
       <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='id env='>env=</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
-  <span class='kw'>case</span><span class='lparen'>(</span><span class='id env'>env</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>dev</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>development</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>prod</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>production</span><span class='tstring_end'>'</span></span>
-  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span>
+  <span class='kw'>case</span><span class='lparen'>(</span><span class='id env'>env</span><span class='period'>.</span><span class='id to_s'>to_s</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>dev</span><span class='tstring_end'>'</span></span>  <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='symbol'>:development</span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>prod</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='symbol'>:production</span>
+  <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span> <span class='kw'>then</span> <span class='ivar'>@env</span> <span class='op'>=</span> <span class='symbol'>:test</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -558,7 +558,7 @@ true if current environemnt is production, false otherwise
       <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id prod?'>prod?</span>
-  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>production</span><span class='tstring_end'>'</span></span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='symbol'>:production</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -616,7 +616,7 @@ true if current environemnt is test, false otherwise
       <pre class="code"><span class="info file"># File 'lib/goliath/goliath.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id test?'>test?</span>
-  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>test</span><span class='tstring_end'>'</span></span>
+  <span class='ivar'>@env</span> <span class='op'>==</span> <span class='symbol'>:test</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -628,7 +628,7 @@ true if current environemnt is test, false otherwise
 </div>
     
     <div id="footer">
-  Generated on Fri Mar  4 22:34:26 2011 by 
+  Generated on Mon Apr 11 12:32:31 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.6.4 (ruby-1.9.2).
 </div>

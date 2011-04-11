@@ -1,0 +1,1452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf-8" />
+<title>Class: Goliath::Connection</title>
+<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (C)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../Goliath.html" title="Goliath (module)">Goliath</a></span></span>
+     &raquo; 
+    <span class="title">Connection</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Goliath::Connection
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">EM::Connection</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">EM::Connection</li>
+          
+            <li class="next">Goliath::Connection</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/goliath/connection.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="AsyncResponse-constant" class="">AsyncResponse =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
+
+
+  
+  <h2>Instance Attribute Summary <small>(<a href="#" class="summary_toggle">collapse</a>)</small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#app-instance_method" title="#app (instance method)">- (Object) <strong>app</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute app.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#config-instance_method" title="#config (instance method)">- (Object) <strong>config</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute config.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#logger-instance_method" title="#logger (instance method)">- (Object) <strong>logger</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute logger.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#options-instance_method" title="#options (instance method)">- (Object) <strong>options</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute options.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#request-instance_method" title="#request (instance method)">- (Object) <strong>request</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute request.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#response-instance_method" title="#response (instance method)">- (Object) <strong>response</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute response.
+</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#status-instance_method" title="#status (instance method)">- (Object) <strong>status</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Returns the value of attribute status.
+</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#async_process-instance_method" title="#async_process (instance method)">- (Object) <strong>async_process</strong>(results) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#async_response%3F-instance_method" title="#async_response? (instance method)">- (Boolean) <strong>async_response?</strong>(results) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#close_request_response-instance_method" title="#close_request_response (instance method)">- (Object) <strong>close_request_response</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#log_request-instance_method" title="#log_request (instance method)">- (Object) <strong>log_request</strong>(type, response) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#post_init-instance_method" title="#post_init (instance method)">- (Object) <strong>post_init</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#post_process-instance_method" title="#post_process (instance method)">- (Object) <strong>post_process</strong>(results) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#process-instance_method" title="#process (instance method)">- (Object) <strong>process</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#receive_data-instance_method" title="#receive_data (instance method)">- (Object) <strong>receive_data</strong>(data) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remote_address-instance_method" title="#remote_address (instance method)">- (Object) <strong>remote_address</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#send_response-instance_method" title="#send_response (instance method)">- (Object) <strong>send_response</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stream_close-instance_method" title="#stream_close (instance method)">- (Object) <strong>stream_close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stream_send-instance_method" title="#stream_send (instance method)">- (Object) <strong>stream_send</strong>(data) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#stream_start-instance_method" title="#stream_start (instance method)">- (Object) <strong>stream_start</strong>(status, headers) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#terminate_request-instance_method" title="#terminate_request (instance method)">- (Object) <strong>terminate_request</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#unbind-instance_method" title="#unbind (instance method)">- (Object) <strong>unbind</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id="app=-instance_method"></span>
+      <span id="app-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="app-instance_method">
+  
+    - (<tt>Object</tt>) <strong>app</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute app
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 6</span>
+
+<span class='kw'>def</span> <span class='id app'>app</span>
+  <span class='ivar'>@app</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="config=-instance_method"></span>
+      <span id="config-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="config-instance_method">
+  
+    - (<tt>Object</tt>) <strong>config</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute config
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 7</span>
+
+<span class='kw'>def</span> <span class='id config'>config</span>
+  <span class='ivar'>@config</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="logger=-instance_method"></span>
+      <span id="logger-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="logger-instance_method">
+  
+    - (<tt>Object</tt>) <strong>logger</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute logger
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 7</span>
+
+<span class='kw'>def</span> <span class='id logger'>logger</span>
+  <span class='ivar'>@logger</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="options=-instance_method"></span>
+      <span id="options-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="options-instance_method">
+  
+    - (<tt>Object</tt>) <strong>options</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute options
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 7</span>
+
+<span class='kw'>def</span> <span class='id options'>options</span>
+  <span class='ivar'>@options</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="request=-instance_method"></span>
+      <span id="request-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>request</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute request
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 6</span>
+
+<span class='kw'>def</span> <span class='id request'>request</span>
+  <span class='ivar'>@request</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="response=-instance_method"></span>
+      <span id="response-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="response-instance_method">
+  
+    - (<tt>Object</tt>) <strong>response</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute response
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 6</span>
+
+<span class='kw'>def</span> <span class='id response'>response</span>
+  <span class='ivar'>@response</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="status=-instance_method"></span>
+      <span id="status-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="status-instance_method">
+  
+    - (<tt>Object</tt>) <strong>status</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute status
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 7</span>
+
+<span class='kw'>def</span> <span class='id status'>status</span>
+  <span class='ivar'>@status</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="async_process-instance_method">
+  
+    - (<tt>Object</tt>) <strong>async_process</strong>(results) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39
+40
+41
+42
+43</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='id async_process'>async_process</span><span class='lparen'>(</span><span class='id results'>results</span><span class='rparen'>)</span>
+  <span class='ivar'>@response</span><span class='period'>.</span><span class='id status'>status</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='period'>.</span><span class='id headers'>headers</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='period'>.</span><span class='id body'>body</span> <span class='op'>=</span> <span class='op'>*</span><span class='id results'>results</span>
+
+  <span class='id log_request'>log_request</span><span class='lparen'>(</span><span class='symbol'>:async</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='rparen'>)</span>
+  <span class='id send_response'>send_response</span>
+  <span class='id terminate_request'>terminate_request</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="async_response?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>async_response?</strong>(results) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+83
+84
+85</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 83</span>
+
+<span class='kw'>def</span> <span class='id async_response?'>async_response?</span><span class='lparen'>(</span><span class='id results'>results</span><span class='rparen'>)</span>
+  <span class='id results'>results</span> <span class='op'>&amp;&amp;</span> <span class='id results'>results</span><span class='period'>.</span><span class='id first'>first</span> <span class='op'>==</span> <span class='const'>AsyncResponse</span><span class='period'>.</span><span class='id first'>first</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="close_request_response-instance_method">
+  
+    - (<tt>Object</tt>) <strong>close_request_response</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 92</span>
+
+<span class='kw'>def</span> <span class='id close_request_response'>close_request_response</span>
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id async_close'>async_close</span><span class='period'>.</span><span class='id succeed'>succeed</span>
+  <span class='ivar'>@response</span><span class='period'>.</span><span class='id close'>close</span> <span class='kw'>rescue</span> <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="log_request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>log_request</strong>(type, response) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+58
+59
+60
+61
+62</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 58</span>
+
+<span class='kw'>def</span> <span class='id log_request'>log_request</span><span class='lparen'>(</span><span class='id type'>type</span><span class='comma'>,</span> <span class='id response'>response</span><span class='rparen'>)</span>
+  <span class='id logger'>logger</span><span class='period'>.</span><span class='id info'>info</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id type'>type</span><span class='rbrace'>}</span><span class='tstring_content'> status: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@response</span><span class='period'>.</span><span class='id status'>status</span><span class='rbrace'>}</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
+              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Content-Length: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@response</span><span class='period'>.</span><span class='id headers'>headers</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Content-Length</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rbrace'>}</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span>
+              <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Response Time: </span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>%.2f</span><span class='tstring_end'>&quot;</span></span> <span class='op'>%</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='const'>Time</span><span class='period'>.</span><span class='id now'>now</span><span class='period'>.</span><span class='id to_f'>to_f</span> <span class='op'>-</span> <span class='id request'>request</span><span class='period'>.</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='symbol'>:start_time</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_content'>ms</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="post_init-instance_method">
+  
+    - (<tt>Object</tt>) <strong>post_init</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 11</span>
+
+<span class='kw'>def</span> <span class='id post_init'>post_init</span>
+  <span class='ivar'>@request</span> <span class='op'>=</span> <span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Request</span><span class='period'>.</span><span class='id new'>new</span>
+  <span class='ivar'>@response</span> <span class='op'>=</span> <span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Response</span><span class='period'>.</span><span class='id new'>new</span>
+
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id remote_address'>remote_address</span> <span class='op'>=</span> <span class='id remote_address'>remote_address</span>
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id async_callback'>async_callback</span> <span class='op'>=</span> <span class='id method'>method</span><span class='lparen'>(</span><span class='symbol'>:async_process</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id stream_start'>stream_start</span> <span class='op'>=</span> <span class='id method'>method</span><span class='lparen'>(</span><span class='symbol'>:stream_start</span><span class='rparen'>)</span>
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id stream_send'>stream_send</span> <span class='op'>=</span> <span class='id method'>method</span><span class='lparen'>(</span><span class='symbol'>:stream_send</span><span class='rparen'>)</span>
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id stream_close'>stream_close</span> <span class='op'>=</span> <span class='id method'>method</span><span class='lparen'>(</span><span class='symbol'>:stream_close</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="post_process-instance_method">
+  
+    - (<tt>Object</tt>) <strong>post_process</strong>(results) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 64</span>
+
+<span class='kw'>def</span> <span class='id post_process'>post_process</span><span class='lparen'>(</span><span class='id results'>results</span><span class='rparen'>)</span>
+  <span class='id results'>results</span> <span class='op'>=</span> <span class='id results'>results</span><span class='period'>.</span><span class='id to_a'>to_a</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id async_response?'>async_response?</span><span class='lparen'>(</span><span class='id results'>results</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@response</span><span class='period'>.</span><span class='id status'>status</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='period'>.</span><span class='id headers'>headers</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='period'>.</span><span class='id body'>body</span> <span class='op'>=</span> <span class='op'>*</span><span class='id results'>results</span>
+  <span class='id log_request'>log_request</span><span class='lparen'>(</span><span class='symbol'>:sync</span><span class='comma'>,</span> <span class='ivar'>@response</span><span class='rparen'>)</span>
+  <span class='id send_response'>send_response</span>
+
+<span class='kw'>rescue</span> <span class='const'>Exception</span> <span class='op'>=&gt;</span> <span class='id e'>e</span>
+  <span class='id logger'>logger</span><span class='period'>.</span><span class='id error'>error</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id e'>e</span><span class='period'>.</span><span class='id message'>message</span><span class='rbrace'>}</span><span class='tstring_content'>\n</span><span class='embexpr_beg'>#{</span><span class='id e'>e</span><span class='period'>.</span><span class='id backtrace'>backtrace</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+
+<span class='kw'>ensure</span>
+  <span class='id terminate_request'>terminate_request</span> <span class='kw'>if</span> <span class='kw'>not</span> <span class='id async_response?'>async_response?</span><span class='lparen'>(</span><span class='id results'>results</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="process-instance_method">
+  
+    - (<tt>Object</tt>) <strong>process</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+28
+29
+30
+31
+32
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 28</span>
+
+<span class='kw'>def</span> <span class='id process'>process</span>
+  <span class='id response'>response</span><span class='period'>.</span><span class='id send_close'>send_close</span> <span class='op'>=</span> <span class='id request'>request</span><span class='period'>.</span><span class='id env'>env</span><span class='lbracket'>[</span><span class='const'>Goliath</span><span class='op'>::</span><span class='const'>Request</span><span class='op'>::</span><span class='const'>HEADERS</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>Connection</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span>
+  <span class='id post_process'>post_process</span><span class='lparen'>(</span><span class='ivar'>@app</span><span class='period'>.</span><span class='id call'>call</span><span class='lparen'>(</span><span class='ivar'>@request</span><span class='period'>.</span><span class='id env'>env</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+<span class='kw'>rescue</span> <span class='const'>Exception</span> <span class='op'>=&gt;</span> <span class='id e'>e</span>
+  <span class='id logger'>logger</span><span class='period'>.</span><span class='id error'>error</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id e'>e</span><span class='period'>.</span><span class='id message'>message</span><span class='rbrace'>}</span><span class='tstring_content'>\n</span><span class='embexpr_beg'>#{</span><span class='id e'>e</span><span class='period'>.</span><span class='id backtrace'>backtrace</span><span class='period'>.</span><span class='id join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rbrace'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id post_process'>post_process</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='int'>500</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>'</span><span class='tstring_content'>An error happened</span><span class='tstring_end'>'</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="receive_data-instance_method">
+  
+    - (<tt>Object</tt>) <strong>receive_data</strong>(data) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25
+26</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id receive_data'>receive_data</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id request'>request</span><span class='period'>.</span><span class='id parse'>parse</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id process'>process</span> <span class='kw'>if</span> <span class='id request'>request</span><span class='period'>.</span><span class='id finished?'>finished?</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="remote_address-instance_method">
+  
+    - (<tt>Object</tt>) <strong>remote_address</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+102
+103
+104
+105
+106</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 102</span>
+
+<span class='kw'>def</span> <span class='id remote_address'>remote_address</span>
+  <span class='const'>Socket</span><span class='period'>.</span><span class='id unpack_sockaddr_in'>unpack_sockaddr_in</span><span class='lparen'>(</span><span class='id get_peername'>get_peername</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span>
+<span class='kw'>rescue</span> <span class='const'>Exception</span>
+  <span class='kw'>nil</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="send_response-instance_method">
+  
+    - (<tt>Object</tt>) <strong>send_response</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 79</span>
+
+<span class='kw'>def</span> <span class='id send_response'>send_response</span>
+  <span class='ivar'>@response</span><span class='period'>.</span><span class='id each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id chunk'>chunk</span><span class='op'>|</span> <span class='id send_data'>send_data</span><span class='lparen'>(</span><span class='id chunk'>chunk</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="stream_close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>stream_close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54
+55
+56</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 54</span>
+
+<span class='kw'>def</span> <span class='id stream_close'>stream_close</span>
+  <span class='id terminate_request'>terminate_request</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="stream_send-instance_method">
+  
+    - (<tt>Object</tt>) <strong>stream_send</strong>(data) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 50</span>
+
+<span class='kw'>def</span> <span class='id stream_send'>stream_send</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+  <span class='id send_data'>send_data</span><span class='lparen'>(</span><span class='id data'>data</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="stream_start-instance_method">
+  
+    - (<tt>Object</tt>) <strong>stream_start</strong>(status, headers) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+45
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 45</span>
+
+<span class='kw'>def</span> <span class='id stream_start'>stream_start</span><span class='lparen'>(</span><span class='id status'>status</span><span class='comma'>,</span> <span class='id headers'>headers</span><span class='rparen'>)</span>
+  <span class='id send_data'>send_data</span><span class='lparen'>(</span><span class='ivar'>@response</span><span class='period'>.</span><span class='id head'>head</span><span class='rparen'>)</span>
+  <span class='id send_data'>send_data</span><span class='lparen'>(</span><span class='ivar'>@response</span><span class='period'>.</span><span class='id headers_output'>headers_output</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="terminate_request-instance_method">
+  
+    - (<tt>Object</tt>) <strong>terminate_request</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+87
+88
+89
+90</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 87</span>
+
+<span class='kw'>def</span> <span class='id terminate_request'>terminate_request</span>
+  <span class='id close_connection_after_writing'>close_connection_after_writing</span> <span class='kw'>rescue</span> <span class='kw'>nil</span>
+  <span class='id close_request_response'>close_request_response</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="unbind-instance_method">
+  
+    - (<tt>Object</tt>) <strong>unbind</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/goliath/connection.rb', line 97</span>
+
+<span class='kw'>def</span> <span class='id unbind'>unbind</span>
+  <span class='ivar'>@request</span><span class='period'>.</span><span class='id async_close'>async_close</span><span class='period'>.</span><span class='id succeed'>succeed</span> <span class='kw'>unless</span> <span class='ivar'>@request</span><span class='period'>.</span><span class='id async_close'>async_close</span><span class='period'>.</span><span class='id nil?'>nil?</span>
+  <span class='ivar'>@response</span><span class='period'>.</span><span class='id body'>body</span><span class='period'>.</span><span class='id fail'>fail</span> <span class='kw'>if</span> <span class='ivar'>@response</span><span class='period'>.</span><span class='id body'>body</span><span class='period'>.</span><span class='id respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:fail</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Wed Feb 16 14:31:09 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.6.4 (ruby-1.9.2).
+</div>
+
+  </body>
+</html>
