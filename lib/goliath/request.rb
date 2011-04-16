@@ -26,8 +26,11 @@ module Goliath
 
       @env[STREAM_SEND]  = proc { |data| callback { @conn.send_data(data) } }
       @env[STREAM_CLOSE] = proc { callback { @conn.terminate_request(false) } }
-      @env[STREAM_START] = proc do
+      @env[STREAM_START] = proc do |status, headers|
         callback do
+          @response.status = status
+          @response.headers = headers
+
           @conn.send_data(@response.head)
           @conn.send_data(@response.headers_output)
         end

@@ -32,6 +32,6 @@ class Stream < Goliath::API
       env.stream_close
     end
 
-    [200, {}, Goliath::Response::STREAMING]
+    [202, {'X-Stream' => 'Goliath'}, Goliath::Response::STREAMING]
   end
 end
