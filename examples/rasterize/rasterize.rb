@@ -1,5 +1,4 @@
 require 'goliath'
-require 'digest/md5'
 require 'postrank-uri'
 
 # Install phantomjs: http://code.google.com/p/phantomjs/wiki/QuickStart
@@ -16,11 +15,11 @@ class Rasterize < Goliath::API
 
   def response(env)
     url = PostRank::URI.clean(params['url'])
-    hash = Digest::MD5.hexdigest(PostRank::URI.hash(url, :clean => false))
+    hash = PostRank::URI.hash(url, :clean => false)
 
     if !File.exists? filename(hash)
       fiber = Fiber.current
-      EM.system('phantomjs rasterize.js ' + url.to_s + " thumb/#{hash}.png") do |output, status|
+      EM.system('phantomjs rasterize.js ' + url.to_s + ' ' + filename(hash)) do |output, status|
         env.logger.info "Phantom exit status: #{status}"
         fiber.resume
       end
