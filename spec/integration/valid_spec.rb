@@ -22,21 +22,16 @@ describe Valid do
   end
 end
 
-class ValidationErrorInEndpointButNoHandler < Goliath::API
-  use Goliath::Rack::Params
+class ValidationErrorInEndpoint < Goliath::API
   def response(env)
     raise Goliath::Validation::Error.new(420, 'YOU MUST CHILL')
   end
 end
 
-class ValidationErrorInEndpoint < ValidationErrorInEndpointButNoHandler
-  use Goliath::Rack::ValidationError
-end
-
 describe ValidationErrorInEndpoint do
   let(:err) { Proc.new { fail "API request failed" } }
 
-  it 'handles Goliath::Rack::ValidationError handle the error when included' do
+  it 'handles Goliath::Validation::Error correctly' do
     with_api(ValidationErrorInEndpoint) do
       get_request({}, err) do |c|
         c.response.should == '[:error, "YOU MUST CHILL"]'
@@ -46,15 +41,3 @@ describe ValidationErrorInEndpoint do
   end
 end
 
-describe ValidationErrorInEndpointButNoHandler do
-  let(:err) { Proc.new { fail "API request failed" } }
-
-  it 'treats Goliath::Validation::Error same as any exception' do
-    with_api(ValidationErrorInEndpointButNoHandler) do
-      get_request({}, err) do |c|
-        c.response.should == '[:error, "YOU MUST CHILL"]'
-        c.response_header.status.should == 400
-      end
-    end
-  end
-end
