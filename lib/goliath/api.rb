@@ -1,5 +1,6 @@
 require 'goliath/response'
 require 'goliath/request'
+require 'goliath/validation/error'
 
 module Goliath
   # All Goliath APIs subclass Goliath::API. All subclasses _must_ override the
@@ -146,7 +147,9 @@ module Goliath
           else
             env[Goliath::Constants::ASYNC_CALLBACK].call([status, headers, body])
           end
-
+        rescue Goliath::Validation::Error => e
+          env[Goliath::Constants::ASYNC_CALLBACK].call([e.status_code, {}, {:error => e.message}])
+          
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))
