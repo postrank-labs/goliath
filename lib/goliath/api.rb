@@ -146,8 +146,10 @@ module Goliath
           else
             env[Goliath::Constants::ASYNC_CALLBACK].call([status, headers, body])
           end
-
         rescue Exception => e
+          
+          raise if (self.class.middlewares || []).map(&:first).any?{|mw| mw <= Goliath::Rack::ValidationError } && e.is_a?(Goliath::Validation::Error)
+
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))
 
