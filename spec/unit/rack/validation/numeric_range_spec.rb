@@ -58,6 +58,15 @@ describe Goliath::Rack::Validation::NumericRange do
     end
   end
 
+
+  it 'converts to a float with :as => Float' do
+    @nr = Goliath::Rack::Validation::NumericRange.new(@app, {:key => 'id', :min => -5, :max => 20, :default => 15, :as => Float})
+    #
+    @env['params']['id'] = 1.5
+    @nr.call(@env)
+    @env['params']['id'].should == 1.5
+  end
+
   it 'raises error if key is not set' do
     lambda { Goliath::Rack::Validation::NumericRange.new('app', {:min => 5}) }.should raise_error
   end
