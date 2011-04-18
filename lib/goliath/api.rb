@@ -147,9 +147,10 @@ module Goliath
           else
             env[Goliath::Constants::ASYNC_CALLBACK].call([status, headers, body])
           end
+
         rescue Goliath::Validation::Error => e
           env[Goliath::Constants::ASYNC_CALLBACK].call([e.status_code, {}, {:error => e.message}])
-          
+
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))

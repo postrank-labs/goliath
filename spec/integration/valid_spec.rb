@@ -24,7 +24,7 @@ end
 
 class ValidationErrorInEndpoint < Goliath::API
   def response(env)
-    raise Goliath::Validation::Error.new(420, 'YOU MUST CHILL')
+    raise Goliath::Validation::Error.new(420, 'You Must Chill')
   end
 end
 
@@ -34,7 +34,7 @@ describe ValidationErrorInEndpoint do
   it 'handles Goliath::Validation::Error correctly' do
     with_api(ValidationErrorInEndpoint) do
       get_request({}, err) do |c|
-        c.response.should == '[:error, "YOU MUST CHILL"]'
+        c.response.should == '[:error, "You Must Chill"]'
         c.response_header.status.should == 420
       end
     end

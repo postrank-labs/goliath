@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'goliath/rack/validation_error'
 require 'goliath/validation/standard_http_errors'
 
 describe Goliath::Validation::Error do
@@ -9,8 +8,9 @@ describe Goliath::Validation::Error do
   end
 
   it 'sets a default status code and message' do
-    Goliath::Validation::NotFoundError.new.status_code.should == '404'
-    Goliath::Validation::NotFoundError.new.message.should == 'Not Found'
+    nfe = Goliath::Validation::NotFoundError.new
+    nfe.status_code.should == '404'
+    nfe.message.should == 'Not Found'
   end
 end
 

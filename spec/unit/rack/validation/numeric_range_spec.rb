@@ -30,7 +30,7 @@ describe Goliath::Rack::Validation::NumericRange do
     end
 
     it 'uses the first value, if the value is an array' do
-      @env['params']['id'] = [10,11,12]
+      @env['params']['id'] = [10, 11, 12]
       @nr.call(@env)
       @env['params']['id'].should == 10
     end
@@ -58,12 +58,10 @@ describe Goliath::Rack::Validation::NumericRange do
     end
   end
 
-
   it 'converts to a float with :as => Float' do
-    @nr = Goliath::Rack::Validation::NumericRange.new(@app, {:key => 'id', :min => -5, :max => 20, :default => 15, :as => Float})
-    #
+    nr = Goliath::Rack::Validation::NumericRange.new(@app, {:key => 'id', :min => 1.1, :as => Float})
     @env['params']['id'] = 1.5
-    @nr.call(@env)
+    nr.call(@env)
     @env['params']['id'].should == 1.5
   end
 

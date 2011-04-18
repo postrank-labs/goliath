@@ -7,6 +7,7 @@ module Goliath
       #
       # @example
       #  use Goliath::Rack::Validation::NumericRange, {:key => 'num', :min => 1, :max => 30, :default => 10}
+      #  use Goliath::Rack::Validation::NumericRange, {:key => 'num', :min => 1.2, :max => 3.5, :default => 2.9, :as => Float}
       #  use Goliath::Rack::Validation::NumericRange, {:key => 'num', :min => 1}
       #  use Goliath::Rack::Validation::NumericRange, {:key => 'num', :max => 10}
       #
@@ -54,7 +55,7 @@ module Goliath
           @app.call(env)
         end
 
-        def coerce val
+        def coerce(val)
           (@coerce_as == Float) ? val.to_f : val.to_i
         end
 
