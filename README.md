@@ -73,6 +73,8 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 * [Stage left: Enter Goliath - HTTP Proxy + MongoDB](http://everburning.com/news/stage-left-enter-goliath/)
 * [InfoQ: Meet the Goliath of Ruby Application Servers](http://www.infoq.com/articles/meet-goliath)
 * [Node.jsはコールバック・スパゲティを招くか](http://el.jibun.atmarkit.co.jp/rails/2011/03/nodejs-d123.html)
+* [Goliath on LinuxFr.org (french)](http://linuxfr.org/news/en-vrac-spécial-ruby-jruby-sinatra-et-goliath)
+* [Goliath et ses amis (slides in french)](http://nono.github.com/Presentations/20110416_Goliath/)
 
 ## Discussion and Support
 
