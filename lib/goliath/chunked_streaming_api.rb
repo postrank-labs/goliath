@@ -6,12 +6,9 @@
 # http://blog.port80software.com/2006/11/08/
 #
 module Goliath
-  ::Goliath::Response::STREAMING_HEADERS = { 'Transfer-Encoding' => 'chunked', }
-
   class ChunkedStreamingAPI < Goliath::API
     CRLF = "\r\n"
-    STREAMING = ::Goliath::Response::STREAMING
-    STREAMING_HEADERS = ::Goliath::Response::STREAMING_HEADERS
+    STREAMING_HEADERS = { 'Transfer-Encoding' => 'chunked' }
 
     # Sends a chunk in a Chunked transfer encoding stream.
     #
@@ -23,9 +20,9 @@ module Goliath
     #     extension name and an optional equal sign and value
     #     (Note: chunk extensions aren't provided yet)
     #
-    def send_chunk env, chunk
+    def send_chunk(env, chunk)
       chunk_len_in_hex = chunk.bytesize.to_s(16)
-      body = [chunk_len_in_hex, CRLF, chunk, CRLF ].join
+      body = [chunk_len_in_hex, CRLF, chunk, CRLF].join
       env.stream_send(body)
     end
 
@@ -41,7 +38,7 @@ module Goliath
     #     in the trailer after the chunks.
     #     (Note: trailer headers aren't provided yet
     #
-    def close_stream env
+    def close_stream(env)
       env.stream_send([0, CRLF, CRLF].join)
       env.stream_close
     end

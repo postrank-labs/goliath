@@ -33,6 +33,6 @@ class ChunkedStreaming < Goliath::ChunkedStreamingAPI
     end
 
     headers = { 'Content-Type' => 'text/plain', 'X-Stream' => 'Goliath' }
-    [200, STREAMING_HEADERS.merge(headers), STREAMING]
+    [200, STREAMING_HEADERS.merge(headers), Goliath::Response::STREAMING]
   end
 end
