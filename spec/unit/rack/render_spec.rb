@@ -41,13 +41,21 @@ describe Goliath::Rack::Render do
     end
   end
 
+  CONTENT_TYPES = {
+    'rss' => 'application/rss+xml',
+    'xml' => 'application/xml',
+    'html' => 'text/html',
+    'json' => 'application/json',
+    'yaml' => 'text/yaml',
+  }
+
   describe 'Content-Type' do
     before(:each) do
       app.should_receive(:call).and_return([200, {}, {}])
     end
 
     describe 'from header' do
-      %w(application/json text/html application/rss+xml application/xml).each do |type|
+      CONTENT_TYPES.values.each do |type|
         it "handles content type for #{type}" do
           env['HTTP_ACCEPT'] = type
           status, headers, body = render.call(env)
@@ -57,10 +65,7 @@ describe Goliath::Rack::Render do
     end
 
     describe 'from URL param' do
-      {'rss' => 'application/rss+xml',
-       'xml' => 'application/xml',
-       'html' => 'text/html',
-       'json' => 'application/json'}.each_pair do |format, content_type|
+      CONTENT_TYPES.each_pair do |format, content_type|
         it "converts #{format} to #{content_type}" do
           env['params']['format'] = format
           status, headers, body = render.call(env)

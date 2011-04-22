@@ -40,6 +40,7 @@ module Goliath
           format.xml { body }
           format.rss { body }
           format.js { body }
+          format.yaml { body }
         end
 
         extra = { 'Content-Type' => get_content_type(env),
