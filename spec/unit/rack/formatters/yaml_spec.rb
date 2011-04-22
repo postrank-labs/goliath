@@ -12,8 +12,8 @@ describe Goliath::Rack::Formatters::YAML do
       @ym = Goliath::Rack::Formatters::YAML.new(@app)
     end
 
-    it 'checks content type for application/yaml' do
-      @ym.yaml_response?({'Content-Type' => 'application/yaml'}).should be_true
+    it 'checks content type for text/yaml' do
+      @ym.yaml_response?({'Content-Type' => 'text/yaml'}).should be_true
     end
 
     it 'returns false for non-applicaton/yaml types' do
@@ -27,13 +27,13 @@ describe Goliath::Rack::Formatters::YAML do
     end
 
     it 'formats the body into yaml if content-type is yaml' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/yaml'}, {:a => 1, :b => 2}])
+      @app.should_receive(:call).and_return([200, {'Content-Type' => 'text/yaml'}, {:a => 1, :b => 2}])
 
       status, header, body = @ym.call({})
-      lambda { YAML.parse(body.first)['a'].should == 1 }.should_not raise_error
+      lambda { YAML.load(body.first)[:a].should == 1 }.should_not raise_error
     end
 
-    it "doesn't format to yaml if the type is not application/yaml" do
+    it "doesn't format to yaml if the type is not text/yaml" do
       @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
 
       YAML.should_not_receive(:encode)
