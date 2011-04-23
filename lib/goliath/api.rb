@@ -174,5 +174,35 @@ module Goliath
       env.logger.error('You need to implement response')
       [400, {}, {:error => 'No response implemented'}]
     end
+
+    # Helper method for streaming response apis.
+    #
+    # @param [Integer] status_code The status code to return. 200 by default,
+    #   though there is an argument for 202 ('Accepted')
+    # @param [Hash] headers Headers to return.
+    def streaming_response status_code=200, headers={}
+      [status_code, headers, Goliath::Response::STREAMING]
+    end
+
+    # Helper method for chunked transfer streaming response apis
+    #
+    # Chunked transfer streaming is transparent to all clients (it's just as
+    # good as a normal response), but allows an aware client to begin consuming
+    # the stream even as it's produced.
+    #
+    # * http://en.wikipedia.org/wiki/Chunked_transfer_encoding
+    # * http://developers.sun.com/mobility/midp/questions/chunking/
+    # * http://blog.port80software.com/2006/11/08/
+    #
+    # @param [Integer] status_code The status code to return.
+    # @param [Hash] headers Headers to return. The Transfer-Encoding=chunked
+    #   header is set for you.
+    #
+    # If you are using chunked streaming, you must use
+    # env.chunked_stream_send and env.chunked_stream_close
+    def chunked_streaming_response status_code=200, headers={}
+      streaming_response status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS)
+    end
+
   end
 end

@@ -11,9 +11,8 @@ $:<< '../lib' << 'lib'
 #
 
 require 'goliath'
-require 'goliath/chunked_streaming_api'
 
-class ChunkedStreaming < Goliath::ChunkedStreamingAPI
+class ChunkedStreaming < Goliath::API
   def on_close(env)
     env.logger.info "Connection closed."
   end
@@ -21,18 +20,18 @@ class ChunkedStreaming < Goliath::ChunkedStreamingAPI
   def response(env)
     i = 0
     pt = EM.add_periodic_timer(1) do
-      send_chunk(env, "#{i}\n")
+      env.chunked_stream_send("#{i}\n")
       i += 1
     end
 
     EM.add_timer(10) do
       pt.cancel
 
-      send_chunk(env, "!! BOOM !!\n")
-      close_stream(env)
+      env.chunked_stream_send("!! BOOM !!\n")
+      env.chunked_stream_close
     end
 
     headers = { 'Content-Type' => 'text/plain', 'X-Stream' => 'Goliath' }
-    [200, STREAMING_HEADERS.merge(headers), Goliath::Response::STREAMING]
+    chunked_streaming_response(200, headers)
   end
 end

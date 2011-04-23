@@ -23,6 +23,8 @@ module Goliath
 
     # Used to signal that a response is a streaming response
     STREAMING = :goliath_stream_response
+    CHUNKED_STREAM_HEADERS = { 'Transfer-Encoding' => 'chunked' }
+
 
     def initialize
       @headers = Goliath::Headers.new
