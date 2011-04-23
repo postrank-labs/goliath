@@ -21,10 +21,16 @@ module Goliath
         @last = Time.now.to_f
       end
 
+      @@recent_latency = 0
+      def self.recent_latency
+        @@recent_latency
+      end
+
       # Called automatically to start the plugin
       def run
         EM.add_periodic_timer(1) do
-          @logger.info "LATENCY: #{Time.now.to_f - @last}"
+          @@recent_latency = (Time.now.to_f - @last)
+          @logger.info "LATENCY: #{@@recent_latency}"
           @last = Time.now.to_f
         end
       end
