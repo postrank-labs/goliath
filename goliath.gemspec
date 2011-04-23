@@ -34,6 +34,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'multipart_body'
   s.add_development_dependency 'amqp', '>=0.7.1'
 
+  s.add_development_dependency 'tilt', '>=1.2.2'
+  s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'bluecloth'
 
