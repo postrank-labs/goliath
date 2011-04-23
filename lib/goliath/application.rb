@@ -6,7 +6,7 @@ module Goliath
   class Application
     # Most of this stuff is straight out of sinatra.
 
-    # Set of caller regex's to be skippe when looking for our API file
+    # Set of caller regex's to be skipped when looking for our API file
     CALLERS_TO_IGNORE = [ # :nodoc:
       /\/goliath(\/(application))?\.rb$/, # all goliath code
       /rubygems\/custom_require\.rb$/,    # rubygems require hacks
@@ -38,6 +38,11 @@ module Goliath
       c = caller_files.first
       c = $0 if !c || c.empty?
       c
+    end
+
+    def self.root_path *args
+      @root_path ||= File.expand_path(File.dirname(app_file))
+      File.join(@root_path, *args)
     end
 
     # Execute the application
