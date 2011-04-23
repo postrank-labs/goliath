@@ -1,0 +1,39 @@
+- title ||= 'Goliath'
+!!! 5
+%html
+  %head
+    %meta{ :charset => "utf-8" }/
+    %meta{ :content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible" }/
+
+    %title= title
+    <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="icon" type="image/x-icon" />
+    %link{ :href => "/stylesheets/style.css", :rel => "stylesheet", :type => "text/css", :media => "all" }
+
+  %body{ :lang => 'en' }
+    #header-container
+      %header.wrapper
+        %h1#title
+          == <a href="/">#{title}</a>
+
+        %nav
+          %ul.menu
+            %li.item
+              <a href="/">Home</a>
+            %li.item
+              <a href="/debug">Debug</a>
+            %li &nbsp;
+
+    #main.wrapper{ :role => 'main' }
+      != yield
+
+    #footer-container
+      %footer.wrapper
+        .copyright
+          %p Copyright &copy; #{Time.now.strftime("%Y")}
+
+    %script{ :src => "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js", :type => "text/javascript" }/
+    :javascript
+      !window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery.min.js"%3E%3C/script%3E'))
+
+    /
+      haml layout
