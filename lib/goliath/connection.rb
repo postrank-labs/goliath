@@ -12,7 +12,7 @@ module Goliath
     attr_accessor :app, :api, :port, :logger, :status, :config, :options
     attr_reader   :parser
 
-    AsyncResponse = [-1, {}, []].freeze
+    AsyncResponse = [-1, {}, []]
 
     def post_init
       @current = nil

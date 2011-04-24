@@ -18,8 +18,8 @@ module Goliath
     # The body to send
     attr_accessor :body
 
-    SERVER = 'Server'.freeze
-    DATE = 'Date'.freeze
+    SERVER = 'Server'
+    DATE = 'Date'
 
     # Used to signal that a response is a streaming response
     STREAMING = :goliath_stream_response
