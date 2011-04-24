@@ -75,9 +75,14 @@ module Goliath
     #     chunk data. The chunk is terminated by CRLF. If chunk extensions are
     #     provided, the chunk size is terminated by a semicolon followed with the
     #     extension name and an optional equal sign and value
-    #     (Note: chunk extensions aren't provided yet)
+    #
+    # Note: chunk extensions aren't provided yet
+    #
+    # This will do nothing if the chunk is empty -- sending a zero-length chunk
+    # signals the end of a stream.
     #
     def chunked_stream_send(chunk)
+      return if chunk.empty?
       chunk_len_in_hex = chunk.bytesize.to_s(16)
       body = [chunk_len_in_hex, "\r\n", chunk, "\r\n"].join
       stream_send(body)
@@ -93,7 +98,8 @@ module Goliath
     #     be computed after all chunk data has been generated. The sender may
     #     indicate in a Trailer header field which additional fields it will send
     #     in the trailer after the chunks.
-    #     (Note: trailer headers aren't provided yet
+    #
+    # Note: trailer headers aren't provided yet
     #
     def chunked_stream_close
       stream_send([0, "\r\n", "\r\n"].join)
