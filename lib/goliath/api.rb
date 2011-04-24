@@ -144,10 +144,12 @@ module Goliath
           Thread.current[GOLIATH_ENV] = env
           status, headers, body = response(env)
 
-          if body == Goliath::Response::STREAMING
-            env[STREAM_START].call(status, headers)
-          else
-            env[ASYNC_CALLBACK].call([status, headers, body])
+          if status
+            if body == Goliath::Response::STREAMING
+              env[STREAM_START].call(status, headers)
+            else
+              env[ASYNC_CALLBACK].call([status, headers, body])
+            end
           end
 
         rescue Goliath::Validation::Error => e
