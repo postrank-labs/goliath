@@ -177,10 +177,9 @@ module Goliath
 
     # Helper method for streaming response apis.
     #
-    # @param [Integer] status_code The status code to return. 200 by default,
-    #   though there is an argument for 202 ('Accepted')
+    # @param [Integer] status_code The status code to return (200 by default).
     # @param [Hash] headers Headers to return.
-    def streaming_response status_code=200, headers={}
+    def streaming_response(status_code=200, headers={})
       [status_code, headers, Goliath::Response::STREAMING]
     end
 
@@ -200,7 +199,7 @@ module Goliath
     #
     # If you are using chunked streaming, you must use
     # env.chunked_stream_send and env.chunked_stream_close
-    def chunked_streaming_response status_code=200, headers={}
+    def chunked_streaming_response(status_code=200, headers={})
       streaming_response status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS)
     end
 

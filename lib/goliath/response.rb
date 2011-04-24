@@ -25,7 +25,6 @@ module Goliath
     STREAMING = :goliath_stream_response
     CHUNKED_STREAM_HEADERS = { 'Transfer-Encoding' => 'chunked' }
 
-
     def initialize
       @headers = Goliath::Headers.new
       @status = 200
