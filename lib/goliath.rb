@@ -13,6 +13,8 @@ require 'goliath/request'
 require 'goliath/response'
 require 'goliath/headers'
 require 'goliath/http_status_codes'
+require 'goliath/validation/error'
+require 'goliath/validation/standard_http_errors'
 
 require 'goliath/rack/default_response_format'
 require 'goliath/rack/heartbeat'

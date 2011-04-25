@@ -142,6 +142,15 @@ Berry\r
         ret['foo'].should == 'bar'
       end
 
+      it "raises a BadRequestError on invalid JSON" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar" BORKEN}|
+        @env['rack.input'].rewind
+
+        lambda{ @params.retrieve_params(@env) }.should raise_error(Goliath::Validation::BadRequestError)
+      end
+
 
       it "doesn't parse unknown content types" do
         @env['CONTENT_TYPE'] = 'fake/form -- type'
