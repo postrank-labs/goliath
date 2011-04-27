@@ -24,13 +24,17 @@ module Goliath
       # @return [Array] array contains [middleware class, args, block]
       def middlewares
         @middlewares ||= []
-        @middlewares.unshift([::Goliath::Rack::DefaultResponseFormat, nil, nil])
-        @middlewares.unshift([::Rack::ContentLength, nil, nil])
 
-        if Goliath.dev?
-           reloader = @middlewares.detect {|mw| mw.first == ::Rack::Reloader}
-           @middlewares.unshift([::Rack::Reloader, 0, nil]) if !reloader
-         end
+        unless @loaded_default_middlewares
+          @middlewares.unshift([::Goliath::Rack::DefaultResponseFormat, nil, nil])
+          @middlewares.unshift([::Rack::ContentLength, nil, nil])
+
+          if Goliath.dev? && !@middlewares.detect {|mw| mw.first == ::Rack::Reloader}
+            @middlewares.unshift([::Rack::Reloader, 0, nil])
+          end
+
+          @loaded_default_middlewares = true
+        end
 
         @middlewares
       end
