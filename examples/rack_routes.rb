@@ -27,12 +27,11 @@ class Bonjour < Goliath::API
 end
 
 class Hola < Goliath::API
-  use Goliath::Rack::Params
   use Goliath::Rack::ValidationError
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
   
   def response(env)
-    [200, {}, "¡hola #{env.params['name']}!"]
+    [200, {}, "¡hola!"]
   end
 end
 

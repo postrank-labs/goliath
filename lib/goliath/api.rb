@@ -157,16 +157,9 @@ module Goliath
           end
 
         rescue Goliath::Validation::Error => e
-          puts e.message
-          puts e.backtrace
           env[ASYNC_CALLBACK].call([e.status_code, {}, {:error => e.message}])
 
         rescue Exception => e
-          puts e.message
-          puts e.backtrace
-          env.logger.error(e.message)
-          env.logger.error(e.backtrace.join("\n"))
-
           env[ASYNC_CALLBACK].call([400, {}, {:error => e.message}])
         end
       }.resume
