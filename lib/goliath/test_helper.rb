@@ -36,7 +36,18 @@ module Goliath
         klass.middlewares.each do |mw|
           use(*(mw[0..1].compact), &mw[2])
         end
-        run klass.new
+
+        # If you use map you can't use run as
+        # the rack builder will blowup.
+        if klass.maps.empty?
+          run klass.new
+        else
+          klass.maps.each do |mp|
+            map(mp.first, &mp.last)
+          end
+        end
+
+        klass
       end
     end
 

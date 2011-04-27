@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 $:<< '../lib' << 'lib'
 
 require 'goliath'
@@ -25,7 +26,19 @@ class Bonjour < Goliath::API
   end
 end
 
+class Hola < Goliath::API
+  use Goliath::Rack::Params
+  use Goliath::Rack::ValidationError
+  use Goliath::Rack::Validation::RequestMethod, %w(GET)
+  
+  def response(env)
+    [200, {}, "¡hola #{env.params['name']}!"]
+  end
+end
+
 class RackRoutes < Goliath::API
+  
+
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end
@@ -37,8 +50,12 @@ class RackRoutes < Goliath::API
   map "/bonjour" do
     run Bonjour.new
   end
+  
+  map "/hola" do
+    run Hola.new
+  end
 
   map '/' do
-    run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
+    run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }
   end
 end
