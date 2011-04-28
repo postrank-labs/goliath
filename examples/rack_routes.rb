@@ -27,16 +27,13 @@ class Bonjour < Goliath::API
 end
 
 class Hola < Goliath::API
-  use Goliath::Rack::ValidationError
-  use Goliath::Rack::Validation::RequestMethod, %w(GET)
-  
   def response(env)
     [200, {}, "¡hola!"]
   end
 end
 
 class RackRoutes < Goliath::API
-  
+
 
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
@@ -49,8 +46,11 @@ class RackRoutes < Goliath::API
   map "/bonjour" do
     run Bonjour.new
   end
-  
+
   map "/hola" do
+    use Goliath::Rack::ValidationError
+    use Goliath::Rack::Validation::RequestMethod, %w(GET)
+
     run Hola.new
   end
 
