@@ -33,8 +33,6 @@ class Hola < Goliath::API
 end
 
 class RackRoutes < Goliath::API
-
-
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end

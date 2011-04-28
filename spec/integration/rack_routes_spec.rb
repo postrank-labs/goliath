@@ -13,7 +13,7 @@ describe RackRoutes do
       end
     end
   end
-  
+
   it 'routes to the default' do
     with_api(RackRoutes) do
       get_request({:path => '/donkey'}, err) do |c|
@@ -22,7 +22,7 @@ describe RackRoutes do
       end
     end
   end
-  
+
   it 'uses API middleware' do
     with_api(RackRoutes) do
       post_request({:path => '/hola'}, err) do |c|
