@@ -160,6 +160,9 @@ module Goliath
           env[ASYNC_CALLBACK].call([e.status_code, {}, {:error => e.message}])
 
         rescue Exception => e
+          env.logger.error(e.message)
+          env.logger.error(e.backtrace.join("\n"))
+
           env[ASYNC_CALLBACK].call([400, {}, {:error => e.message}])
         end
       }.resume
