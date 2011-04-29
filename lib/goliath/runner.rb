@@ -115,14 +115,6 @@ module Goliath
       end
     end
 
-    # Given a block, this will use Rack::Builder to create the application
-    #
-    # @param blk [Block] The application block to load
-    # @return [Object] The Rack application
-    def load_app(&blk)
-      @app = ::Rack::Builder.app(&blk)
-    end
-
     # Stores the list of plugins to be used by the server
     #
     # @param plugins [Array] The list of plugins to use

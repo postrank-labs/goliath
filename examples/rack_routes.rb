@@ -32,6 +32,15 @@ class Hola < Goliath::API
   end
 end
 
+class Aloha < Goliath::API
+  use Goliath::Rack::ValidationError
+  use Goliath::Rack::Validation::RequestMethod, %w(GET)
+
+  def response(env)
+    [200, {}, "Aloha"]
+  end
+end
+
 class RackRoutes < Goliath::API
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
@@ -51,6 +60,8 @@ class RackRoutes < Goliath::API
 
     run Hola.new
   end
+
+  map "/aloha", Aloha
 
   map '/' do
     run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }

@@ -49,6 +49,37 @@ module Goliath
     # Default execution address
     DEFAULT_ADDRESS = '0.0.0.0'
 
+    # Builds the rack middleware chain for the given API
+    #
+    # @param klass [Class] The API class to build the middlewares for
+    # @return [Object] The Rack middleware chain
+    def self.build_app(klass, api = nil)
+      ::Rack::Builder.new do
+        klass.middlewares.each do |mw|
+          use(*(mw[0..1].compact), &mw[2])
+        end
+
+        # If you use map you can't use run as
+        # the rack builder will blowup.
+        if klass.maps.empty?
+          run api
+        else
+          klass.maps.each do |(path, route_klass, blk)|
+            if route_klass
+              map(path) do
+                route_klass.middlewares.each do |mw|
+                  use(*(mw[0..1].compact), &mw[2])
+                end
+                run klass.new
+              end
+            else
+              map(path, &blk)
+            end
+          end
+        end
+      end
+    end
+
     # Create a new Goliath::Server
     #
     # @param address [String] The server address (default: DEFAULT_ADDRESS)
