@@ -32,4 +32,14 @@ describe RackRoutes do
       end
     end
   end
+
+  it 'uses API middleware' do
+    with_api(RackRoutes) do
+      post_request({:path => '/aloha'}, err) do |c|
+        # the /hola route only supports GET requests
+        c.response_header.status.should == 400
+        c.response.should == '[:error, "Invalid request method"]'
+      end
+    end
+  end
 end

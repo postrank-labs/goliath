@@ -2,6 +2,7 @@ require 'em-synchrony'
 require 'em-synchrony/em-http'
 
 require 'goliath/server'
+require 'goliath/rack/builder'
 require 'rack'
 
 module Goliath
@@ -27,30 +28,6 @@ module Goliath
       Goliath.env = 'test'
     end
 
-    # Builds the rack middleware chain for the given API
-    #
-    # @param klass [Class] The API class to build the middlewares for
-    # @return [Object] The Rack middleware chain
-    def build_app(klass)
-      ::Rack::Builder.new do
-        klass.middlewares.each do |mw|
-          use(*(mw[0..1].compact), &mw[2])
-        end
-
-        # If you use map you can't use run as
-        # the rack builder will blowup.
-        if klass.maps.empty?
-          run klass.new
-        else
-          klass.maps.each do |mp|
-            map(mp.first, &mp.last)
-          end
-        end
-
-        klass
-      end
-    end
-
     # Launches an instance of a given API server. The server
     # will launch on the default settings of localhost port 9000.
     #
@@ -64,7 +41,7 @@ module Goliath
       s = Goliath::Server.new
       s.logger = mock('log').as_null_object
       s.api = api.new
-      s.app = build_app(api)
+      s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
       s.options = options
       s.port = port

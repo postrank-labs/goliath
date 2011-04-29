@@ -76,7 +76,7 @@ module Goliath
 
       # Returns the router maps configured for the API
       #
-      # @return [Array] array contains [path, block]
+      # @return [Array] array contains [path, klass, block]
       def maps
         @maps ||= []
       end
@@ -89,9 +89,13 @@ module Goliath
       #  end
       #
       # @param name [String] The URL path to map
+      # @param klass [Class] The class to retrieve the middlewares from
       # @param block The code to execute
-      def map(name, &block)
-        maps.push([name, block])
+      def map(name, klass = nil, &block)
+        if klass && block_given?
+          raise "Can't provide class and block to map"
+        end
+        maps.push([name, klass, block])
       end
     end
 

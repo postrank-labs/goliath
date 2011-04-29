@@ -58,21 +58,7 @@ module Goliath
       api = klass.new
 
       runner = Goliath::Runner.new(ARGV, api)
-      runner.load_app do
-        klass.middlewares.each do |mw|
-          use(*(mw[0..1].compact), &mw[2])
-        end
-
-        # If you use map you can't use run as
-        # the rack builder will blowup.
-        if klass.maps.empty?
-          run api
-        else
-          klass.maps.each do |mp|
-            map(mp.first, &mp.last)
-          end
-        end
-      end
+      runner.app = Goliath::Builder.build(klass, api)
 
       runner.load_plugins(klass.plugins)
       runner.run
