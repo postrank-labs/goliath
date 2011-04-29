@@ -58,7 +58,7 @@ module Goliath
       api = klass.new
 
       runner = Goliath::Runner.new(ARGV, api)
-      runner.app = Goliath::Builder.build(klass, api)
+      runner.app = Goliath::Rack::Builder.build(klass, api)
 
       runner.load_plugins(klass.plugins)
       runner.run
