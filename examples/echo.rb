@@ -14,7 +14,6 @@ class Echo < Goliath::API
   use Goliath::Rack::Formatters::JSON   # JSON output formatter
   use Goliath::Rack::Render             # auto-negotiate response format
   use Goliath::Rack::Heartbeat          # respond to /status with 200, OK (monitoring, etc)
-  use Goliath::Rack::ValidationError    # catch and render validation errors
 
   use Goliath::Rack::Validation::RequestMethod, %w(GET POST)           # allow GET and POST requests only
   use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}  # must provide ?echo= query or body param

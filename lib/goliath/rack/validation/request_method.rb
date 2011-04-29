@@ -1,3 +1,4 @@
+require 'goliath/rack/validator'
 require 'goliath/rack/validation_error'
 
 module Goliath
@@ -8,7 +9,7 @@ module Goliath
       # @example
       #  use Goliath::Rack::Validation::RequestMethod, %w(GET POST)
       #
-      class RequestMethod
+      class RequestMethod < Goliath::Rack::Validator
         attr_reader :methods
 
         ERROR = 'Invalid request method'
@@ -24,7 +25,7 @@ module Goliath
         end
 
         def call(env)
-          raise Goliath::Validation::Error.new(400, ERROR) unless methods.include?(env['REQUEST_METHOD'])
+          return validation_error(400, ERROR) unless methods.include?(env['REQUEST_METHOD'])
           @app.call(env)
         end
       end

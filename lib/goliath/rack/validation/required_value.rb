@@ -1,3 +1,4 @@
+require 'goliath/rack/validator'
 require 'goliath/rack/validation_error'
 
 module Goliath
@@ -9,7 +10,7 @@ module Goliath
       #  use Goliath::Rack::Validation::RequiredValue, {:key => 'mode', :values => %w(foo bar)}
       #  use Goliath::Rack::Validation::RequiredValue, {:key => 'baz', :values => 'awesome'}
       #
-      class RequiredValue
+      class RequiredValue < Goliath::Rack::Validator
         attr_reader :key, :values
 
         # Creates the Goliath::Rack::Validation::RequiredValue validator.
@@ -26,31 +27,25 @@ module Goliath
         end
 
         def call(env)
-          value_valid!(env['params'])
+          return validation_error(400, "Provided #{@key} is invalid") unless value_valid?(env['params'])
           @app.call(env)
         end
 
-        def value_valid!(params)
-          error = false
+        def value_valid?(params)
           if !params.has_key?(key) || params[key].nil? ||
               (params[key].is_a?(String) && params[key] =~ /^\s*$/)
-            error = true
+            return false
           end
 
           if params[key].is_a?(Array)
-            error = true if params[key].empty?
+            return false if params[key].empty?
+            params[key].each { |k| return false unless values.include?(k) }
 
-            params[key].each do |k|
-              unless values.include?(k)
-               error = true
-               break
-              end
-            end
           elsif !values.include?(params[key])
-            error = true
+            return false
           end
 
-          raise Goliath::Validation::Error.new(400, "Provided #{@key} is invalid") if error
+          true
         end
       end
     end

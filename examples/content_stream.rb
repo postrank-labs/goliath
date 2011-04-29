@@ -17,7 +17,6 @@ class ContentStream < Goliath::API
 
   use Goliath::Rack::Render
   use Goliath::Rack::Heartbeat
-  use Goliath::Rack::ValidationError
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
 
   def on_close(env)

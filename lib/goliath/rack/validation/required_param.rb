@@ -1,3 +1,4 @@
+require 'goliath/rack/validator'
 require 'goliath/rack/validation_error'
 
 module Goliath
@@ -8,7 +9,7 @@ module Goliath
       # @example
       #  use Goliath::Rack::Validation::RequiredParam, {:key => 'mode', :type => 'Mode'}
       #
-      class RequiredParam
+      class RequiredParam < Goliath::Rack::Validator
         attr_reader :type, :key
 
         # Creates the Goliath::Rack::Validation::RequiredParam validator
@@ -25,28 +26,27 @@ module Goliath
         end
 
         def call(env)
-          key_valid!(env['params'])
+          return validation_error(400, "#{@type} identifier missing") unless key_valid?(env['params'])
           @app.call(env)
         end
 
-        def key_valid!(params)
-          error = false
+        def key_valid?(params)
           if !params.has_key?(key) || params[key].nil? ||
               (params[key].is_a?(String) && params[key] =~ /^\s*$/)
-            error = true
+            return false
           end
 
           if params[key].is_a?(Array)
             unless params[key].compact.empty?
               params[key].each do |k|
-                return unless k.is_a?(String)
-                return unless k =~ /^\s*$/
+                return true unless k.is_a?(String)
+                return true unless k =~ /^\s*$/
               end
             end
-            error = true
+            return false
           end
 
-          raise Goliath::Validation::Error.new(400, "#{@type} identifier missing") if error
+          true
         end
       end
     end
