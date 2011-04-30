@@ -9,6 +9,7 @@ require 'goliath/plugins/latency'
 require 'yajl'
 
 class Echo < Goliath::API
+  use Goliath::Rack::Tracer             # log trace statistics
   use Goliath::Rack::Params             # parse & merge query and body parameters
   use Goliath::Rack::DefaultMimeType    # cleanup accepted media types
   use Goliath::Rack::Formatters::JSON   # JSON output formatter

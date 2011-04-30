@@ -47,7 +47,7 @@ module Goliath
     # @example
     #   [200, {}, {:meta => {:trace => env.trace_stats}}, {}]
     #
-    # @return [Array] Array of [name, time] pairs with a Total entry added.d
+    # @return [Array] Array of [name, time] pairs with a Total entry added.
     def trace_stats
       self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
