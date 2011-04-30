@@ -1,5 +1,3 @@
-require 'goliath/rack/validation_error'
-
 module Goliath
   module Rack
     module Validation

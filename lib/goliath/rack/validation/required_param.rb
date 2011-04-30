@@ -1,5 +1,4 @@
 require 'goliath/rack/validator'
-require 'goliath/rack/validation_error'
 
 module Goliath
   module Rack
@@ -9,7 +8,8 @@ module Goliath
       # @example
       #  use Goliath::Rack::Validation::RequiredParam, {:key => 'mode', :type => 'Mode'}
       #
-      class RequiredParam < Goliath::Rack::Validator
+      class RequiredParam
+        include Goliath::Rack::Validator
         attr_reader :type, :key
 
         # Creates the Goliath::Rack::Validation::RequiredParam validator

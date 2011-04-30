@@ -1,5 +1,4 @@
 require 'goliath/rack/validator'
-require 'goliath/rack/validation_error'
 
 module Goliath
   module Rack
@@ -9,7 +8,8 @@ module Goliath
       # @example
       #  use Goliath::Rack::Validation::RequestMethod, %w(GET POST)
       #
-      class RequestMethod < Goliath::Rack::Validator
+      class RequestMethod
+        include Goliath::Rack::Validator
         attr_reader :methods
 
         ERROR = 'Invalid request method'

@@ -1,5 +1,4 @@
 require 'goliath/rack/validator'
-require 'goliath/rack/validation_error'
 
 module Goliath
   module Rack
@@ -10,7 +9,9 @@ module Goliath
       #  use Goliath::Rack::Validation::RequiredValue, {:key => 'mode', :values => %w(foo bar)}
       #  use Goliath::Rack::Validation::RequiredValue, {:key => 'baz', :values => 'awesome'}
       #
-      class RequiredValue < Goliath::Rack::Validator
+      class RequiredValue
+        include Goliath::Rack::Validator
+
         attr_reader :key, :values
 
         # Creates the Goliath::Rack::Validation::RequiredValue validator.
