@@ -1,21 +1,9 @@
 module Goliath
   module Rack
     class DefaultResponseFormat
-      def initialize(app)
-        @app = app
-      end
+      include Goliath::Rack::AsyncMiddleware
 
-      def call(env)
-        async_cb = env['async.callback']
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(status, headers, body))
-        end
-
-        status, headers, body = @app.call(env)
-        post_process(status, headers, body)
-      end
-
-      def post_process(status, headers, body)
+      def post_process(env, status, headers, body)
         return [status, headers, body] if body.respond_to?(:to_ary)
 
         new_body = []

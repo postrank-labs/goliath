@@ -11,21 +11,11 @@ module Goliath
     #
     class Render
       include ::Rack::RespondTo
+      include Goliath::Rack::AsyncMiddleware
 
       def initialize(app, types = nil)
         @app = app
         ::Rack::RespondTo.media_types = [types].flatten if types
-      end
-
-      def call(env)
-        async_cb = env['async.callback']
-
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body))
-        end
-
-        status, headers, body = @app.call(env)
-        post_process(env, status, headers, body)
       end
 
       def post_process(env, status, headers, body)

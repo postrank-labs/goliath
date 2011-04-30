@@ -8,24 +8,9 @@ module Goliath
       # @example
       #   use Goliath::Rack::Formatters::YAML
       class YAML
-        # Called by the framework to create the formatter.
-        #
-        # @return [Goliath::Rack::Formatters::YAML] The YAML formatter.
-        def initialize(app)
-          @app = app
-        end
+        include Goliath::Rack::AsyncMiddleware
 
-        def call(env)
-          async_cb = env['async.callback']
-          env['async.callback'] = Proc.new do |status, headers, body|
-            async_cb.call(post_process(status, headers, body))
-          end
-
-          status, headers, body = @app.call(env)
-          post_process(status, headers, body)
-        end
-
-        def post_process(status, headers, body)
+        def post_process(env, status, headers, body)
           if yaml_response?(headers)
             body = [body.to_yaml]
           end
