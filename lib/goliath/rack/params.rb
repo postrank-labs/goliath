@@ -32,18 +32,22 @@ module Goliath
           unless post_params
             body = env['rack.input'].read
             env['rack.input'].rewind
-
-            begin
-              post_params = case(env['CONTENT_TYPE'])
-              when URL_ENCODED then
-                ::Rack::Utils.parse_nested_query(body)
-              when JSON_ENCODED then
-                MultiJson.decode(body)
-              else
-                {}
+            
+            unless body.empty?
+              begin
+                post_params = case(env['CONTENT_TYPE'])
+                when URL_ENCODED then
+                  ::Rack::Utils.parse_nested_query(body)
+                when JSON_ENCODED then
+                  MultiJson.decode(body)
+                else
+                  {}
+                end
+              rescue StandardError => e
+                raise Goliath::Validation::BadRequestError, "Invalid parameters: #{e.class.to_s}"
               end
-            rescue StandardError => e
-              raise Goliath::Validation::BadRequestError, "Invalid parameters: #{e.class.to_s}"
+            else
+              post_params = {}
             end
           end
 
