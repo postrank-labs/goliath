@@ -19,7 +19,12 @@ module Goliath
       end
 
       def call(env)
-        env['params'] = retrieve_params(env)
+        begin
+          env['params'] = retrieve_params(env)
+        rescue Goliath::Validation::BadRequestError => e
+          return validation_error(e.status_code, e.message)
+        end
+
         @app.call(env)
       end
 
@@ -43,7 +48,7 @@ module Goliath
                 {}
               end
             rescue StandardError => e
-              raise Goliath::Validation::BadRequestError, "Invalid parameters: #{e.class.to_s}"
+              raise Goliath::Validation::BadRequestError.new("Invalid parameters: #{e.class.to_s}")
             end
           end
 
