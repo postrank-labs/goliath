@@ -19,7 +19,12 @@ module Goliath
       end
 
       def call(env)
-        env['params'] = retrieve_params(env)
+        begin
+          env['params'] = retrieve_params(env)
+        rescue Goliath::Validation::BadRequestError => e
+          return validation_error(e.status_code, e.message)
+        end
+
         @app.call(env)
       end
 
@@ -32,7 +37,7 @@ module Goliath
           unless post_params
             body = env['rack.input'].read
             env['rack.input'].rewind
-            
+
             unless body.empty?
               begin
                 post_params = case(env['CONTENT_TYPE'])

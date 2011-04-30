@@ -33,7 +33,6 @@ class Hola < Goliath::API
 end
 
 class Aloha < Goliath::API
-  use Goliath::Rack::ValidationError
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
 
   def response(env)
@@ -55,7 +54,6 @@ class RackRoutes < Goliath::API
   end
 
   map "/hola" do
-    use Goliath::Rack::ValidationError
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
 
     run Hola.new

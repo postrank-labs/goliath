@@ -5,8 +5,6 @@ require 'goliath'
 
 class Valid < Goliath::API
   use Goliath::Rack::Params
-  use Goliath::Rack::ValidationError
-
   use Goliath::Rack::Validation::RequiredParam, {:key => 'test'}
 
   def response(env)

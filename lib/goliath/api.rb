@@ -1,5 +1,6 @@
 require 'goliath/response'
 require 'goliath/request'
+require 'goliath/rack/validator'
 require 'goliath/validation/error'
 
 module Goliath
@@ -17,6 +18,7 @@ module Goliath
   #
   class API
     include Goliath::Constants
+    include Goliath::Rack::Validator
 
     class << self
       # Retrieves the middlewares defined by this API server
@@ -161,13 +163,13 @@ module Goliath
           end
 
         rescue Goliath::Validation::Error => e
-          env[ASYNC_CALLBACK].call([e.status_code, {}, {:error => e.message}])
+          env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
 
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))
 
-          env[ASYNC_CALLBACK].call([400, {}, {:error => e.message}])
+          env[ASYNC_CALLBACK].call(validation_error(400, e.message))
         end
       }.resume
 
@@ -184,7 +186,7 @@ module Goliath
     # @return [Array] Array contains [Status code, Headers Hash, Body]
     def response(env)
       env.logger.error('You need to implement response')
-      [400, {}, {:error => 'No response implemented'}]
+      raise Goliath::Validation::InternalServerError.new('No response implemented')
     end
 
     # Helper method for streaming response apis.
@@ -212,8 +214,7 @@ module Goliath
     # If you are using chunked streaming, you must use
     # env.chunked_stream_send and env.chunked_stream_close
     def chunked_streaming_response(status_code=200, headers={})
-      streaming_response status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS)
+      streaming_response(status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS))
     end
-
   end
 end
