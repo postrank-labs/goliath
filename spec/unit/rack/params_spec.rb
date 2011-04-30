@@ -141,6 +141,14 @@ Berry\r
         ret = @params.retrieve_params(@env)
         ret['foo'].should == 'bar'
       end
+      
+      it "handles empty input gracefully on JSON" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        
+        ret = @params.retrieve_params(@env)
+        ret.should be_empty
+      end
 
       it "raises a BadRequestError on invalid JSON" do
         @env['CONTENT_TYPE'] = 'application/json'
@@ -150,7 +158,6 @@ Berry\r
 
         lambda{ @params.retrieve_params(@env) }.should raise_error(Goliath::Validation::BadRequestError)
       end
-
 
       it "doesn't parse unknown content types" do
         @env['CONTENT_TYPE'] = 'fake/form -- type'
