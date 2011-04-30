@@ -60,6 +60,8 @@ module Goliath
       # To do preprocessing, override this method in your subclass and invoke
       # super(env) as the last line.  To make information available to the
       # post_process method, store it in env.
+      #
+      # @param env [Goliath::Env] The goliath environment
       def call(env)
         async_cb = env['async.callback']
 
@@ -67,7 +69,7 @@ module Goliath
           async_cb.call(post_process(env, status, headers, body))
         end
         status, headers, body = @app.call(env)
-        post_process(env, status, headers, body)
+        status == -1 ? [status, headers, body] : post_process(env, status, headers, body)
       end
 
       # Override this method in your middleware to perform any
