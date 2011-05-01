@@ -40,7 +40,11 @@ module Goliath
       c
     end
 
-    def self.root_path *args
+    # Retrieve the base directory for the API
+    #
+    # @param args [Array] Any arguments to append to the path
+    # @return [File] path for the given arguments
+    def self.root_path(*args)
       @root_path ||= File.expand_path(File.dirname(app_file))
       File.join(@root_path, *args)
     end

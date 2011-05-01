@@ -191,9 +191,9 @@ module Goliath
 
     # Helper method for streaming response apis.
     #
-    # @param [Integer] status_code The status code to return (200 by default).
-    # @param [Hash] headers Headers to return.
-    def streaming_response(status_code=200, headers={})
+    # @param status_code [Integer] The status code to return (200 by default).
+    # @param headers [Hash] Headers to return.
+    def streaming_response(status_code = 200, headers = {})
       [status_code, headers, Goliath::Response::STREAMING]
     end
 
@@ -207,13 +207,13 @@ module Goliath
     # * http://developers.sun.com/mobility/midp/questions/chunking/
     # * http://blog.port80software.com/2006/11/08/
     #
-    # @param [Integer] status_code The status code to return.
-    # @param [Hash] headers Headers to return. The Transfer-Encoding=chunked
+    # @param status_code [Integer] The status code to return.
+    # @param headers [Hash] Headers to return. The Transfer-Encoding=chunked
     #   header is set for you.
     #
     # If you are using chunked streaming, you must use
     # env.chunked_stream_send and env.chunked_stream_close
-    def chunked_streaming_response(status_code=200, headers={})
+    def chunked_streaming_response(status_code = 200, headers = {})
       streaming_response(status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS))
     end
   end

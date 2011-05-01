@@ -42,7 +42,7 @@ module Goliath
     module AsyncMiddleware
       # Called by the framework to create the middleware.
       #
-      # @param app The application
+      # @param app [Proc] The application
       # @return [Goliath::Rack::AsyncMiddleware]
       def initialize(app)
         @app = app
@@ -62,14 +62,21 @@ module Goliath
       # post_process method, store it in env.
       #
       # @param env [Goliath::Env] The goliath environment
+      # @return [Array] The [status_code, headers, body] tuple
       def call(env)
         async_cb = env['async.callback']
 
         env['async.callback'] = Proc.new do |status, headers, body|
           async_cb.call(post_process(env, status, headers, body))
         end
+
         status, headers, body = @app.call(env)
-        status == -1 ? [status, headers, body] : post_process(env, status, headers, body)
+
+        if status == Goliath::Connection::AsyncResponse.first
+          [status, headers, body]
+        else
+          post_process(env, status, headers, body)
+        end
       end
 
       # Override this method in your middleware to perform any
