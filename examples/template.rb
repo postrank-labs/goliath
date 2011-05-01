@@ -24,8 +24,9 @@ class Template < Goliath::API
   include Goliath::Rack::Templates      # render templated files from ./views
 
   use(Rack::Static,                     # render static files from ./public
-            :root => Goliath::Application.root_path("public"),
+            :root => Goliath::Application.app_path("public"),
             :urls => ["/favicon.ico", '/stylesheets', '/javascripts', '/images'])
+
   plugin Goliath::Plugin::Latency       # ask eventmachine reactor to track its latency
 
   def recent_latency

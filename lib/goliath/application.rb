@@ -8,7 +8,8 @@ module Goliath
 
     # Set of caller regex's to be skipped when looking for our API file
     CALLERS_TO_IGNORE = [ # :nodoc:
-      /\/goliath(\/(application))?\.rb$/, # all goliath code
+      /\/goliath(\/application)?\.rb$/, # all goliath code
+      /\/goliath(\/(rack|validation|plugins)\/)/, # all goliath code
       /rubygems\/custom_require\.rb$/,    # rubygems require hacks
       /bundler(\/runtime)?\.rb/,          # bundler require hacks
       /<internal:/                        # internal in ruby >= 1.9.2
@@ -40,12 +41,27 @@ module Goliath
       c
     end
 
+    # Retrive the base director for the API before we've changed directories
+    #
+    # @note Note sure of a better way to handle this. Goliath will do a chdir
+    #       when the runner is executed. If you need the +root_path+ before
+    #       the runner is executing (like, in a use statement) you need this method.
+    #
+    # @param args [Array] Any arguments to append to the path
+    # @return [String] path for the given arguments
+    def self.app_path(*args)
+      @app_path ||= File.expand_path(File.dirname(app_file))
+      File.join(@app_path, *args)
+    end
+
     # Retrieve the base directory for the API
     #
     # @param args [Array] Any arguments to append to the path
-    # @return [File] path for the given arguments
+    # @return [String] path for the given arguments
     def self.root_path(*args)
-      @root_path ||= File.expand_path(File.dirname(app_file))
+      return app_path(args) if Goliath.test?
+
+      @root_path ||= File.expand_path("./")
       File.join(@root_path, *args)
     end
 
