@@ -292,7 +292,7 @@ module Goliath
       #                      the template either directly in +options[:local]+ or in a
       #                      separate hash as the last parameter.
       # @return [String] The rendered template
-      def render(engine, data, options={}, locals={}, &block)
+      def render(engine, data, options = {}, locals = {}, &block)
         # merge app-level options
         if config.has_key?(:template_engines) && config[:template_engines].has_key?(engine)
           options = config[:template_engines][engine].merge(options)
