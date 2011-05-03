@@ -21,12 +21,13 @@ module Goliath
     #     include Goliath::Rack::AsyncMiddleware
     #
     #     def call(env)
-    #       # ... do pre-processing
-    #       super(env)
+    #       awesomness_quotient = 3
+    #       # the extra args sent to super are passed along to post_process
+    #       super(env, awesomness_quotient)
     #     end
     #
-    #     def post_process(env, status, headers, body)
-    #       new_body = make_totally_awesome(body)
+    #     def post_process(env, status, headers, body, awesomness_quotient)
+    #       new_body = make_totally_awesome(body, awesomness_quotient)
     #       [status, headers, new_body]
     #     end
     #   end
@@ -58,16 +59,16 @@ module Goliath
       # will come back up through the chain normally and be returned.
       #
       # To do preprocessing, override this method in your subclass and invoke
-      # super(env) as the last line.  To make information available to the
-      # post_process method, store it in env.
+      # super(env) as the last line.  Any extra arguments will be made available
+      # to the post_process method.
       #
       # @param env [Goliath::Env] The goliath environment
       # @return [Array] The [status_code, headers, body] tuple
-      def call(env)
+      def call(env, *args)
         async_cb = env['async.callback']
 
         env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body))
+          async_cb.call(post_process(env, status, headers, body, *args))
         end
 
         status, headers, body = @app.call(env)
@@ -75,7 +76,7 @@ module Goliath
         if status == Goliath::Connection::AsyncResponse.first
           [status, headers, body]
         else
-          post_process(env, status, headers, body)
+          post_process(env, status, headers, body, *args)
         end
       end
 
