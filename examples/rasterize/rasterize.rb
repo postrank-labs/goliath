@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+$: << File.dirname(__FILE__)+'/../../lib'
 require 'goliath'
 require 'postrank-uri'
 
@@ -6,9 +8,7 @@ require 'postrank-uri'
 # $> curl http://localhost:9000/?url=http://www.google.com (or rather, visit in the browser!)
 
 class Rasterize < Goliath::API
-
   use Goliath::Rack::Params
-  use Goliath::Rack::ValidationError
 
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
   use Goliath::Rack::Validation::RequiredParam, {:key => 'url'}
