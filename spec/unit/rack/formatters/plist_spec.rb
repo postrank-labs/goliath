@@ -1,12 +1,21 @@
 require 'spec_helper'
 require 'goliath/rack/formatters/plist'
 
-# this sucks, but I had install problems with nokogiri-plist
-class Object
-  def to_plist(*args) "plist: #{to_s}" end
-end
-
 describe Goliath::Rack::Formatters::Plist do
+  # this sucks, but I had install problems with nokogiri-plist
+  # and I would rather not use an alternative library that requires libxml or rexml
+  before(:all) do
+    class Object
+      def to_plist(*args) "plist: #{to_s}" end
+    end
+  end
+
+  after(:all) do
+    class Object
+      undef to_plist
+    end
+  end
+
   it 'accepts an app' do
     lambda { Goliath::Rack::Formatters::Plist.new('my app') }.should_not raise_error
   end
@@ -40,4 +49,3 @@ describe Goliath::Rack::Formatters::Plist do
     end
   end
 end
-
