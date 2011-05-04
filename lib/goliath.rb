@@ -18,6 +18,9 @@ require 'goliath/validation/standard_http_errors'
 
 require 'goliath/rack/validator'
 require 'goliath/rack/async_middleware'
+require 'goliath/rack/async_aroundware'
+require 'goliath/synchrony/response_receiver'
+
 require 'goliath/rack/builder'
 require 'goliath/rack/default_response_format'
 require 'goliath/rack/heartbeat'
@@ -25,6 +28,7 @@ require 'goliath/rack/params'
 require 'goliath/rack/render'
 require 'goliath/rack/default_mime_type'
 require 'goliath/rack/tracer'
+
 require 'goliath/rack/formatters/json'
 require 'goliath/rack/formatters/html'
 require 'goliath/rack/formatters/xml'
@@ -41,3 +45,4 @@ require 'goliath/rack/validation/boolean_value'
 require 'goliath/api'
 
 require 'goliath/application'
+
