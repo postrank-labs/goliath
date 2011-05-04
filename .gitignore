@@ -16,3 +16,4 @@ _site
 examples/log
 examples/goliath.log*
 examples/goliath.pid
+examples/rasterize/thumb
