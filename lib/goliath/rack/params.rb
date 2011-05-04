@@ -14,6 +14,8 @@ module Goliath
     #  use Goliath::Rack::Params
     #
     class Params
+      include Goliath::Rack::Validator
+
       def initialize(app)
         @app = app
       end
