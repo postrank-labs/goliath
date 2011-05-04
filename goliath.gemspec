@@ -39,7 +39,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'yard'
   s.add_development_dependency 'bluecloth'
 
-  s.files = `git ls-files`.split("\n")
-  s.test_files = `git ls-files -- spec/*`.split("\n")
+  ignores = File.readlines(".gitignore").grep(/\S+/).map {|s| s.chomp }
+  dotfiles = [".gemtest", ".gitignore", ".rspec", ".yardopts"]
+
+  s.files = Dir["**/*"].reject {|f| File.directory?(f) || ignores.any? {|i| File.fnmatch(i, f) } } + dotfiles
+  s.test_files = s.files.grep(/^spec\//)
   s.require_paths = ['lib']
 end
