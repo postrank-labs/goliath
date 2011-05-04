@@ -29,6 +29,7 @@ require 'goliath/rack/formatters/json'
 require 'goliath/rack/formatters/html'
 require 'goliath/rack/formatters/xml'
 require 'goliath/rack/formatters/yaml'
+require 'goliath/rack/formatters/plist'
 require 'goliath/rack/jsonp'
 
 require 'goliath/rack/validation/request_method'
