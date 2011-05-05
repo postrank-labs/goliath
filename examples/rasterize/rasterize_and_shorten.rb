@@ -14,14 +14,10 @@ require 'postrank-uri'
 class ShortenURL < Goliath::Synchrony::MultiReceiver
   SHORTENER_URL_BASE = 'http://is.gd/create.php'
 
-  def enqueue_shortener_req
+  def pre_process
     target_url = PostRank::URI.clean(env.params['url'])
     shortener_request = EM::HttpRequest.new(SHORTENER_URL_BASE).aget(:query => { :format => 'simple', :url => target_url })
     enqueue :shortener, shortener_request
-  end
-
-  def pre_process
-    enqueue_shortener_req
   end
 
   def post_process
