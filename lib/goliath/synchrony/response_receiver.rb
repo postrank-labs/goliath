@@ -6,13 +6,6 @@ module Goliath
     module ResponseReceiver
       attr_accessor :env, :status, :headers, :body
 
-      # Create a new MultiReceiver
-      # @param env [Goliath::Env] the current environment
-      def initialize env
-        super()
-        @env = env
-      end
-
       # Override this method in your middleware to perform any preprocessing
       # (launching a deferred request, perhaps)
       def pre_process
@@ -44,10 +37,28 @@ module Goliath
     class MultiReceiver < EM::Synchrony::Multi
       include ResponseReceiver
 
+      # Create a new MultiReceiver
+      # @param env [Goliath::Env] the current environment
+      def initialize env
+        @env = env
+        super()
+      end
+
+      alias_method :enqueue, :add
+
+      def successes
+        responses[:callback]
+      end
+
+      def failures
+        responses[:errback]
+      end
+
       # Finished if we received a response and the multi request is finished
       def finished?
         super && response_received?
       end
     end
+
   end
 end
