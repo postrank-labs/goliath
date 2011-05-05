@@ -31,14 +31,20 @@ module Goliath
         # * when the response_receiver completes, invoke the old callback chain
         async_callback = env['async.callback']
         env['async.callback'] = response_receiver
-        response_receiver.callback{ async_callback.call(response_receiver.post_process) }
-        response_receiver.errback{  async_callback.call(response_receiver.post_process) }
+        response_receiver.callback{ do_postprocess(env, async_callback, response_receiver) }
+        response_receiver.errback{  do_postprocess(env, async_callback, response_receiver) }
 
         response_receiver.pre_process
 
         response_receiver.call(@app.call(env))
       end
-    end
 
+      include Goliath::Rack::Validator
+      def do_postprocess(env, async_callback, response_receiver)
+        Goliath::Rack::Validator.safely(env) do
+          async_callback.call(response_receiver.post_process)
+        end
+      end
+    end
   end
 end
