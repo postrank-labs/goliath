@@ -107,7 +107,20 @@ class TestRig < Goliath::API
   use Echo                              # replace status, headers or body if 'echo_status' etc given
   use Delay                             # make response take X seconds if 'delay' param
 
+  def on_headers(env, headers)
+    env['client-headers'] = headers
+  end
+
   def response(env)
-    [200, {}, { :result => "normal result" }]
+    query_params = env.params.collect { |param| param.join(": ") }
+    query_headers = env['client-headers'].collect { |param| param.join(": ") }
+
+    headers = {
+      "Special" => "Header",
+      "Params"  => query_params.join("|"),
+      "Path"    => env[Goliath::Request::REQUEST_PATH],
+      "Headers" => query_headers.join("|"),
+      "Method"  => env[Goliath::Request::REQUEST_METHOD]}
+    [200, headers, headers.dup]
   end
 end
