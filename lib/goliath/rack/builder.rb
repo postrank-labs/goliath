@@ -7,7 +7,7 @@ module Goliath
       # @param api [Object] The instantated API
       # @return [Object] The Rack middleware chain
       def self.build(klass, api)
-        ::Rack::Builder.new do
+        ::Rack::Builder.app do
           klass.middlewares.each do |mw|
             use(*(mw[0..1].compact), &mw[2])
           end
