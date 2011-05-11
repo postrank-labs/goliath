@@ -7,29 +7,36 @@ describe Goliath::Rack::Validation::RequiredParam do
   end
 
   it 'accepts options on create' do
-    opts = { :type => 1, :key => 2 }
+    opts = { :type => 1, :key => 2, :message => 'is required' }
     lambda { Goliath::Rack::Validation::RequiredParam.new('my app', opts) }.should_not raise_error
   end
 
-  it 'defaults type and key' do
+  it 'defaults type, key and message' do
     @rp = Goliath::Rack::Validation::RequiredParam.new('app')
     @rp.key.should_not be_nil
     @rp.key.should_not =~ /^\s*$/
 
     @rp.type.should_not be_nil
     @rp.type.should_not =~ /^\s*$/
+
+    @rp.message.should == 'identifier missing'
   end
 
   describe 'with middleware' do
     before(:each) do
       @app = mock('app').as_null_object
       @env = {'params' => {}}
-      @rp = Goliath::Rack::Validation::RequiredParam.new(@app, {:type => 'Monkey', :key => 'mk'})
+      @rp = Goliath::Rack::Validation::RequiredParam.new(@app, {:type => 'Monkey', :key => 'mk', :message => 'is required'})
     end
 
     it 'stores type and key options' do
       @rp.type.should == 'Monkey'
       @rp.key.should == 'mk'
+    end
+
+    it 'calls validation_error with a custom message' do
+      @rp.should_receive(:validation_error).with(anything, 'Monkey is required')
+      @rp.call(@env)
     end
 
     it 'returns the app status, headers and body' do
