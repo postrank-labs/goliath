@@ -10,7 +10,7 @@ module Goliath
       #
       class RequiredParam
         include Goliath::Rack::Validator
-        attr_reader :type, :key
+        attr_reader :type, :key, :message
 
         # Creates the Goliath::Rack::Validation::RequiredParam validator
         #
@@ -18,15 +18,17 @@ module Goliath
         # @param opts [Hash] The validator options
         # @option opts [String] :key The key to look for in params (default: id)
         # @option opts [String] :type The type string to put in the error message. (default: :key)
+        # @option opts [String] :message The message string to display after the type string. (default: 'identifier missing')
         # @return [Goliath::Rack::Validation::RequiredParam] The validator
         def initialize(app, opts = {})
           @app = app
           @key = opts[:key] || 'id'
           @type = opts[:type] || @key.capitalize
+          @message = opts[:message] || 'identifier missing'
         end
 
         def call(env)
-          return validation_error(400, "#{@type} identifier missing") unless key_valid?(env['params'])
+          return validation_error(400, "#{@type} #{@message}") unless key_valid?(env['params'])
           @app.call(env)
         end
 
