@@ -28,33 +28,33 @@ module Goliath
         # ... requests aren't deferrables so they're tracked in @pending_queries
       end
 
-      def find(selector={}, opts={}, &block)
+      def find(collection, selector={}, opts={}, &block)
         @pending_queries += 1
-        mongo.find(selector, opts) do |result|
+        mongo.collection(collection).find(selector, opts) do |result|
           yield result
           @pending_queries -= 1
           self.succeed if finished?
         end
       end
 
-      def first(selector={}, opts={}, &block)
+      def first(collection, selector={}, opts={}, &block)
         opts[:limit] = 1
-        find(selector, opts) do |result|
+        find(collection, selector, opts) do |result|
           yield result.first
         end
       end
 
-      def insert(*args)
-        mongo.insert(*args)
+      def insert(collection, *args)
+        mongo.collection(collection).insert(*args)
       end
-      def update(*args)
-        mongo.update(*args)
+      def update(collection, *args)
+        mongo.collection(collection).update(*args)
       end
-      def save(*args)
-        mongo.save(*args)
+      def save(collection, *args)
+        mongo.collection(collection).save(*args)
       end
-      def remove(*args)
-        mongo.remove(*args)
+      def remove(collection, *args)
+        mongo.collection(collection).remove(*args)
       end
     end
   end
