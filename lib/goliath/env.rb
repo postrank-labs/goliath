@@ -49,7 +49,7 @@ module Goliath
     #
     # @return [Array] Array of [name, time] pairs with a Total entry added.
     def trace_stats
-      self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
+      self[:trace].sort_by(&:last) + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
 
     # If the API is a streaming API this will send the provided data to the client.
