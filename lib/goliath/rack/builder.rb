@@ -8,8 +8,8 @@ module Goliath
       # @return [Object] The Rack middleware chain
       def self.build(klass, api)
         ::Rack::Builder.app do
-          klass.middlewares.each do |mw|
-            use(*(mw[0..1].compact), &mw[2])
+          klass.middlewares.each do |mw_klass, args, blk|
+            use(mw_klass, *args, &blk)
           end
 
           # If you use map you can't use run as
@@ -20,8 +20,8 @@ module Goliath
             klass.maps.each do |(path, route_klass, blk)|
               if route_klass
                 map(path) do
-                  route_klass.middlewares.each do |mw|
-                    use(*(mw[0..1].compact), &mw[2])
+                  route_klass.middlewares.each do |mw_klass, args, blk|
+                    use(mw_klass, *args, &blk)
                   end
                   run klass.new
                 end

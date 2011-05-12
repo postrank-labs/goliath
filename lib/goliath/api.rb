@@ -53,7 +53,7 @@ module Goliath
       # @param name [Class] The middleware class to use
       # @param args Any arguments to pass to the middeware
       # @param block A block to pass to the middleware
-      def use(name, args = nil, &block)
+      def use(name, *args, &block)
         @middlewares ||= []
         @middlewares << [name, args, block]
       end
