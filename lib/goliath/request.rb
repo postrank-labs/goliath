@@ -132,7 +132,6 @@ module Goliath
         @state = :finished
         @env['rack.input'].rewind if @env['rack.input']
         post_process(@app.call(@env))
-
       rescue Exception => e
         server_exception(e)
       end
@@ -188,14 +187,22 @@ module Goliath
     # @param e [Exception] The exception to log
     # @return [Nil]
     def server_exception(e)
-      @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-      post_process([500, {}, 'An error happened'])
+      if e.is_a?(Goliath::Validation::Error)
+        status, headers, body = [e.status_code, {}, ('{"error":"%s"}'%e.message)]  #
+      else
+        @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+        status, headers, body = [500, {}, 'An error happened']
+      end
+      headers['Content-Length'] = body.bytesize.to_s
+      @env[:terminate_connection] = true
+      post_process([status, headers, body])
     end
 
     # Used to determine if the connection should  be kept open
     #
     # @return [Boolean] True to keep the connection open, false otherwise
     def keep_alive
+      return false if @env[:terminate_connection]
       case @env[HTTP_VERSION]
         # HTTP 1.1: all requests are persistent requests, client
         # must send a Connection:close header to indicate otherwise

@@ -21,13 +21,10 @@ module Goliath
       end
 
       def call(env)
-        begin
+        Goliath::Rack::Validator.safely(env) do
           env['params'] = retrieve_params(env)
-        rescue Goliath::Validation::BadRequestError => e
-          return validation_error(e.status_code, e.message)
+          @app.call(env)
         end
-
-        @app.call(env)
       end
 
       def retrieve_params(env)
