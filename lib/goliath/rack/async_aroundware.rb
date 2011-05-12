@@ -16,14 +16,16 @@ module Goliath
       # @param app [#call] the downstream app
       # @param response_receiver_klass a class that quacks like a
       #   Goliath::Rack::ResponseReceiver and an EM::Deferrable
-      def initialize app, response_receiver_klass
+      # @param *args [Array] extra args to pass to the response_receiver
+      def initialize app, response_receiver_klass, *args
         @app = app
         @response_receiver_klass = response_receiver_klass
+        @response_receiver_args  = args
       end
 
       #
       def call(env)
-        response_receiver = @response_receiver_klass.new(env)
+        response_receiver = new_response_receiver(env)
 
         # put response_receiver in the middle of the async_callback chain:
         # * save the old callback chain;
@@ -37,6 +39,10 @@ module Goliath
         response_receiver.pre_process
 
         response_receiver.call(@app.call(env))
+      end
+
+      def new_response_receiver(env)
+        @response_receiver_klass.new(env, *@response_receiver_args)
       end
 
       include Goliath::Rack::Validator

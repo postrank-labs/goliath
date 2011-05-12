@@ -11,13 +11,14 @@ module Goliath
       include EM::Deferrable
       include Goliath::Rack::Validator
 
-      def initialize(env)
+      def initialize(env, db_name)
         @env = env
         @pending_queries = 0
+        @db = env.config[db_name]
       end
 
-      def mongo
-        env.mongo
+      def db
+        @db
       end
 
       def finished?
@@ -30,7 +31,7 @@ module Goliath
 
       def find(collection, selector={}, opts={}, &block)
         @pending_queries += 1
-        mongo.collection(collection).find(selector, opts) do |result|
+        db.collection(collection).find(selector, opts) do |result|
           yield result
           @pending_queries -= 1
           self.succeed if finished?
@@ -45,16 +46,16 @@ module Goliath
       end
 
       def insert(collection, *args)
-        mongo.collection(collection).insert(*args)
+        db.collection(collection).insert(*args)
       end
       def update(collection, *args)
-        mongo.collection(collection).update(*args)
+        db.collection(collection).update(*args)
       end
       def save(collection, *args)
-        mongo.collection(collection).save(*args)
+        db.collection(collection).save(*args)
       end
       def remove(collection, *args)
-        mongo.collection(collection).remove(*args)
+        db.collection(collection).remove(*args)
       end
     end
   end
