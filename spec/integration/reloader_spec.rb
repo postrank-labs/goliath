@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-Goliath.env = 'dev'
+Goliath.env = :development
 
 class ReloaderDev < Goliath::API
   use Goliath::Rack::Params
@@ -17,8 +17,8 @@ end
 describe "Reloader" do
   let(:err) { Proc.new { fail "API request failed" } }
 
-  before(:each) { Goliath.env = "dev" }
-  after(:each) { Goliath.env = "test" }
+  before(:each) { Goliath.env = :development }
+  after(:each) { Goliath.env = :test }
 
   def count(klass)
     cnt = 0
@@ -37,7 +37,7 @@ describe "Reloader" do
   end
 
   it "doesn't add in prod mode" do
-    Goliath.env = "prod"
+    Goliath.env = :production
     count(ReloaderProd).should == 0
   end
 end
