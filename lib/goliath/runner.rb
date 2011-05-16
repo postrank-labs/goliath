@@ -63,7 +63,7 @@ module Goliath
     def initialize(argv, api)
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
-      Goliath.short_env = options.delete(:env)
+      Goliath.env = options.delete(:env)
 
       @api = api
       @address = options.delete(:address)
@@ -90,7 +90,7 @@ module Goliath
         :daemonize => false,
         :verbose => false,
         :log_stdout => false,
-        :env => 'dev',
+        :env => :development,
       }
 
       @options_parser ||= OptionParser.new do |opts|

@@ -17,24 +17,18 @@ module Goliath
 
   # Sets the current goliath environment
   #
-  # @param [Symbol] env the environment symbol of [development|production|test]
-  def env= e
-    es = e.to_sym
-    if ENVIRONMENTS.include? es
+  # @param [String|Symbol] env the environment symbol of [dev | development | prod | production | test]
+  def env=(e)
+    es = case(e.to_sym)
+    when :dev  then :development
+    when :prod then :production
+    else e.to_sym
+    end
+
+    if ENVIRONMENTS.include?(es)
       @env = es
     else
       fail "did not recognize environment: #{e}, expected one of: #{ENVIRONMENTS.join(', ')}"
-    end
-  end
-
-  # Sets the current goliath environment
-  #
-  # @param [String] env the environment string of [dev|prod|test]
-  def short_env=(env)
-    case(env.to_s)
-    when 'dev'  then @env = :development
-    when 'prod' then @env = :production
-    when 'test' then @env = :test
     end
   end
 

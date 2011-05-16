@@ -25,7 +25,7 @@ module Goliath
   #
   module TestHelper
     def self.included(mod)
-      Goliath.short_env = 'test'
+      Goliath.env = :test
     end
 
     # Launches an instance of a given API server. The server
