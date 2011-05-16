@@ -63,6 +63,7 @@ module Goliath
     def initialize(argv, api)
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
+      Goliath.env = options.delete(:env)
 
       @api = api
       @address = options.delete(:address)
@@ -88,7 +89,8 @@ module Goliath
 
         :daemonize => false,
         :verbose => false,
-        :log_stdout => false
+        :log_stdout => false,
+        :env => :development,
       }
 
       @options_parser ||= OptionParser.new do |opts|
@@ -97,7 +99,7 @@ module Goliath
         opts.separator ""
         opts.separator "Server options:"
 
-        opts.on('-e', '--environment NAME', "Set the execution environment (prod, dev or test) (default: #{Goliath.env})") { |val| Goliath.env = val }
+        opts.on('-e', '--environment NAME', "Set the execution environment (prod, dev or test) (default: #{@options[:env]})") { |val| @options[:env] = val }
 
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
