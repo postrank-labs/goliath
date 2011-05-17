@@ -90,7 +90,7 @@ module Goliath
           conn.options = options
         end
 
-        blk.call if blk
+        blk.call(self) if blk
       end
     end
 

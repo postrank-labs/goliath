@@ -32,14 +32,14 @@ describe HttpLog do
 
   let(:api_options) { { :config => config_file } }
 
-  def mock_mongo
-    @api_server.config['mongo'] = mock('mongo').as_null_object
+  def mock_mongo(api)
+    api.config['mongo'] = mock('mongo').as_null_object
   end
 
   it 'responds to requests' do
-    with_api(HttpLog, api_options) do
+    with_api(HttpLog, api_options) do |api|
       server(Responder, 8080)
-      mock_mongo
+      mock_mongo(api)
 
       get_request({}, err) do |c|
         c.response_header.status.should == 200
@@ -48,9 +48,9 @@ describe HttpLog do
   end
 
   it 'forwards to our API server' do
-    with_api(HttpLog, api_options) do
+    with_api(HttpLog, api_options) do |api|
       server(Responder, 8080)
-      mock_mongo
+      mock_mongo(api)
 
       get_request({}, err) do |c|
         c.response_header.status.should == 200
@@ -70,9 +70,9 @@ describe HttpLog do
 
   context 'query parameters' do
     it 'forwards the query parameters' do
-      with_api(HttpLog, api_options) do
+      with_api(HttpLog, api_options) do |api|
         server(Responder, 8080)
-        mock_mongo
+        mock_mongo(api)
 
         get_request({:query => {:first => :foo, :second => :bar, :third => :baz}}, err) do |c|
           c.response_header.status.should == 200
@@ -84,9 +84,9 @@ describe HttpLog do
 
   context 'request path' do
     it 'forwards the request path' do
-      with_api(HttpLog, api_options) do
+      with_api(HttpLog, api_options) do |api|
         server(Responder, 8080)
-        mock_mongo
+        mock_mongo(api)
 
         get_request({:path => '/my/request/path'}, err) do |c|
           c.response_header.status.should == 200
@@ -98,9 +98,9 @@ describe HttpLog do
 
   context 'headers' do
     it 'forwards the headers' do
-      with_api(HttpLog, api_options) do
+      with_api(HttpLog, api_options) do |api|
         server(Responder, 8080)
-        mock_mongo
+        mock_mongo(api)
 
         get_request({:head => {:first => :foo, :second => :bar}}, err) do |c|
           c.response_header.status.should == 200
@@ -112,9 +112,9 @@ describe HttpLog do
 
   context 'request method' do
     it 'forwards GET requests' do
-      with_api(HttpLog, api_options) do
+      with_api(HttpLog, api_options) do |api|
         server(Responder, 8080)
-        mock_mongo
+        mock_mongo(api)
 
         get_request({}, err) do |c|
           c.response_header.status.should == 200
@@ -124,9 +124,9 @@ describe HttpLog do
     end
 
     it 'forwards POST requests' do
-      with_api(HttpLog, api_options) do
+      with_api(HttpLog, api_options) do |api|
         server(Responder, 8080)
-        mock_mongo
+        mock_mongo(api)
 
         post_request({}, err) do |c|
           c.response_header.status.should == 200
