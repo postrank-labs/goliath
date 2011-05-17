@@ -68,7 +68,7 @@ module Goliath
     # start listening for requests
     #
     # @return Does not return until the server has halted.
-    def start
+    def start(&blk)
       EM.synchrony do
         trap("INT")  { EM.stop }
         trap("TERM") { EM.stop }
@@ -90,6 +90,7 @@ module Goliath
           conn.options = options
         end
 
+        blk.call if blk
       end
     end
 

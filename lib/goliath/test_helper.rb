@@ -35,7 +35,7 @@ module Goliath
     # @param port [Integer] The port to run the server on
     # @param options [Hash] The options hash to provide to the server
     # @return [Goliath::Server] The executed server
-    def server(api, port = 9000, options = {})
+    def server(api, port = 9000, options = {}, &blk)
       op = OptionParser.new
 
       s = Goliath::Server.new
@@ -45,7 +45,7 @@ module Goliath
       s.api.options_parser(op, options)
       s.options = options
       s.port = port
-      s.start
+      s.start(&blk)
       s
     end
 
@@ -64,10 +64,7 @@ module Goliath
     # @param blk [Proc] The code to execute after the server is launched.
     # @note This will not return until stop is called.
     def with_api(api, options = {}, &blk)
-      EM.synchrony do
-        @api_server = server(api, 9000, options)
-        blk.call
-      end
+      server(api, 9000, options, &blk)
     end
 
     # Helper method to setup common callbacks for various request methods.
