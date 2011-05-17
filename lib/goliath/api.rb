@@ -169,7 +169,7 @@ module Goliath
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))
-          env['rack.exception'] = e
+          env[RACK_EXCEPTION] = e
           env[ASYNC_CALLBACK].call(validation_error(500, e.message))
         end
       }.resume
