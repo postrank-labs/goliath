@@ -163,7 +163,7 @@ module Goliath
           end
 
         rescue Goliath::Validation::Error => e
-          env['rack.exception'] = e
+          env[RACK_EXCEPTION] = e
           env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
 
         rescue Exception => e
