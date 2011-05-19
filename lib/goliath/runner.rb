@@ -176,12 +176,18 @@ module Goliath
     # @return [Logger] The logger object
      def setup_logger
        log = Log4r::Logger.new('goliath')
+       log.level = @verbose ? Log4r::DEBUG : Log4r::INFO
+
+       # allow api to setup logging as it desires
+       if api.respond_to?(:setup_logger)
+         api.setup_logger(log, options)
+         return log
+       end
 
        log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
        setup_file_logger(log, log_format) if @log_file
        setup_stdout_logger(log, log_format) if @log_stdout
 
-       log.level = @verbose ? Log4r::DEBUG : Log4r::INFO
        log
      end
 

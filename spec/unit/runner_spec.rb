@@ -89,6 +89,25 @@ describe Goliath::Runner do
             log = @r.send(:setup_logger)
           end
         end
+
+        describe 'custom logger' do
+          it 'calls the api loger setup method' do
+            api = mock('api')
+            api.should_receive(:respond_to?).with(:setup_logger).and_return(true)
+            api.should_receive(:setup_logger).and_return(true)
+
+            @r.should_not_receive(:setup_stdout_logger)
+            @r.should_not_receive(:setup_file_logger)
+
+            @r.api = api
+            @r.log_stdout = true
+            @r.verbose = true
+            @r.log_file = 'out.log'
+
+            l = @r.send(:setup_logger)
+            l.should_not be_nil
+          end
+        end
       end
 
       it 'creates the log dir if neeed' do
