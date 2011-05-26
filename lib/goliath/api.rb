@@ -83,6 +83,10 @@ module Goliath
         @maps ||= []
       end
 
+      def maps?
+        !maps.empty?
+      end
+
       # Specify a router map to be used by the API
       #
       # @example
