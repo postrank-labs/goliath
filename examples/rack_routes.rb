@@ -27,8 +27,11 @@ class Bonjour < Goliath::API
 end
 
 class Hola < Goliath::API
+  use Goliath::Rack::Params
+  use Goliath::Rack::Validation::RequiredParam, {:key => "foo"}
+
   def response(env)
-    [200, {}, "¡hola!"]
+    [200, {}, "hola!"]
   end
 end
 
@@ -55,7 +58,6 @@ class RackRoutes < Goliath::API
 
   map "/hola" do
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
-
     run Hola.new
   end
 
@@ -63,5 +65,10 @@ class RackRoutes < Goliath::API
 
   map '/' do
     run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }
+  end
+
+  # You must use either maps or response, but never both!
+  def response(env)
+    raise RuntimeException.new("#response is ignored when using maps, so this exception won't raise. See spec/integration/rack_routes_spec.")
   end
 end
