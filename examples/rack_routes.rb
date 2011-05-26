@@ -67,7 +67,8 @@ class RackRoutes < Goliath::API
     run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }
   end
 
+  # You must use either maps or response, but never both!
   def response(env)
-    raise RuntimeException.new("You shouldn't be reading this =)")
+    raise RuntimeException.new("#response is ignored when using maps, so this exception won't raise. See spec/integration/rack_routes_spec.")
   end
 end
