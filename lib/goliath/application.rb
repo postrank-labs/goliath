@@ -83,6 +83,12 @@ module Goliath
       runner.load_plugins(klass.plugins)
       runner.run
     end
+    
+    @autorun = true
+    
+    class << self
+      attr_accessor :autorun
+    end
 
     private
 
@@ -98,7 +104,7 @@ module Goliath
   end
 
   at_exit do
-    if $!.nil? && $0 == Goliath::Application.app_file
+    if Application.autorun && $!.nil? && $0 == Application.app_file
       Application.run!
     end
   end
