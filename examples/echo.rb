@@ -4,7 +4,7 @@ $:<< '../lib' << 'lib'
 require 'goliath'
 require 'goliath/plugins/latency'
 
-# Goliath uses multi-jon, so pick your favorite JSON serializer
+# Goliath uses multi-json, so pick your favorite JSON serializer
 # require 'json'
 require 'yajl'
 
