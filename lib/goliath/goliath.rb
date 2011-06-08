@@ -34,21 +34,21 @@ module Goliath
 
   # Determines if we are in the production environment
   #
-  # @return [Boolean] true if current environemnt is production, false otherwise
+  # @return [Boolean] true if current environment is production, false otherwise
   def prod?
     env == :production
   end
 
   # Determines if we are in the development environment
   #
-  # @return [Boolean] true if current environemnt is development, false otherwise
+  # @return [Boolean] true if current environment is development, false otherwise
   def dev?
     env == :development
   end
 
   # Determines if we are in the test environment
   #
-  # @return [Boolean] true if current environemnt is test, false otherwise
+  # @return [Boolean] true if current environment is test, false otherwise
   def test?
     env == :test
   end

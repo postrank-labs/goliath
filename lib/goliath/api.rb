@@ -147,7 +147,7 @@ module Goliath
 
     # {#call} is executed automatically by the middleware chain and will setup
     # the environment for the {#response} method to execute. This includes setting
-    # up a new Fiber, handing any execptions thrown from the API and executing
+    # up a new Fiber, handing any exceptions thrown from the API and executing
     # the appropriate callback method for the API.
     #
     # @param env [Goliath::Env] The request environment
