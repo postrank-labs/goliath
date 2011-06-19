@@ -20,6 +20,12 @@ class HelloWorld < Goliath::API
   end
 end
 
+class PostHelloWorld < Goliath::API
+  def response(env)
+    [200, {}, "hello post world!"]
+  end
+end
+
 class HelloNumber < Goliath::API
   use Goliath::Rack::Params
   def response(env)
@@ -53,6 +59,10 @@ end
 class RackRoutes < Goliath::API
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
+  end
+
+  post "/hello_world" do
+    run PostHelloWorld.new
   end
 
   map "/hello_world" do

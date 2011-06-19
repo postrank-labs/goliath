@@ -22,7 +22,7 @@ describe Goliath::Rack::Validation::RequestMethod do
 
     it 'raises error if method is invalid' do
       @env['REQUEST_METHOD'] = 'fubar'
-      @rm.call(@env).should == [400, {}, {:error => "Invalid request method"}]
+      @rm.call(@env).should == [405, {'Allow' => 'GET, POST'}, {:error => "Invalid request method"}]
     end
 
     it 'allows valid methods through' do

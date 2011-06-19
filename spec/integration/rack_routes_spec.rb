@@ -42,13 +42,23 @@ describe RackRoutes do
       end
     end
 
+    it 'should allow sinatra style route definition' do
+      with_api(RackRoutes) do
+        post_request({:path => '/hello_world'}, err) do |c|
+          c.response_header.status.should == 200
+          c.response.should == 'hello post world!'
+        end
+      end
+    end
+
     context "defined in blocks" do
       it 'uses middleware defined in the block' do
         with_api(RackRoutes) do
           post_request({:path => '/hola'}, err) do |c|
             # the /hola route only supports GET requests
-            c.response_header.status.should == 400
+            c.response_header.status.should == 405
             c.response.should == '[:error, "Invalid request method"]'
+            c.response_header['ALLOW'].should == 'GET'
           end
         end
       end
@@ -69,8 +79,9 @@ describe RackRoutes do
         with_api(RackRoutes) do
           post_request({:path => '/aloha'}, err) do |c|
             # the /hola route only supports GET requests
-            c.response_header.status.should == 400
+            c.response_header.status.should == 405
             c.response.should == '[:error, "Invalid request method"]'
+            c.response_header['ALLOW'].should == 'GET'
           end
         end
       end

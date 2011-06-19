@@ -105,6 +105,16 @@ module Goliath
         end
         maps.push([name, klass, opts, block])
       end
+
+      [:get, :post, :head, :put, :delete].each do |http_method|
+        class_eval <<-EOT, __FILE__, __LINE__ + 1
+        def #{http_method}(name, *args, &block)
+          opts = args.last.is_a?(Hash) ? args.pop : {}
+          klass = args.first
+          map(name, klass, opts.merge(:request_method => #{http_method.to_s.upcase.inspect}), &block)
+        end
+        EOT
+      end
     end
 
     # Default stub method to add options into the option parser.
