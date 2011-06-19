@@ -115,7 +115,7 @@ module Goliath
       end
 
       [:get, :post, :head, :put, :delete].each do |http_method|
-        s = <<-EOT#, __FILE__, __LINE__ + 1
+        s = <<-EOT, __FILE__, __LINE__ + 1
         def #{http_method}(name, *args, &block)
           opts = args.last.is_a?(Hash) ? args.pop : {}
           klass = args.first
