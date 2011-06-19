@@ -94,7 +94,15 @@ module Goliath
       #    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
       #  end
       #
-      # @param name [String] The URL path to map
+      # @example
+      #  map '/user/:id', :id => /\d+/ do
+      #    # params[:id] will be a number
+      #    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Loading user #{params[:id]}"]] }
+      #  end
+      #
+      # @param name [String] The URL path to map.
+      #   Optional parts are supported via <tt>(.:format)</tt>, variables as <tt>:var</tt> and globs via <tt>*remaining_path</tt>.
+      #   Variables can be validated by supplying a Regexp.
       # @param klass [Class] The class to retrieve the middlewares from
       # @param block The code to execute
       def map(name, *args, &block)
