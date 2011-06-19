@@ -33,6 +33,15 @@ describe RackRoutes do
       end
     end
 
+    it 'routes to the correct API using regex filters' do
+      with_api(RackRoutes) do
+        get_request({:path => '/123123'}, err) do |c|
+          c.response_header.status.should == 200
+          c.response.should == 'number 123123!'
+        end
+      end
+    end
+
     context "defined in blocks" do
       it 'uses middleware defined in the block' do
         with_api(RackRoutes) do

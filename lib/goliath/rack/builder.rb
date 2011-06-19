@@ -1,3 +1,5 @@
+require 'http_router'
+
 module Goliath
   module Rack
     class Builder
@@ -11,15 +13,27 @@ module Goliath
           klass.middlewares.each do |mw_klass, args, blk|
             use(mw_klass, *args, &blk)
           end
-
-          klass.maps.each do |path, route_klass, blk|
-            blk ||= Proc.new {
-              run Builder.build(route_klass, route_klass.new)
-            }
-            map(path, &blk)
+          if klass.maps?
+            router = HttpRouter.new
+            router.default(proc{ |env|
+              env = env.dup
+              env['PATH_INFO'] = '/'
+              router.call(env)
+            })
+            klass.maps.each do |path, route_klass, opts, blk|
+              blk ||= Proc.new {
+                run Builder.build(route_klass, route_klass.new)
+              }
+              router.add(path, opts.dup).to {|env|
+                env['params'] ||= {}
+                env['params'].merge!(env['router.params'])
+                ::Rack::Builder.new(&blk).to_app.call(env)
+              }
+            end
+            run router
+          else
+            run api
           end
-
-          run api unless klass.maps?
         end
       end
 

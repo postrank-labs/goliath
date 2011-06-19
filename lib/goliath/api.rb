@@ -97,11 +97,13 @@ module Goliath
       # @param name [String] The URL path to map
       # @param klass [Class] The class to retrieve the middlewares from
       # @param block The code to execute
-      def map(name, klass = nil, &block)
+      def map(name, *args, &block)
+        opts = args.last.is_a?(Hash) ? args.pop : {}
+        klass = args.first
         if klass && block_given?
           raise "Can't provide class and block to map"
         end
-        maps.push([name, klass, block])
+        maps.push([name, klass, opts, block])
       end
     end
 
