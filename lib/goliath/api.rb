@@ -145,9 +145,15 @@ module Goliath
       end
     end
 
+    # @param name [Symbol] The method to check if we respond to it.
+    # @return [Boolean] True if the API's method_missing responds to the method
+    def respond_to_missing?(name, *)
+      env.respond_to? name
+    end
+
     # {#call} is executed automatically by the middleware chain and will setup
     # the environment for the {#response} method to execute. This includes setting
-    # up a new Fiber, handing any execptions thrown from the API and executing
+    # up a new Fiber, handing any exceptions thrown from the API and executing
     # the appropriate callback method for the API.
     #
     # @param env [Goliath::Env] The request environment

@@ -41,7 +41,7 @@ module Goliath
       c
     end
 
-    # Retrive the base director for the API before we've changed directories
+    # Retrive the base directory for the API before we've changed directories
     #
     # @note Note sure of a better way to handle this. Goliath will do a chdir
     #       when the runner is executed. If you need the +root_path+ before

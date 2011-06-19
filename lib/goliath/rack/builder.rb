@@ -4,7 +4,7 @@ module Goliath
       # Builds the rack middleware chain for the given API
       #
       # @param klass [Class] The API class to build the middlewares for
-      # @param api [Object] The instantated API
+      # @param api [Object] The instantiated API
       # @return [Object] The Rack middleware chain
       def self.build(klass, api)
         ::Rack::Builder.app do

@@ -4,7 +4,7 @@ require 'optparse'
 require 'log4r'
 
 module Goliath
-  # The Goliath::Runner is responsible for parsing any provided options, settting up the
+  # The Goliath::Runner is responsible for parsing any provided options, setting up the
   # rack application, creating a logger, and then executing the Goliath::Server with the loaded information.
   class Runner
     # The address of the server @example 127.0.0.1
