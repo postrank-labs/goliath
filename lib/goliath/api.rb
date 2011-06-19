@@ -123,6 +123,18 @@ module Goliath
         end
         EOT
       end
+
+      def router
+        unless @router
+          @router = HttpRouter.new
+          @router.default(proc{ |env|
+            env = env.dup
+            env['PATH_INFO'] = '/'
+            @router.call(env)
+          })
+        end
+        @router
+      end
     end
 
     # Default stub method to add options into the option parser.
