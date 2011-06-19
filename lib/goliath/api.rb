@@ -115,13 +115,16 @@ module Goliath
       end
 
       [:get, :post, :head, :put, :delete].each do |http_method|
-        class_eval <<-EOT, __FILE__, __LINE__ + 1
+        s = <<-EOT#, __FILE__, __LINE__ + 1
         def #{http_method}(name, *args, &block)
           opts = args.last.is_a?(Hash) ? args.pop : {}
           klass = args.first
-          map(name, klass, opts.merge(:request_method => #{http_method.to_s.upcase.inspect}), &block)
+          opts[:conditions] ||= {}
+          opts[:conditions][:request_method] = [#{http_method == :get ? "'HEAD', 'GET'" : http_method.to_s.upcase.inspect}]
+          map(name, klass, opts, &block)
         end
         EOT
+        class_eval s
       end
 
       def router

@@ -84,6 +84,17 @@ module Goliath
       req.errback { stop }
     end
 
+    # Make a HEAD request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the HEAD request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def head_request(request_data = {}, errback = nil, &blk)
+      path = request_data.delete(:path) || ''
+      req = EM::HttpRequest.new("http://localhost:9000#{path}").head(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
     # Make a GET request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the GET request.
@@ -103,6 +114,17 @@ module Goliath
     def post_request(request_data = {}, errback = nil, &blk)
       path = request_data.delete(:path) || ''
       req = EM::HttpRequest.new("http://localhost:9000#{path}").post(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
+    # Make a PUT request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the PUT request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def put_request(request_data = {}, errback = nil, &blk)
+      path = request_data.delete(:path) || ''
+      req = EM::HttpRequest.new("http://localhost:9000#{path}").put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
   end

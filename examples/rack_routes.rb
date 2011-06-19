@@ -65,7 +65,7 @@ class RackRoutes < Goliath::API
     run PostHelloWorld.new
   end
 
-  map "/hello_world" do
+  get "/hello_world" do
     run HelloWorld.new
   end
 

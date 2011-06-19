@@ -42,11 +42,40 @@ describe RackRoutes do
       end
     end
 
-    it 'should allow sinatra style route definition' do
-      with_api(RackRoutes) do
-        post_request({:path => '/hello_world'}, err) do |c|
-          c.response_header.status.should == 200
-          c.response.should == 'hello post world!'
+    context 'sinatra style route definition' do
+      it 'should honor the request method' do
+        with_api(RackRoutes) do
+          post_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello post world!'
+          end
+        end
+      end
+      it 'should reject other request methods' do
+        with_api(RackRoutes) do
+          put_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 405
+            c.response_header['ALLOW'].split(/, /).should == %w(GET HEAD POST)
+          end
+        end
+      end
+    end
+
+    context 'routes defined with get' do
+      it 'should allow get' do
+        with_api(RackRoutes) do
+          get_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello world!'
+          end
+        end
+      end
+      it 'should allow head' do
+        with_api(RackRoutes) do
+          head_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello world!'
+          end
         end
       end
     end
