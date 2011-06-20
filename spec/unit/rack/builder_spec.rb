@@ -36,24 +36,5 @@ describe Goliath::Rack::Builder do
       Goliath::Rack::Builder.build(router.class, router)
     end
 
-    context "when API using maps" do
-
-      it "loads mappings from classes" do
-        NestedClassApi.should_receive(:new) # once in Builder
-        Goliath::Rack::Builder.build(router.class, router)
-      end
-
-      it "loads mappings from blocks" do
-        NestedBlockApi.should_receive(:new) # once in SimpleRouter
-        Goliath::Rack::Builder.build(router.class, router)
-      end
-
-      it "loads middlewares only for class mappings" do
-        NestedMiddleware.should_receive(:new) # once in NestedClassApi
-        Goliath::Rack::Builder.build(router.class, router)
-      end
-
-    end
-
   end
 end

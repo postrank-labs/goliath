@@ -33,13 +33,61 @@ describe RackRoutes do
       end
     end
 
+    it 'routes to the correct API using regex filters' do
+      with_api(RackRoutes) do
+        get_request({:path => '/123123'}, err) do |c|
+          c.response_header.status.should == 200
+          c.response.should == 'number 123123!'
+        end
+      end
+    end
+
+    context 'sinatra style route definition' do
+      it 'should honor the request method' do
+        with_api(RackRoutes) do
+          post_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello post world!'
+          end
+        end
+      end
+      it 'should reject other request methods' do
+        with_api(RackRoutes) do
+          put_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 405
+            c.response_header['ALLOW'].split(/, /).should == %w(GET HEAD POST)
+          end
+        end
+      end
+    end
+
+    context 'routes defined with get' do
+      it 'should allow get' do
+        with_api(RackRoutes) do
+          get_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello world!'
+          end
+        end
+      end
+      it 'should allow head' do
+        with_api(RackRoutes) do
+          head_request({:path => '/hello_world'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'hello world!'
+          end
+        end
+      end
+    end
+
     context "defined in blocks" do
       it 'uses middleware defined in the block' do
         with_api(RackRoutes) do
           post_request({:path => '/hola'}, err) do |c|
             # the /hola route only supports GET requests
-            c.response_header.status.should == 400
+            c.response_header.status.should == 405
             c.response.should == '[:error, "Invalid request method"]'
+            c.response_header['ALLOW'].should == 'GET'
           end
         end
       end
@@ -60,8 +108,9 @@ describe RackRoutes do
         with_api(RackRoutes) do
           post_request({:path => '/aloha'}, err) do |c|
             # the /hola route only supports GET requests
-            c.response_header.status.should == 400
+            c.response_header.status.should == 405
             c.response.should == '[:error, "Invalid request method"]'
+            c.response_header['ALLOW'].should == 'GET'
           end
         end
       end

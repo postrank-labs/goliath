@@ -25,7 +25,7 @@ module Goliath
         end
 
         def call(env)
-          return validation_error(400, ERROR) unless methods.include?(env['REQUEST_METHOD'])
+          return validation_error(405, ERROR, "Allow" => methods.map{|m| m.to_s.upcase}.join(', ')) unless methods.include?(env['REQUEST_METHOD'])
           @app.call(env)
         end
       end
