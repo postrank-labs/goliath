@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
   s.add_dependency 'http_router', '~> 0.8.9'
 
+  s.add_development_dependency 'rake', '0.8.7'
   s.add_development_dependency 'rspec', '>2.0'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'em-http-request', '>= 1.0.0.beta.1'
