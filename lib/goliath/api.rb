@@ -193,30 +193,28 @@ module Goliath
     # @param env [Goliath::Env] The request environment
     # @return [Goliath::Connection::AsyncResponse] An async response.
     def call(env)
-      Fiber.new {
-        begin
-          Thread.current[GOLIATH_ENV] = env
-          status, headers, body = response(env)
+      begin
+        Thread.current[GOLIATH_ENV] = env
+        status, headers, body = response(env)
 
-          if status
-            if body == Goliath::Response::STREAMING
-              env[STREAM_START].call(status, headers)
-            else
-              env[ASYNC_CALLBACK].call([status, headers, body])
-            end
+        if status
+          if body == Goliath::Response::STREAMING
+            env[STREAM_START].call(status, headers)
+          else
+            env[ASYNC_CALLBACK].call([status, headers, body])
           end
-
-        rescue Goliath::Validation::Error => e
-          env[RACK_EXCEPTION] = e
-          env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
-
-        rescue Exception => e
-          env.logger.error(e.message)
-          env.logger.error(e.backtrace.join("\n"))
-          env[RACK_EXCEPTION] = e
-          env[ASYNC_CALLBACK].call(validation_error(500, e.message))
         end
-      }.resume
+
+      rescue Goliath::Validation::Error => e
+        env[RACK_EXCEPTION] = e
+        env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
+
+      rescue Exception => e
+        env.logger.error(e.message)
+        env.logger.error(e.backtrace.join("\n"))
+        env[RACK_EXCEPTION] = e
+        env[ASYNC_CALLBACK].call(validation_error(500, e.message))
+      end
 
       Goliath::Connection::AsyncResponse
     end
