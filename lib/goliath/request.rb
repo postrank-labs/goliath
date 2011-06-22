@@ -1,5 +1,7 @@
 require 'eventmachine'
 require 'goliath/constants'
+require 'goliath/response'
+require 'goliath/validation'
 require 'async_rack'
 require 'stringio'
 
