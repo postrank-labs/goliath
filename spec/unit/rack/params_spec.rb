@@ -19,6 +19,7 @@ describe Goliath::Rack::Params do
 
       ret = @params.retrieve_params(@env)
       ret['foo'].should == 'bar'
+      ret[:foo].should == 'bar'
       ret['baz'].should == 'bonkey'
     end
 
@@ -38,6 +39,8 @@ describe Goliath::Rack::Params do
       ret['foo'].should == 'bar'
       ret['baz'].should == 'bonkey'
       ret['zonk'].should == {'donk' => 'monk'}
+      ret[:zonk].should == {'donk' => 'monk'}
+      ret[:zonk][:donk].should == 'monk'
     end
 
     it 'parses arrays of data' do
@@ -47,6 +50,7 @@ describe Goliath::Rack::Params do
       ret['foo'].is_a?(Array).should be_true
       ret['foo'].length.should == 3
       ret['foo'].should == %w(bar baz foos)
+      ret[:foo].should == %w(bar baz foos)
     end
 
     it 'parses multipart data' do
@@ -67,6 +71,7 @@ Berry\r
 
       ret = @params.retrieve_params(@env)
       ret['submit-name'].should == 'Larry'
+      ret[:"submit-name"].should == 'Larry'
       ret['submit-name-with-content'].should == 'Berry'
     end
 
@@ -140,6 +145,7 @@ Berry\r
 
         ret = @params.retrieve_params(@env)
         ret['foo'].should == 'bar'
+        ret[:foo].should == 'bar'
       end
       
       it "handles empty input gracefully on JSON" do

@@ -128,13 +128,15 @@ module Goliath
     #
     # @return [Nil]
     def process
-      begin
-        @state = :finished
-        @env['rack.input'].rewind if @env['rack.input']
-        post_process(@app.call(@env))
-      rescue Exception => e
-        server_exception(e)
-      end
+      Fiber.new {
+        begin
+          @state = :finished
+          @env['rack.input'].rewind if @env['rack.input']
+          post_process(@app.call(@env))
+        rescue Exception => e
+          server_exception(e)
+        end
+      }.resume
     end
 
     # Invoked by the app / middleware once the request
@@ -166,10 +168,10 @@ module Goliath
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
             @env[RACK_LOGGER].info("Status: #{@response.status}, " +
-                              "Content-Length: #{@response.headers['Content-Length']}, " +
-                              "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+                                   "Content-Length: #{@response.headers['Content-Length']}, " +
+                                   "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
 
-            @conn.terminate_request(keep_alive)
+                                   @conn.terminate_request(keep_alive)
           rescue Exception => e
             server_exception(e)
           end
@@ -206,13 +208,13 @@ module Goliath
       case @env[HTTP_VERSION]
         # HTTP 1.1: all requests are persistent requests, client
         # must send a Connection:close header to indicate otherwise
-        when '1.1' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+      when '1.1' then
+        (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
 
-          # HTTP 1.0: all requests are non keep-alive, client must
-          # send a Connection: Keep-Alive to indicate otherwise
-        when '1.0' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+        # HTTP 1.0: all requests are non keep-alive, client must
+        # send a Connection: Keep-Alive to indicate otherwise
+      when '1.0' then
+        (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
       end
     end
   end

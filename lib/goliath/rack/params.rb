@@ -58,8 +58,22 @@ module Goliath
           params.merge!(post_params)
         end
 
-        params
+        indifferent_params(params)
       end
+
+      def indifferent_params(params)
+        params = indifferent_hash.merge(params)
+        params.each do |key, value|
+          next unless value.is_a?(Hash)
+          params[key] = indifferent_params(value)
+        end
+      end
+
+      # Creates a Hash with indifferent access.
+      def indifferent_hash
+        Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+      end
+
     end
   end
 end
