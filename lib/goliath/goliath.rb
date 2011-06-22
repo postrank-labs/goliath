@@ -1,6 +1,8 @@
 require 'eventmachine'
 require 'http/parser'
 require 'async_rack'
+require 'goliath/constants'
+require 'goliath/version'
 
 # The Goliath Framework
 module Goliath

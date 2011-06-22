@@ -1,7 +1,9 @@
+require 'http_router'
+require 'goliath/goliath'
 require 'goliath/response'
 require 'goliath/request'
-require 'goliath/rack/validator'
-require 'goliath/validation/error'
+require 'goliath/rack'
+require 'goliath/validation'
 
 module Goliath
   # All Goliath APIs subclass Goliath::API. All subclasses _must_ override the
