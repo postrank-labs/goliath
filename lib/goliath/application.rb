@@ -1,3 +1,7 @@
+require 'goliath/goliath'
+require 'goliath/runner'
+require 'goliath/rack'
+
 module Goliath
   # The main execution class for Goliath. This will execute in the at_exit
   # handler to run the server.

@@ -1,5 +1,7 @@
 require 'http/parser'
 require 'goliath/env'
+require 'goliath/constants'
+require 'goliath/request'
 
 module Goliath
   # The Goliath::Connection class handles sending and receiving data
