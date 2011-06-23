@@ -4,8 +4,8 @@ module Goliath
       # A plist formatter. Pass in to_plist options as an option to the middleware
       #
       # @example
-      #   use Goliath::Rack::Formatters::Plist, :convert_unknown_to_string => true
-      class Plist
+      #   use Goliath::Rack::Formatters::PLIST, :convert_unknown_to_string => true
+      class PLIST
         include AsyncMiddleware
 
         def initialize(app, opts = {})

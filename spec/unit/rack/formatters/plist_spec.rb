@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'goliath/rack/formatters/plist'
 
-describe Goliath::Rack::Formatters::Plist do
+describe Goliath::Rack::Formatters::PLIST do
   # this sucks, but I had install problems with nokogiri-plist
   # and I would rather not use an alternative library that requires libxml or rexml
   before(:all) do
@@ -17,13 +17,13 @@ describe Goliath::Rack::Formatters::Plist do
   end
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Formatters::Plist.new('my app') }.should_not raise_error
+    lambda { Goliath::Rack::Formatters::PLIST.new('my app') }.should_not raise_error
   end
 
   describe 'with a formatter' do
     before(:each) do
       @app = mock('app').as_null_object
-      @m = Goliath::Rack::Formatters::Plist.new(@app)
+      @m = Goliath::Rack::Formatters::PLIST.new(@app)
     end
 
     it 'formats the body into plist if content-type is plist' do
