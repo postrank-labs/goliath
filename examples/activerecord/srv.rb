@@ -21,8 +21,7 @@ end
 class Srv < Goliath::API
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
-  use Goliath::Rack::Formatters::JSON
-  use Goliath::Rack::Render
+  use Goliath::Rack::Render, 'json'
 
   use Goliath::Rack::Validation::RequiredParam, {:key => 'id', :type => 'ID'}
   use Goliath::Rack::Validation::NumericRange, {:key => 'id', :min => 1}

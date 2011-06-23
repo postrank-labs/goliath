@@ -57,6 +57,14 @@ module Goliath
       # @param block A block to pass to the middleware
       def use(name, *args, &block)
         @middlewares ||= []
+
+        if name == Goliath::Rack::Render
+          [args].flatten.each do |type|
+            type = Goliath::Rack::Formatters.const_get type.upcase
+            @middlewares << [type, nil, nil]
+          end
+        end
+
         @middlewares << [name, args, block]
       end
 

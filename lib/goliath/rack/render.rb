@@ -25,12 +25,9 @@ module Goliath
         # setting of selected_media_type, so it's required
 
         respond_to do |format|
-          format.json { body }
-          format.html { body }
-          format.xml { body }
-          format.rss { body }
-          format.js { body }
-          format.yaml { body }
+          ::Rack::RespondTo.media_types.each do |type|
+            format.send(type, Proc.new { body })
+          end
         end
 
         extra = { 'Content-Type' => get_content_type(env),
@@ -45,13 +42,14 @@ module Goliath
           fmt = env.params['format']
           fmt = fmt.last if fmt.is_a?(Array)
 
-          if fmt.nil? || fmt =~ /^\s*$/
-            ::Rack::RespondTo.selected_media_type
-          else
+          if !fmt.nil? && fmt !~ /^\s*$/
             ::Rack::RespondTo::MediaType(fmt)
           end
         end
         
+        type = ::Rack::RespondTo.env['HTTP_ACCEPT'] if type.nil?
+        type = ::Rack::RespondTo.selected_media_type if type == '*/*'
+
         "#{type}; charset=utf-8"
       end
     end

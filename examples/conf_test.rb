@@ -11,9 +11,7 @@ require 'goliath'
 
 class ConfTest < Goliath::API
   use Goliath::Rack::Params
-  use Goliath::Rack::DefaultMimeType
-  use Goliath::Rack::Formatters::JSON
-  use Goliath::Rack::Render
+  use Goliath::Rack::Render, 'json'
 
   def options_parser(opts, options)
     options[:test] = 0

@@ -98,8 +98,7 @@ class TestRig < Goliath::API
   use Goliath::Rack::Params             # parse & merge query and body parameters
   #
   use Goliath::Rack::DefaultMimeType    # cleanup accepted media types
-  use Goliath::Rack::Formatters::JSON   # JSON output formatter
-  use Goliath::Rack::Render             # auto-negotiate response format
+  use Goliath::Rack::Render, 'json'     # auto-negotiate response format
   #
   use ExceptionHandler                  # turn raised errors into HTTP responses
   use MiddlewareFailure                 # make response fail if 'fail' param
