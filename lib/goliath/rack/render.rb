@@ -41,15 +41,17 @@ module Goliath
       end
 
       def get_content_type(env)
-        fmt = env.params['format']
-        fmt = fmt.last if fmt.is_a?(Array)
+        type = if env.respond_to? :params
+          fmt = env.params['format']
+          fmt = fmt.last if fmt.is_a?(Array)
 
-        type = if fmt.nil? || fmt =~ /^\s*$/
-          ::Rack::RespondTo.selected_media_type
-        else
-          ::Rack::RespondTo::MediaType(fmt)
+          if fmt.nil? || fmt =~ /^\s*$/
+            ::Rack::RespondTo.selected_media_type
+          else
+            ::Rack::RespondTo::MediaType(fmt)
+          end
         end
-
+        
         "#{type}; charset=utf-8"
       end
     end
