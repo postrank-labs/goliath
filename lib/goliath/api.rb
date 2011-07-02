@@ -23,6 +23,13 @@ module Goliath
     include Goliath::Rack::Validator
 
     class << self
+      # Catches the userland class which inherits the Goliath API
+      #
+      # In case of further subclassing, the very last class encountered is used.
+      def inherited(subclass)
+        Goliath::Application.app_class = subclass.name
+      end
+
       # Retrieves the middlewares defined by this API server
       #
       # @return [Array] array contains [middleware class, args, block]
