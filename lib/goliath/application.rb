@@ -44,6 +44,21 @@ module Goliath
       c = $0 if !c || c.empty?
       c
     end
+    
+    # Returns the userland class which inherits the Goliath API
+    #
+    # @return [String] The app class
+    def self.app_class
+      @app_class
+    end
+    
+    # Sets the userland class that should use the Goliath API
+    #
+    # @param app_class [String|Symbol|Constant] The new app class
+    # @return [String] app_class The new app class
+    def self.app_class=(app_class)
+      @app_class = app_class.to_s
+    end
 
     # Retrive the base directory for the API before we've changed directories
     #
@@ -73,11 +88,18 @@ module Goliath
     #
     # @return [Nil]
     def self.run!
-      file = File.basename(app_file, '.rb')
-      klass = begin
-        Kernel.const_get(camel_case(file))
+      unless @app_class
+        file = File.basename(app_file, '.rb')
+        @app_class = camel_case(file)
+      end
+
+      begin
+        klass = Kernel
+        @app_class.split('::').each do |con|
+          klass = klass.const_get(con)
+        end
       rescue NameError
-        raise NameError, "Class #{camel_case(file)} not found."
+        raise NameError, "Class #{@app_class} not found."
       end
       api = klass.new
 
