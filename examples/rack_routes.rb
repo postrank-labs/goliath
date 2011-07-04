@@ -33,6 +33,13 @@ class HelloNumber < Goliath::API
   end
 end
 
+class BigNumber < Goliath::API
+  use Goliath::Rack::Params
+  def response(env)
+    [200, {}, "big number #{params[:number]}!"]
+  end
+end
+
 class Bonjour < Goliath::API
   def response(env)
     [200, {}, "bonjour!"]
@@ -81,7 +88,11 @@ class RackRoutes < Goliath::API
   map "/aloha", Aloha
 
   map "/:number", :number => /\d+/ do
-    run HelloNumber.new
+    if params[:number].to_i > 100
+      run BigNumber.new
+    else
+      run HelloNumber.new
+    end
   end
 
   map '/' do

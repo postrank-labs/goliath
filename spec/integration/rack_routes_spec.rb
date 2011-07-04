@@ -35,9 +35,18 @@ describe RackRoutes do
 
     it 'routes to the correct API using regex filters' do
       with_api(RackRoutes) do
+        get_request({:path => '/98'}, err) do |c|
+          c.response_header.status.should == 200
+          c.response.should == 'number 98!'
+        end
+      end
+    end
+
+    it 'routes to the correct API referencing params in the body of the buidler' do
+      with_api(RackRoutes) do
         get_request({:path => '/123123'}, err) do |c|
           c.response_header.status.should == 200
-          c.response.should == 'number 123123!'
+          c.response.should == 'big number 123123!'
         end
       end
     end
