@@ -1,3 +1,5 @@
+require 'goliath/synchrony/response_receiver'
+
 module Goliath
   module Synchrony
     #
