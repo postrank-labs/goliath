@@ -24,7 +24,7 @@ module Goliath
               klass.router.add(path, opts.dup).to {|env|
                 builder = Builder.new
                 env['params'] ||= {}
-                env['params'].merge!(env['router.params'])
+                env['params'].merge!(env['router.params']) if env['router.params']
                 builder.params = builder.retrieve_params(env)
                 builder.instance_eval(&blk)
                 builder.to_app.call(env)

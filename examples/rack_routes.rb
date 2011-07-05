@@ -95,7 +95,7 @@ class RackRoutes < Goliath::API
     end
   end
 
-  map '/' do
+  not_found('/') do
     run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }
   end
 

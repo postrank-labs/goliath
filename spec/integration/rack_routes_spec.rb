@@ -15,6 +15,21 @@ describe RackRoutes do
       }.to_not raise_error
     end
 
+    it 'fallback not found to missing' do
+      with_api(RackRoutes) do
+        get_request({:path => '/donkey'}, err) do |cb|
+          cb.response_header.status.should == 404
+          cb.response.should == 'Try /version /hello_world, /bonjour, or /hola'
+        end
+      end
+      with_api(RackRoutes) do
+        get_request({:path => '/'}, err) do |cb|
+          cb.response_header.status.should == 404
+          cb.response.should == 'Try /version /hello_world, /bonjour, or /hola'
+        end
+      end
+    end
+
     it 'fallback not found to /' do
       with_api(RackRoutes) do
         get_request({:path => '/donkey'}, err) do |cb|

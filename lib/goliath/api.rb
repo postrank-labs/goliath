@@ -147,12 +147,17 @@ module Goliath
         unless @router
           @router = HttpRouter.new
           @router.default(proc{ |env|
-            env = env.dup
-            env['PATH_INFO'] = '/'
-            @router.call(env)
+            @router.routes.last.dest.call(env)
           })
         end
         @router
+      end
+
+      # Use to define the 404 routing logic. As well, define any number of other paths to also run the not_found block.
+      def not_found(*other_paths, &block)
+        app = ::Rack::Builder.new(&block).to_app
+        router.default(app)
+        other_paths.each {|path| router.add(path).to(app) }
       end
     end
 
