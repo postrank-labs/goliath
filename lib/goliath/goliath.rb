@@ -8,7 +8,7 @@ require 'goliath/version'
 module Goliath
   module_function
 
-  ENVIRONMENTS = [:development, :production, :test]
+  ENVIRONMENTS = [:development, :production, :test, :staging]
 
   # Retrieves the current goliath environment
   #
