@@ -54,4 +54,11 @@ module Goliath
   def test?
     env == :test
   end
+
+  # Determines if we are in the staging environment
+  #
+  # @return [Boolean] true if current environment is staging.
+  def staging?
+    env == :staging
+  end
 end
