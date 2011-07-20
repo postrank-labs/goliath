@@ -127,5 +127,16 @@ module Goliath
       req = EM::HttpRequest.new("http://localhost:9000#{path}").put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
+
+    # Make a DELETE request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the DELETE request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def delete_request(request_data = {}, errback = nil, &blk)
+      path = request_data.delete(:path) || ''
+      req = EM::HttpRequest.new("http://localhost:9000#{path}").delete(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
   end
 end
