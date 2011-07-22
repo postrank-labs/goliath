@@ -27,7 +27,7 @@ module Goliath
       #
       # In case of further subclassing, the very last class encountered is used.
       def inherited(subclass)
-        Goliath::Application.app_class = subclass.name
+        Goliath::Application.app_class = subclass.name if defined?(Goliath::Application)
       end
 
       # Retrieves the middlewares defined by this API server
