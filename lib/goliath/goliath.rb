@@ -8,7 +8,7 @@ require 'goliath/version'
 module Goliath
   module_function
 
-  ENVIRONMENTS = [:development, :production, :test]
+  ENVIRONMENTS = [:development, :production, :test, :staging]
 
   # Retrieves the current goliath environment
   #
@@ -53,5 +53,12 @@ module Goliath
   # @return [Boolean] true if current environment is test, false otherwise
   def test?
     env == :test
+  end
+
+  # Determines if we are in the staging environment
+  #
+  # @return [Boolean] true if current environment is staging.
+  def staging?
+    env == :staging
   end
 end
