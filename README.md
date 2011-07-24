@@ -6,6 +6,8 @@ The framework is powered by an EventMachine reactor, a high-performance HTTP par
 
 Each HTTP request within Goliath is executed in its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
 
+
+
 ## Installation & Prerequisites
 
 * Install Ruby 1.9 (via RVM or natively)
@@ -20,18 +22,23 @@ Each HTTP request within Goliath is executed in its own Ruby fiber and all async
 
 ## Getting Started: Hello World
 
-    require 'goliath'
+```ruby
+require 'goliath'
 
-    class Hello < Goliath::API
-      def response(env)
-        [200, {}, "Hello World"]
-      end
-    end
+class Hello < Goliath::API
+  def response(env)
+    [200, {}, "Hello World"]
+  end
+end
 
-    > ruby hello.rb -sv
-    > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
+> ruby hello.rb -sv
+> [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
+```
 
-See examples directory for more, hands-on examples of building Goliath powered web-services.
+See examples directory for more, hands-on examples of building Goliath powered web-services. Are you new to EventMachine, or want a detailed walk-through of building a Goliath powered API? You're in luck, we have two super-awesome peepcode screencasts which will teach you all you need to know:
+
+* [Meet EventMachine: Part 1](http://peepcode.com/products/eventmachine) - introduction to EM, Fibers, etc.
+* [Meet EventMachine: Part 2](http://peepcode.com/products/eventmachine-ii) - building an API with Goliath
 
 ## Performance: MRI, JRuby, Rubinius
 
@@ -63,6 +70,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 
 ### Hands-on applications:
 
+* [Peecode](http://peepcode.com/products/eventmachine) [screencasts](http://peepcode.com/products/eventmachine-ii)
 * [Asynchronous HTTP, MySQL, etc](https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing)
 * [Response streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
