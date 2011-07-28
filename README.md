@@ -70,7 +70,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 
 ### Hands-on applications:
 
-* [Peecode](http://peepcode.com/products/eventmachine) [screencasts](http://peepcode.com/products/eventmachine-ii)
+* [Peepcode](http://peepcode.com/products/eventmachine) [screencasts](http://peepcode.com/products/eventmachine-ii)
 * [Asynchronous HTTP, MySQL, etc](https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing)
 * [Response streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
