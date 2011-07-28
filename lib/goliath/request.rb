@@ -200,6 +200,17 @@ module Goliath
       headers['Content-Length'] = body.bytesize.to_s
       @env[:terminate_connection] = true
       post_process([status, headers, body])
+      # Pass the request status to succeeded, so that the callback declared in
+      # #post_process is executed as soon as possible, and not after the whole
+      # response has been generated. For example, if you wanted to abort the
+      # request in a #on_headers or #on_body hook (through exception raising),
+      # the previous behaviour still went through all the hooks and the
+      # #response method before returning the error. Now the error fires as
+      # soon as possible. Note that #on_body and #response hooks may still be
+      # executed if your machine is very fast or the request is very small,
+      # but at least for long requests you don't get stuck until the full
+      # request has been received.
+      succeed
     end
 
     # Used to determine if the connection should  be kept open
