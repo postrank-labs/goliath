@@ -24,17 +24,32 @@ module Goliath
         [status, headers, body]
       end
 
+      # Virtual setter for the downstream middleware/endpoint response
+      def downstream_resp=(status_headers_body)
+        @status, @headers, @body = status_headers_body
+      end
+
       # Invoked by the async_callback chain. Stores the [status, headers, body]
       # for post_process'ing
       def call shb
         return shb if shb.first == Goliath::Connection::AsyncResponse.first
-        @status, @headers, @body = shb
-        succeed if finished?
+        self.downstream_resp = shb
+        check_progress
       end
 
       # Have we received a response?
       def response_received?
         !! @status
+      end
+
+    protected
+
+      def check_progress(fiber)
+        if finished?
+          succeed
+          # continue processing
+          fiber.resume(self) if fiber && fiber.alive? && fiber != Fiber.current
+        end
       end
     end
 

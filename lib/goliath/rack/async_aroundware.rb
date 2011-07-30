@@ -7,7 +7,7 @@ module Goliath
       # to the use statement are sent to each response_receiver_klass as it is created.
       #
       # @example
-      #   class MyResponseReceiver < Goliath::Rack::MultiReceiver
+      #   class Awesomizer2011 < Goliath::Rack::MultiReceiver
       #     def initialize(env, aq)
       #       @awesomeness_quotient = aq
       #       super(env)
@@ -16,7 +16,7 @@ module Goliath
       #   end
       #
       #   class AwesomeApiWithShortening < Goliath::API
-      #     use Goliath::Rack::AsyncAroundware, MyResponseReceiver, 3
+      #     use Goliath::Rack::AsyncAroundware, Awesomizer2011, 3
       #     # ... stuff ...
       #   end
       #
@@ -33,7 +33,7 @@ module Goliath
 
       # This coordinates a response_receiver to process a request. We hook the
       # response_receiver in the middle of the async_callback chain:
-      # * send the downstream response to the barrier, whether received directly
+      # * send the downstream response to the response_receiver, whether received directly
       #   from @app.call or via async callback
       # * have the upstream callback chain be invoked when the response_receiver completes
       #
@@ -42,12 +42,18 @@ module Goliath
       def call(env)
         response_receiver = new_response_receiver(env)
 
-        hook_into_callback_chain(env, response_receiver)
-
         response_receiver_resp = response_receiver.pre_process
 
+        hook_into_callback_chain(env, response_receiver)
+
         downstream_resp = @app.call(env)
-        response_receiver.call(downstream_resp)
+
+        # if downstream resp is final, pass it to the response_receiver; it will invoke
+        # the callback chain at its leisure. Our response is *always* async.
+        if final_response?(downstream_resp)
+          safely(env){ response_receiver.call(downstream_resp) }
+        end
+        return Goliath::Connection::AsyncResponse
       end
 
       # Generate a response_receiver to process the request, using request env & any args
@@ -59,20 +65,29 @@ module Goliath
         @response_receiver_klass.new(env, *@response_receiver_args)
       end
 
-      # put response_receiver in the middle of the async_callback chain:
+      # Put response_receiver in the middle of the async_callback chain:
       # * save the old callback chain;
       # * have the downstream callback send results to the response_receiver (possibly
       #   completing it)
       # * set the old callback chain to fire when the response_receiver completes
       def hook_into_callback_chain(env, response_receiver)
         async_callback = env['async.callback']
-        env['async.callback'] = response_receiver
-        response_receiver.callback{ do_postprocess(env, async_callback, response_receiver) }
-        response_receiver.errback{  do_postprocess(env, async_callback, response_receiver) }
+
+        # The response from the downstream app is accepted by the response_receiver...
+        downstream_callback = Proc.new{|resp| safely(env){ response_receiver.call(resp) } }
+        env['async.callback'] = downstream_callback
+
+        # .. but the upstream chain is only invoked when the response_receiver completes
+        invoke_upstream_chain = Proc.new do
+          response_receiver_resp = safely(env){ response_receiver.post_process }
+          async_callback.call(response_receiver_resp)
+        end
+        response_receiver.callback(&invoke_upstream_chain)
+        response_receiver.errback(&invoke_upstream_chain)
       end
 
-      def do_postprocess(env, async_callback, response_receiver)
-        safely(env){ async_callback.call(response_receiver.post_process) }
+      def final_response?(resp)
+        resp != Goliath::Connection::AsyncResponse
       end
     end
   end
