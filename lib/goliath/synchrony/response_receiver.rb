@@ -1,19 +1,23 @@
 module Goliath
   module Synchrony
 
-    #
-    # FIXME: generalize this to work with any deferrable
     module ResponseReceiver
-      attr_accessor :env, :status, :headers, :body
+      # The request environment, set in the initializer
+      attr_reader :env
+      # The response, set by the BarrierMiddleware's downstream
+      attr_accessor :status, :headers, :body
 
       # Override this method in your middleware to perform any preprocessing
-      # (launching a deferred request, perhaps)
+      # (launching a deferred request, perhaps).
+      #
+      # @return [Array] array contains [status, headers, body]
       def pre_process
+        Goliath::Connection::AsyncResponse
       end
 
-      # Override this method in your middleware to perform any postprocessing.  This
-      # will only be invoked when the deferrable and the response have been
-      # received.
+      # Override this method in your middleware to perform any postprocessing.
+      # This will only be invoked when all deferred requests (including the
+      # response) have completed.
       #
       # @return [Array] array contains [status, headers, body]
       def post_process

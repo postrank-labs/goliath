@@ -2,6 +2,7 @@
 $: << File.dirname(__FILE__)+'/../lib'
 
 require 'goliath'
+require 'goliath/synchrony/response_receiver'
 require 'em-synchrony/em-http'
 require 'yajl/json_gem'
 
