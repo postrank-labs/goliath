@@ -1,6 +1,52 @@
 module Goliath
   module Rack
-    class AsyncAroundware
+    #
+    # Include this to enable middleware that can perform pre- and
+    # post-processing.
+    #
+    # For internal reasons, you can't do the following as you would in Rack:
+    #
+    #   def call(env)
+    #     # ... do pre-processing
+    #     status, headers, body = @app.call(env)
+    #     new_body = make_totally_awesome(body) ## !! BROKEN !!
+    #     [status, headers, new_body]
+    #   end
+    #
+    # This class creates a "aroundware" helper to do that kind of "around"
+    # processing. Goliath proceeds asynchronously, but will still "unwind" the
+    # request by walking up the callback chain. Delegating out to the
+    # aroundware also lets you carry state around -- the ban on instance
+    # variables no longer applies, as each aroundware is unique per request.
+    #
+    # @example
+    #   # count incoming requests, outgoing responses, and
+    #   # outgoing responses by status code
+    #   class StatsdLogger
+    #     include Goliath::Rack::SimpleAroundware
+    #     def pre_process
+    #       statsd_count("reqs.#{config['statsd_name']}.in")
+    #       Goliath::Connection::AsyncResponse
+    #     end
+    #     def post_process
+    #       statsd_count("reqs.#{config['statsd_name']}.out")
+    #       statsd_count("reqs.#{config['statsd_name']}.#{status}")
+    #       [status, headers, body]
+    #     end
+    #     def statsd_count(name, count=1, sampling_frac=nil)
+    #       # ...
+    #     end
+    #   end
+    #
+    #   class AwesomeApiWith < Goliath::API
+    #     use Goliath::Rack::Params
+    #     use Goliath::Rack::AroundwareFactory, StatsdLogger
+    #     def response(env)
+    #       # ... do something awesome
+    #     end
+    #   end
+    #
+    class SimpleAroundwareFactory
       include Goliath::Rack::Validator
 
       # Called by the framework to create the middleware.
@@ -9,7 +55,8 @@ module Goliath
       # aroundware_klass as it is created.
       #
       # @example
-      #   class Awesomizer2011 < Goliath::Rack::MultiReceiver
+      #   class Awesomizer2011
+      #     include Goliath::Rack::SimpleAroundware
       #     def initialize(env, aq)
       #       @awesomeness_quotient = aq
       #       super(env)
@@ -18,15 +65,15 @@ module Goliath
       #   end
       #
       #   class AwesomeApiWithShortening < Goliath::API
-      #     use Goliath::Rack::AsyncAroundware, Awesomizer2011, 3
+      #     use Goliath::Rack::AroundwareFactory, Awesomizer2011, 3
       #     # ... stuff ...
       #   end
       #
       # @param app [#call] the downstream app
       # @param aroundware_klass a class that quacks like a
-      #   Goliath::Rack::ResponseReceiver and an EM::Deferrable
+      #   Goliath::Rack::SimpleAroundware and an EM::Deferrable
       # @param *args [Array] extra args to pass to the aroundware
-      # @return [Goliath::Rack::AsyncAroundware]
+      # @return [Goliath::Rack::AroundwareFactory]
       def initialize app, aroundware_klass, *args
         @app = app
         @aroundware_klass = aroundware_klass
@@ -46,6 +93,7 @@ module Goliath
         aroundware = new_aroundware(env)
 
         aroundware_resp = aroundware.pre_process
+        return aroundware_resp if final_response?(aroundware_resp)
 
         hook_into_callback_chain(env, aroundware)
 
@@ -54,7 +102,7 @@ module Goliath
         # if downstream resp is final, pass it to the aroundware; it will invoke
         # the callback chain at its leisure. Our response is *always* async.
         if final_response?(downstream_resp)
-          aroundware.call(downstream_resp)
+          aroundware.accept_response(:downstream_resp, true, resp)
         end
         return Goliath::Connection::AsyncResponse
       end
@@ -68,18 +116,14 @@ module Goliath
         async_callback = env['async.callback']
 
         # The response from the downstream app is accepted by the aroundware...
+        # ... and we immediately call post_process and hand it upstream
         downstream_callback = Proc.new do |resp|
-          safely(env){ aroundware.call(resp) }
-        end
-        env['async.callback'] = downstream_callback
-
-        # .. but the upstream chain is only invoked when the aroundware completes
-        invoke_upstream_chain = Proc.new do
+          safely(env){ aroundware.accept_response(:downstream_resp, true, resp) }
           new_resp = safely(env){ aroundware.post_process }
           async_callback.call(new_resp)
         end
-        aroundware.callback(&invoke_upstream_chain)
-        aroundware.errback(&invoke_upstream_chain)
+
+        env['async.callback'] = downstream_callback
       end
 
       def final_response?(resp)
@@ -87,10 +131,10 @@ module Goliath
       end
 
       # Generate a aroundware to process the request, using request env & any args
-      # passed to this AsyncAroundware at creation
+      # passed to this AroundwareFactory at creation
       #
       # @param env [Goliath::Env] The goliath environment
-      # @return [Goliath::Rack::ResponseReceiver] The response_receiver to process this request
+      # @return [Goliath::Rack::SimpleAroundware] The aroundware to process this request
       def new_aroundware(env)
         @aroundware_klass.new(env, *@aroundware_args)
       end
