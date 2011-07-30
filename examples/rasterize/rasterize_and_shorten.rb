@@ -4,6 +4,8 @@ require File.dirname(__FILE__)+'/rasterize'
 
 require 'goliath'
 require 'em-synchrony/em-http'
+require 'goliath/deprecated/async_aroundware'
+require 'goliath/deprecated/response_receiver'
 require 'postrank-uri'
 
 #

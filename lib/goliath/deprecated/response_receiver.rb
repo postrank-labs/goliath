@@ -1,6 +1,13 @@
 module Goliath
   module Synchrony
 
+    #
+    # Note: This class is deprecated. Please instead use BarrierAroundware
+    # (orchestrates multiple concurrent requests) or SimpleAroundware (like
+    # AsyncMiddleware, but with a simpler interface).
+    #
+    # There are more notes on the lib/goliath/deprecated/async_aroundware docs.
+    #
     module ResponseReceiver
       # The request environment, set in the initializer
       attr_reader :env
@@ -31,10 +38,10 @@ module Goliath
 
       # Invoked by the async_callback chain. Stores the [status, headers, body]
       # for post_process'ing
-      def call shb
-        return shb if shb.first == Goliath::Connection::AsyncResponse.first
-        self.downstream_resp = shb
-        check_progress
+      def call resp
+        return resp if resp.first == Goliath::Connection::AsyncResponse.first
+        self.downstream_resp = resp
+        check_progress(nil)
       end
 
       # Have we received a response?
@@ -53,6 +60,13 @@ module Goliath
       end
     end
 
+    #
+    # Note: This class is deprecated. Please instead use BarrierAroundware
+    # (orchestrates multiple concurrent requests) or SimpleAroundware (like
+    # AsyncMiddleware, but with a simpler interface).
+    #
+    # There are more notes on the lib/goliath/deprecated/async_aroundware docs.
+    #
     class MultiReceiver < EM::Synchrony::Multi
       include ResponseReceiver
 

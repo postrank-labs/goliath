@@ -6,7 +6,7 @@ require 'em-http'
 require 'em-synchrony/em-http'
 require 'yajl/json_gem'
 
-require 'goliath/synchrony/mongo_receiver'            # has the aroundware logic for talking to mongodb
+require 'goliath/deprecated/mongo_receiver'            # has the aroundware logic for talking to mongodb
 require File.join(File.dirname(__FILE__), 'http_log') # Use the HttpLog as our actual endpoint, but include this in the middleware
 
 # Usage:

@@ -1,8 +1,26 @@
 module Goliath
   module Rack
+    #
+    # Note: This class is deprecated. Instead, use BarrierAroundwareFactory
+    # (orchestrates multiple concurrent requests) or SimpleAroundwareFactory
+    # (like AsyncMiddleware, but with a simpler interface).
+    #
+    # The differences:
+    # * ResponseReceiver/MultiReceiver was a stupid name. The thing that has
+    #   pre_ and post_process is the Aroundware, the thing that manufactures
+    #   it is an AroundwareFactory.
+    # * An aroundware's pre_process may return a direct response, which is
+    #   immediately sent back upstream (no further downstream processing
+    #   happens). In the typical case, you will want to add
+    #       return Goliath::Connection::AsyncResponse
+    #   to your pre_process method.
+    # * ResponseReceiver used to masquerade as callback and middleware. Yuck.
+    #   The downstream response is now set via #accept_response, not #call.
+    #
     class AsyncAroundware
       include Goliath::Rack::Validator
 
+      #
       # Called by the framework to create the middleware.
       #
       # Any extra args passed to the use statement are sent to each
@@ -71,13 +89,14 @@ module Goliath
         downstream_callback = Proc.new do |resp|
           safely(env){ aroundware.call(resp) }
         end
-        env['async.callback'] = downstream_callback
 
         # .. but the upstream chain is only invoked when the aroundware completes
         invoke_upstream_chain = Proc.new do
           new_resp = safely(env){ aroundware.post_process }
           async_callback.call(new_resp)
         end
+
+        env['async.callback'] = downstream_callback
         aroundware.callback(&invoke_upstream_chain)
         aroundware.errback(&invoke_upstream_chain)
       end

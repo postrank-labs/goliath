@@ -1,7 +1,15 @@
-require 'goliath/synchrony/response_receiver'
+require 'goliath/deprecated/response_receiver'
 
 module Goliath
   module Synchrony
+    #
+    # Note: This class is deprecated. Please instead use BarrierAroundware
+    # (orchestrates multiple concurrent requests) or SimpleAroundware (like
+    # AsyncMiddleware, but with a simpler interface).
+    #
+    # There are more notes on the lib/goliath/deprecated/async_aroundware docs.
+    #
+    # ___________________________________________________________________________
     #
     # Currently, you must provide in the env a method 'mongo' that returns a mongo
     # collection or collection proxy (probably by setting it up in the config).
