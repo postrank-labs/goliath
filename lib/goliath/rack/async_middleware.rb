@@ -21,13 +21,13 @@ module Goliath
     #     include Goliath::Rack::AsyncMiddleware
     #
     #     def call(env)
-    #       awesomness_quotient = 3
+    #       awesomeness_quotient = 3
     #       # the extra args sent to super are passed along to post_process
-    #       super(env, awesomness_quotient)
+    #       super(env, awesomeness_quotient)
     #     end
     #
-    #     def post_process(env, status, headers, body, awesomness_quotient)
-    #       new_body = make_totally_awesome(body, awesomness_quotient)
+    #     def post_process(env, status, headers, body, awesomeness_quotient)
+    #       new_body = make_totally_awesome(body, awesomeness_quotient)
     #       [status, headers, new_body]
     #     end
     #   end
