@@ -93,3 +93,4 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 ## License & Acknowledgments
 
 Goliath is distributed under the MIT license, for full details please see the LICENSE file.
+Rock favicon CC-BY from [Douglas Feer](http://www.favicon.cc/?action=icon&file_id=375421)

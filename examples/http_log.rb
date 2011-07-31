@@ -56,6 +56,7 @@ class HttpLog < Goliath::API
   # Write the request information into mongo
   def record(process_time, resp, client_headers, response_headers)
     e = env
+    e.trace('http_log_record')
     EM.next_tick do
       doc = {
         request: {
