@@ -44,15 +44,14 @@ module Goliath
     #
     #   class AwesomeApiWithShortening < Goliath::API
     #     use Goliath::Rack::Params
-    #     use Goliath::Rack::AroundwareFactory, ShortenUrl
+    #     use Goliath::Rack::BarrierAroundwareFactory, ShortenUrl
     #     def response(env)
     #       # ... do something awesome
     #     end
     #   end
     #
-    class BarrierAroundwareFactory
+    class BarrierAroundwareFactory < Goliath::Rack::SimpleAroundwareFactory
       include Goliath::Rack::Validator
-      include Goliath::Rack::AroundwareFactory
 
       # Put aroundware in the middle of the async_callback chain:
       # * save the old callback chain;
@@ -72,7 +71,7 @@ module Goliath
           new_resp = safely(env){ aroundware.post_process }
           async_callback.call(new_resp)
         end
-        
+
         env['async.callback'] = downstream_callback
         aroundware.add_to_pending(:downstream_resp)
         aroundware.callback(&invoke_upstream_chain)

@@ -65,7 +65,7 @@ module Goliath
       #   end
       #
       #   class AwesomeApiWithShortening < Goliath::API
-      #     use Goliath::Rack::AroundwareFactory, Awesomizer2011, 3
+      #     use Goliath::Rack::SimpleAroundwareFactory, Awesomizer2011, 3
       #     # ... stuff ...
       #   end
       #

@@ -1,4 +1,5 @@
 require 'goliath/deprecated/response_receiver'
+require 'em-synchrony/em-mongo'
 
 module Goliath
   module Synchrony
@@ -39,18 +40,29 @@ module Goliath
         # ... requests aren't deferrables so they're tracked in @pending_queries
       end
 
-      def find(collection, selector={}, opts={}, &block)
-        @pending_queries += 1
-        db.collection(collection).find(selector, opts) do |result|
-          yield result
-          @pending_queries -= 1
-          self.succeed if finished?
+      if defined?(EM::Mongo::Cursor)
+        def find(collection, selector={}, opts={}, &block)
+          @pending_queries += 1
+          db.collection(collection).afind(selector, opts).to_a.callback do |result|
+            yield result
+            @pending_queries -= 1
+            self.succeed if finished?
+          end
+        end
+      else
+        def find(collection, selector={}, opts={}, &block)
+          @pending_queries += 1
+          db.collection(collection).afind(selector, opts) do |result|
+            yield result
+            @pending_queries -= 1
+            self.succeed if finished?
+          end
         end
       end
 
       def first(collection, selector={}, opts={}, &block)
         opts[:limit] = 1
-        find(collection, selector, opts) do |result|
+        self.find(collection, selector, opts) do |result|
           yield result.first
         end
       end

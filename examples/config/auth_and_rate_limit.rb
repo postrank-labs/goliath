@@ -11,20 +11,23 @@ environment(:development) do
   timebin = ((Time.now.to_i / 3600).floor * 3600)
 
   # This user's calls should all go through
-  config['api_auth_db'].collection('AccountInfo').save({
+  config['api_auth_db'].collection(:account_info).save({
       :_id => 'i_am_awesome', 'valid' => true,  'max_call_rate' => 1_000_000 })
 
   # this user's account is disabled
-  config['api_auth_db'].collection('AccountInfo').save({
+  config['api_auth_db'].collection(:account_info).save({
       :_id => 'i_am_lame',    'valid' => false, 'max_call_rate' => 1_000 })
 
   # this user has not been seen, but will very quickly hit their limit
-  config['api_auth_db'].collection('AccountInfo').save({
+  config['api_auth_db'].collection(:account_info).save({
       :_id => 'i_am_limited', 'valid' => true, 'max_call_rate' =>     10 })
+  config['api_auth_db'].collection(:usage_info).save({
+      :_id => "i_am_limited-#{timebin}", 'calls' =>  0 })
 
   # fakes a user with a bunch of calls already made this hour -- two more = no yuo
-  config['api_auth_db'].collection('AccountInfo').save({
+  config['api_auth_db'].collection(:account_info).save({
       :_id => 'i_am_busy',    'valid' => true, 'max_call_rate' =>  1_000 })
-  config['api_auth_db'].collection('UsageInfo').save({
+  config['api_auth_db'].collection(:usage_info).save({
       :_id => "i_am_busy-#{timebin}", 'calls' =>  999 })
+
 end
