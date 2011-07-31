@@ -13,38 +13,15 @@ module Goliath
     #     [status, headers, new_body]
     #   end
     #
-    # This class creates a "aroundware" helper to do that kind of "around"
+    # This class creates a "aroundware" helper to do that kind of
     # processing. Goliath proceeds asynchronously, but will still "unwind" the
-    # request by walking up the callback chain. Delegating out to the
-    # aroundware also lets you carry state around -- the ban on instance
-    # variables no longer applies, as each aroundware is unique per request.
+    # request by walking up the callback chain. Delegating out to the aroundware
+    # also lets you carry state around -- the ban on instance variables no
+    # longer applies, as each aroundware is unique per request.
     #
-    # @example
-    #   # count incoming requests, outgoing responses, and
-    #   # outgoing responses by status code
-    #   class StatsdLogger
-    #     include Goliath::Rack::SimpleAroundware
-    #     def pre_process
-    #       statsd_count("reqs.#{config['statsd_name']}.in")
-    #       Goliath::Connection::AsyncResponse
-    #     end
-    #     def post_process
-    #       statsd_count("reqs.#{config['statsd_name']}.out")
-    #       statsd_count("reqs.#{config['statsd_name']}.#{status}")
-    #       [status, headers, body]
-    #     end
-    #     def statsd_count(name, count=1, sampling_frac=nil)
-    #       # ...
-    #     end
-    #   end
-    #
-    #   class AwesomeApiWith < Goliath::API
-    #     use Goliath::Rack::Params
-    #     use Goliath::Rack::AroundwareFactory, StatsdLogger
-    #     def response(env)
-    #       # ... do something awesome
-    #     end
-    #   end
+    # @see Goliath::Rack::AsyncMiddleware
+    # @see Goliath::Rack::SimpleAroundware
+    # @see Goliath::Rack::BarrierAroundware
     #
     class SimpleAroundwareFactory
       include Goliath::Rack::Validator

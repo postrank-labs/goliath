@@ -11,7 +11,7 @@ module Goliath
     module ResponseReceiver
       # The request environment, set in the initializer
       attr_reader :env
-      # The response, set by the BarrierMiddleware's downstream
+      # The response, set by the ResponseReceiver's downstream
       attr_accessor :status, :headers, :body
 
       # Override this method in your middleware to perform any preprocessing

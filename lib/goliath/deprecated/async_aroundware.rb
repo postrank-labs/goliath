@@ -17,6 +17,20 @@ module Goliath
     # * ResponseReceiver used to masquerade as callback and middleware. Yuck.
     #   The downstream response is now set via #accept_response, not #call.
     #
+    # * change
+    #       use Goliath::Rack::AsyncAroundware, MyObsoleteReceiver
+    #   to
+    #       use Goliath::Rack::BarrierAroundwareFactory, MyHappyBarrier
+    # * `BarrierAroundware` provides the combined functionality of
+    #   `MultiReceiver` and `ResponseReceiver`, which will go away. It's now a
+    #   mixin (module) so you're not forced to inherit from it.
+    # * There is no more `responses` method: either use instance accessors or
+    #   look in the `successes`/`failures` hashes for yourresults.
+    # * Both enqueued responses and the downstream response are sent to
+    #   `accept_response`; there is no more  `call` method.
+    # * `MongoReceiver` will go away, because there's no need for it. See
+    #   `examples/auth_and_rate_limit.rb` for examples
+    #
     class AsyncAroundware
       include Goliath::Rack::Validator
 

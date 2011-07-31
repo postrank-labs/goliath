@@ -2,7 +2,7 @@ module Goliath
   module Rack
     #
     # Include this to enable middleware that can perform pre- and
-    # post-processing, optionally having multiple responses pending.
+    # post-processing, orchestrating multiple concurrent requests.
     #
     # For internal reasons, you can't do the following as you would in Rack:
     #
@@ -13,42 +13,19 @@ module Goliath
     #     [status, headers, new_body]
     #   end
     #
-    # This class creates a "aroundware" helper to do that kind of "around"
+    # This class creates an "aroundware" helper to do that kind of
     # processing. Goliath proceeds asynchronously, but will still "unwind" the
-    # request by walking up the callback chain. Delegating out to the
-    # aroundware also lets you carry state around -- the ban on instance
-    # variables no longer applies, as each aroundware is unique per request.
+    # request by walking up the callback chain. Delegating out to the aroundware
+    # also lets you carry state around -- the ban on instance variables no
+    # longer applies, as each aroundware is unique per request.
     #
-    # @example
-    #   class ShortenUrl
-    #     attr_accessor :shortened_url
-    #     include Goliath::Rack::BarrierAroundware
+    # The strategy here is similar to that in EM::Multi. Figuring out what goes
+    # on there will help you understand this.
     #
-    #     def pre_process
-    #       target_url        = PostRank::URI.clean(env.params['url'])
-    #       shortener_request = EM::HttpRequest.new('http://is.gd/create.php').aget(:query => { :format => 'simple', :url => target_url })
-    #       enqueue :shortened_url, shortener_request
-    #       Goliath::Connection::AsyncResponse
-    #     end
-    #
-    #     # by the time you get here, the AroundwareFactory will have populated
-    #     # the [status, headers, body] and the shortener_request will have
-    #     # populated the shortened_url attribute.
-    #     def post_process
-    #       if succeeded?(:shortened_url)
-    #         headers['X-Shortened-URI'] = shortened_url
-    #       end
-    #       [status, headers, body]
-    #     end
-    #   end
-    #
-    #   class AwesomeApiWithShortening < Goliath::API
-    #     use Goliath::Rack::Params
-    #     use Goliath::Rack::BarrierAroundwareFactory, ShortenUrl
-    #     def response(env)
-    #       # ... do something awesome
-    #     end
-    #   end
+    # @see EventMachine::Multi
+    # @see Goliath::Rack::SimpleAroundware
+    # @see Goliath::Rack::SimpleAroundwareFactory
+    # @see Goliath::Rack::BarrierAroundware
     #
     class BarrierAroundwareFactory < Goliath::Rack::SimpleAroundwareFactory
       include Goliath::Rack::Validator

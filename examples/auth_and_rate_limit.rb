@@ -76,31 +76,38 @@ require File.join(File.dirname(__FILE__), 'http_log') # Use the HttpLog as our a
 
 # Tracks and enforces account and rate limit policies.
 #
-# This is like a bouncer who lets you order a drink while he checks your ID. We
-# proxy your request to a backend server and get your account/usage info; if
-# your ID is good there's no further wait on a response.
+# This is like a bouncer who lets townies order a drink while he checks their
+# ID, but who's a jerk to college kids.
 #
-# This works through the magic of BarrierAroundware:
+# On GET or HEAD requests, it proxies the request and gets account/usage info
+# concurrently; authorizing the account doesn't delay the response.
+#
+# On a POST or other non-idempotent request, it checks the account/usage info
+# *before* allowing the request to fire. This takes longer, but is necessary and
+# tolerable.
+#
+# The magic of BarrierAroundware:
 #
 # 1) In pre_process (before the request):
 #    * validate an apikey was given; if not, raise (returning directly)
 #    * launch requests for the account and rate limit usage
 #
-# 2) BarrierAroundwareFactory passes the request down the middleware chain
+# 2) On a POST or other non-GET non-HEAD, we issue `perform`, which barriers
+#    (allowing other requests to proceed) until the two pending requests
+#    complete. It then checks the account exists and is valid, and that the rate
+#    limit is OK
 #
-# 3) post_process resumes only when both proxied request & auth info are complete
+# 3) If the auth check fails, we raise an error (later caught by a safely{}
+#    block and turned into the right 4xx HTTP response.
 #
-# 4) The post_process method then
-#    - Checks the account exists and is valid
-#    - Checks the rate limit is OK
+# 4) If the auth check succeeds, or the request is a GET or HEAD, we return
+#    Goliath::Connection::AsyncResponse, and BarrierAroundwareFactory passes the
+#    request down the middleware chain
 #
-# 5) If it passes all those checks, the request goes through; otherwise we raise
-#    an error that Goliath::Rack::Validator turns into a 4xx response
+# 5) post_process resumes only when both proxied request & auth info are complete
+#    (it already has of course in the non-lazy scenario)
 #
-# WARNING: Since this passes ALL requests through to the responder, it's only
-# suitable for idempotent requests (GET, typically).  You may need to handle
-# POST/PUT/DELETE requests differently.
-#
+# 6) If we were lazy, the post_process method now checks authorization
 #
 class AuthBarrier
   include Goliath::Rack::BarrierAroundware
@@ -127,10 +134,13 @@ class AuthBarrier
     # the results of the afirst deferrable will be set right into account_info (and the request into successes)
     enqueue_mongo_request(:account_info, { :_id => apikey   })
     enqueue_mongo_request(:usage_info,   { :_id => usage_id })
+    maybe_fake_delay!
 
-    # Fake out a delay in the database response if auth_db_delay is given
-    if (auth_db_delay = env.params['auth_db_delay'].to_f) > 0
-      enqueue_acceptor(:sleepy){|acc| EM.add_timer(auth_db_delay){ acc.succeed } }
+    # On non-GET non-HEAD requests, we have to check auth now.
+    unless lazy_authorization?
+      perform     # yield execution until user_info has arrived
+      charge_usage
+      check_authorization!
     end
 
     env.trace('pre_process_end')
@@ -139,26 +149,22 @@ class AuthBarrier
 
   def post_process
     env.trace('post_process_beg')
-
-    # When post_process resumes, the db requests and the response are here!
     # [:account_info, :usage_info, :status, :headers, :body].each{|attr| env.logger.info(("%23s\t%s" % [attr, self.send(attr).inspect[0..200]])) }
-
-    self.account_info ||= {}
-    self.usage_info   ||= {}
 
     inject_headers
 
-    EM.next_tick do
-      safely(env){ charge_usage }
+    # We have to check auth now, we skipped it before
+    if lazy_authorization?
+      charge_usage
+      check_authorization!
     end
 
-    safely(env, headers) do
-      check_apikey!
-      check_rate_limit!
+    env.trace('post_process_end')
+    [status, headers, body]
+  end
 
-      env.trace('post_process_end')
-      [status, headers, body]
-    end
+  def lazy_authorization?
+    (env['REQUEST_METHOD'] == 'GET') || (env['REQUEST_METHOD'] == 'HEAD')
   end
 
   if defined?(EM::Mongo::Cursor)
@@ -175,12 +181,24 @@ class AuthBarrier
     end
   end
 
+  # Fake out a delay in the database response if auth_db_delay is given
+  def maybe_fake_delay!
+    if (auth_db_delay = env.params['auth_db_delay'].to_f) > 0
+      enqueue_acceptor(:sleepy){|acc| EM.add_timer(auth_db_delay){ acc.succeed } }
+    end
+  end
+
   def accept_response(handle, *args)
     env.trace("received_#{handle}")
     super(handle, *args)
   end
 
   # ===========================================================================
+
+  def check_authorization!
+    check_apikey!
+    check_rate_limit!
+  end
 
   def validate_apikey!
     if apikey.to_s.empty?
@@ -189,12 +207,13 @@ class AuthBarrier
   end
 
   def check_apikey!
-    unless account_info['valid'] == true
+    unless account_info && (account_info['valid'] == true)
       raise InvalidApikeyError
     end
   end
 
   def check_rate_limit!
+    self.usage_info ||= {}
     rate  = usage_info['calls'].to_i + 1
     limit = account_info['max_call_rate'].to_i
     return true if rate <= limit
@@ -202,8 +221,10 @@ class AuthBarrier
   end
 
   def charge_usage
-    db.collection(:usage_info).update({ :_id => usage_id },
-      { '$inc' => { :calls   => 1 } }, :upsert => true)
+    EM.next_tick do
+      safely(env){ db.collection(:usage_info).update({ :_id => usage_id },
+          { '$inc' => { :calls   => 1 } }, :upsert => true) }
+    end
   end
 
   def inject_headers
