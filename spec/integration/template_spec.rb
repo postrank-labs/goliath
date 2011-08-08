@@ -10,8 +10,6 @@ describe Template do
 
   let(:api_options) { { :config => config_file } }
 
-  before(:all) {     Goliath.env = :test }
-  
   it 'renders haml template with default haml layout' do
     
     with_api(Template, api_options) do
