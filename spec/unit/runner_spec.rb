@@ -10,6 +10,13 @@ describe Goliath::Runner do
     @r.stub!(:setup_logger).and_return(@log_mock)
   end
 
+  after(:each) do
+    # Runner default env is development.
+    # We do need to revert to test
+    Goliath.env = :test
+  end
+
+  
   describe 'server execution' do
     describe 'daemonization' do
       it 'daemonizes if specified' do
@@ -30,6 +37,12 @@ describe Goliath::Runner do
         @r = Goliath::Runner.new([], nil)
       end
 
+      after(:each) do
+        # Runner default env is development.
+        # We do need to revert to test
+        Goliath.env = :test
+      end
+      
       describe 'without setting up file logger' do
         before(:each) do
           @r.stub!(:setup_file_logger)
