@@ -41,6 +41,8 @@ module Goliath
     #   next request. Everything that you need to store needs to be stored in
     #   local variables.
     module AsyncMiddleware
+      include Goliath::Rack::Validator
+
       # Called by the framework to create the middleware.
       #
       # @param app [Proc] The application
@@ -65,19 +67,38 @@ module Goliath
       # @param env [Goliath::Env] The goliath environment
       # @return [Array] The [status_code, headers, body] tuple
       def call(env, *args)
-        async_cb = env['async.callback']
 
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body, *args))
-        end
+        hook_into_callback_chain(env, *args)
 
-        status, headers, body = @app.call(env)
+        downstream_resp = @app.call(env)
 
-        if status == Goliath::Connection::AsyncResponse.first
-          [status, headers, body]
-        else
+        if final_response?(downstream_resp)
+          status, headers, body = downstream_resp
           post_process(env, status, headers, body, *args)
+        else
+          return Goliath::Connection::AsyncResponse
         end
+      end
+
+      # Put a callback block in the middle of the async_callback chain:
+      # * save the old callback chain;
+      # * have the downstream callback send results to our proc...
+      # * which fires old callback chain when it completes
+      def hook_into_callback_chain(env, *args)
+        async_callback = env['async.callback']
+
+        # The response from the downstream app is sent to post_process
+        # and then directly up the callback chain
+        downstream_callback = Proc.new do |status, headers, body|
+          new_resp = safely(env){ post_process(env, status, headers, body, *args) }
+          async_callback.call(new_resp)
+        end
+
+        env['async.callback'] = downstream_callback
+      end
+
+      def final_response?(resp)
+        resp != Goliath::Connection::AsyncResponse
       end
 
       # Override this method in your middleware to perform any
@@ -88,6 +109,7 @@ module Goliath
       def post_process(env, status, headers, body)
         [status, headers, body]
       end
+
     end
   end
 end

@@ -12,11 +12,11 @@ require 'yajl/json_gem'
 #
 # To run this, start the 'test_rig.rb' server on port 9002:
 #
-#   ./examples/test_rig.rb -sv -p 9002
+#   bundle exec ./examples/test_rig.rb -sv -p 9002
 #
 # And then start this server on port 9000:
 #
-#   ./async_aroundware_demo.rb -sv -p 9000
+#   bundle exec ./examples/barrier_aroundware_demo.rb -sv -p 9000
 #
 # Now curl the async_aroundware_demo_multi:
 #
@@ -42,27 +42,31 @@ require 'yajl/json_gem'
 
 BASE_URL     = 'http://localhost:9002/'
 
-class MyResponseReceiver < Goliath::Synchrony::MultiReceiver
+class RemoteRequestBarrier
+  include Goliath::Rack::BarrierAroundware
+  attr_accessor :sleep_1
+  
   def pre_process
     # Request with delay_1 and drop_1 -- note: 'aget', because we want execution to continue
     req = EM::HttpRequest.new(BASE_URL).aget(:query => { :delay => env.params['delay_1'], :drop => env.params['drop_1'] })
-    add :sleep_1, req
+    enqueue :sleep_1, req
+    return Goliath::Connection::AsyncResponse
   end
 
   def post_process
     # unify the results with the results of the API call
-    responses[:callback].each{|name, resp| body[:results][name] = JSON.parse(resp.response) }
-    responses[:errback ].each{|name, err|  body[:errors][name]  = err.error     }
-    [status, headers, JSON.generate(body)]
+    if successes.include?(:sleep_1) then body[:results][:sleep_1] = JSON.parse(sleep_1.response)
+    else                                 body[:errors][:sleep_1]  = sleep_1.error     ; end
+    [status, headers, JSON.pretty_generate(body)]
   end
 end
 
-class AsyncAroundwareDemo < Goliath::API
+class BarrierAroundwareDemo < Goliath::API
   use Goliath::Rack::Params
   use Goliath::Rack::Validation::NumericRange, {:key => 'delay_1', :default => 1.0, :max => 5.0, :min => 0.0, :as => Float}
   use Goliath::Rack::Validation::NumericRange, {:key => 'delay_2', :default => 0.5, :max => 5.0, :min => 0.0, :as => Float}
   #
-  use Goliath::Rack::AsyncAroundware, MyResponseReceiver
+  use Goliath::Rack::BarrierAroundwareFactory, RemoteRequestBarrier
 
   def response(env)
     # Request with delay_2 and drop_2 -- note: 'get', because we want execution to proceed linearly
@@ -71,7 +75,7 @@ class AsyncAroundwareDemo < Goliath::API
     body = { :results => {}, :errors => {} }
 
     if resp.response_header.status.to_i != 0
-      body[:results][:sleep_2] = JSON.parse(resp.response)
+      body[:results][:sleep_2] = JSON.parse(resp.response) rescue 'parsing failed'
     else
       body[:errors ][:sleep_2] = resp.error
     end
