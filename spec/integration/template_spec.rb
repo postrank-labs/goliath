@@ -1,6 +1,7 @@
 require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/template')
 
+
 describe Template do
 
   def config_file
@@ -10,6 +11,7 @@ describe Template do
   let(:api_options) { { :config => config_file } }
 
   it 'renders haml template with default haml layout' do
+    
     with_api(Template, api_options) do
       get_request do |c|
         c.response.should =~ %r{<li><a href="/joke">Tell me a joke</a></li>}

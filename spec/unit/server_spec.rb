@@ -105,6 +105,10 @@ describe Goliath::Server do
 
   context 'config parsing' do
     context 'environment' do
+      after(:all) do
+        # Be sure to revert to correct env
+        Goliath.env = :test        
+      end
       it 'executes the block if the environment matches the provided string' do
         Goliath.env = :development
         block_run = false
