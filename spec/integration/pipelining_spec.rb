@@ -13,11 +13,11 @@ end
 
 describe 'HTTP Pipelining support' do
   it 'serves multiple requests via single connection' do
-    with_api(Interleaving) do
+    with_api(Interleaving, :port => 9901) do
       start = Time.now.to_f
       res = []
 
-      conn = EM::HttpRequest.new('http://localhost:9000')
+      conn = EM::HttpRequest.new('http://localhost:9901')
       r1 = conn.aget :query => {:delay => 0.3}, :keepalive => true
       r2 = conn.aget :query => {:delay => 0.2}
 
