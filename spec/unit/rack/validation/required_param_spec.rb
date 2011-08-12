@@ -91,6 +91,16 @@ describe Goliath::Rack::Validation::RequiredParam do
         @env['params']['mk'] = [1, 2, 3, 4]
         @rp.key_valid?(@env['params']).should be_true
       end
+
+      it "doesn't raise if the key provided is multiline and has blanks" do
+        @env['params']['mk'] = "my\n  \nvalue"
+        @rp.key_valid?(@env['params']).should be_true
+      end
+
+      it "doesn't raise if the key provided is an array and contains multiline with blanks" do
+        @env['params']['mk'] = ["my\n  \nvalue", "my\n  \nother\n  \nvalue"]
+        @rp.key_valid?(@env['params']).should be_true
+      end
     end
   end
 end
