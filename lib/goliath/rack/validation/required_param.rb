@@ -12,6 +12,13 @@ module Goliath
         include Goliath::Rack::Validator
         attr_reader :type, :key, :message
 
+        # extracted from activesupport 3.0.9
+        if defined?(Encoding) && "".respond_to?(:encode)
+          NON_WHITESPACE_REGEXP = %r![^[:space:]]!
+        else
+          NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
+        end
+        
         # Creates the Goliath::Rack::Validation::RequiredParam validator
         #
         # @param app The app object
@@ -34,7 +41,7 @@ module Goliath
 
         def key_valid?(params)
           if !params.has_key?(key) || params[key].nil? ||
-              (params[key].is_a?(String) && params[key] =~ /^\s*$/)
+              (params[key].is_a?(String) && params[key] !~ NON_WHITESPACE_REGEXP)
             return false
           end
 
@@ -42,7 +49,7 @@ module Goliath
             unless params[key].compact.empty?
               params[key].each do |k|
                 return true unless k.is_a?(String)
-                return true unless k =~ /^\s*$/
+                return true unless k !~ NON_WHITESPACE_REGEXP
               end
             end
             return false
