@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ['dan sinclair', 'Ilya Grigorik']
   s.email = ['dj2@everburning.com', 'ilya@igvita.com']
-  s.homepage = 'http://labs.postrank.com/'
-  s.summary = 'Framework for writing API servers'
+  s.homepage = 'http://goliath.io/'
+  s.summary = 'Async framework for writing API servers'
   s.description = s.summary
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.3'
