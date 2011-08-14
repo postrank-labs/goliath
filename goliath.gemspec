@@ -12,8 +12,6 @@ Gem::Specification.new do |s|
   s.summary = 'Framework for writing API servers'
   s.description = s.summary
 
-  s.required_ruby_version = '>=1.9.2'
-
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.3'
   s.add_dependency 'em-synchrony', '>= 0.3.0.beta.1'
   s.add_dependency 'http_parser.rb'
