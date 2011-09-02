@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = s.summary
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.3'
-  s.add_dependency 'em-synchrony', '>= 0.3.0.beta.1'
+  s.add_dependency 'em-synchrony', '>= 1.0.0'
   s.add_dependency 'http_parser.rb'
   s.add_dependency 'log4r'
 
