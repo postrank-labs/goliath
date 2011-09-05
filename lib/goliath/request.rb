@@ -71,6 +71,8 @@ module Goliath
       @env[PATH_INFO]       = parser.request_path
       @env[FRAGMENT]        = parser.fragment
 
+      yield if block_given?
+
       begin
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
       rescue Exception => e
