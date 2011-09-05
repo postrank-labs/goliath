@@ -121,6 +121,10 @@ module Goliath
       super
     end
 
+    def defer_stack
+      @defer_stack ||= []
+    end
+
     # The Goliath::Env will provide any of it's keys as a method. It will also provide
     # any of the keys in the config object as methods. The methods will return
     # the value of the key. If the key doesn't exist in either hash this will

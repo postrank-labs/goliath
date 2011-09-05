@@ -70,9 +70,7 @@ module Goliath
       @env[REQUEST_PATH]    = parser.request_path
       @env[PATH_INFO]       = parser.request_path
       @env[FRAGMENT]        = parser.fragment
-    end
 
-    def dispatch_header(h)
       begin
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
       rescue Exception => e

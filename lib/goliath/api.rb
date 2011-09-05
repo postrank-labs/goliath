@@ -5,10 +5,6 @@ require 'goliath/request'
 require 'goliath/rack'
 require 'goliath/validation'
 
-class HttpRouter::Route
-  attr_accessor :event_handler
-end
-
 module Goliath
   # All Goliath APIs subclass Goliath::API. All subclasses _must_ override the
   # {#response} method.
@@ -187,21 +183,6 @@ module Goliath
       Thread.current[GOLIATH_ENV]
     end
 
-    # Accessor for the event handler for on_{body, close, header}
-    #
-    # @return [Goliath::Api, nil] The current handler for events
-
-    def event_handler
-      @event_handler ||= begin
-        if self.class.maps?
-          response = self.class.router.recognize(env)
-          response.path.route.event_handler
-        else
-          self
-        end
-      end
-    end
-
     # The API will proxy missing calls to the env object if possible.
     #
     # The two entries in this example are equivalent as long as you are not
@@ -235,6 +216,7 @@ module Goliath
     # @return [Goliath::Connection::AsyncResponse] An async response.
     def call(env)
       begin
+        Thread.current[GOLIATH_ENV] = env
         status, headers, body = response(env)
 
         if status
