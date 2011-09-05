@@ -6,6 +6,7 @@ module Goliath
   # Goliath::Env also provides access to the logger, configuration information
   # and anything else set into the config data during initialization.
   class Env < Hash
+    attr_accessor :event_handler
     include Constants
 
     # Create a new Goliath::Env object

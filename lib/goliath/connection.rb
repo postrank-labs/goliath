@@ -32,13 +32,13 @@ module Goliath
         env[CONFIG]      = config
         env[REMOTE_ADDR] = remote_address
 
-        env[ASYNC_HEADERS] = @api.method(:on_headers) if @api.respond_to? :on_headers
-        env[ASYNC_BODY]    = @api.method(:on_body) if @api.respond_to? :on_body
-        env[ASYNC_CLOSE]   = @api.method(:on_close) if @api.respond_to? :on_close
-
         r = Goliath::Request.new(@app, self, env)
-        r.parse_header(h, @parser)
-
+        r.parse_header(h, @parser) {
+          @api.set_event_handler!(env)
+          env[ASYNC_HEADERS] = env.event_handler.method(:on_headers) if env.event_handler.respond_to? :on_headers
+          env[ASYNC_BODY]    = env.event_handler.method(:on_body)    if env.event_handler.respond_to? :on_body
+          env[ASYNC_CLOSE]   = env.event_handler.method(:on_close)   if env.event_handler.respond_to? :on_close
+        }
         @requests.push(r)
       end
 
