@@ -17,35 +17,6 @@ module Goliath
         original_run(app)
       end
 
-      module MappingHandlers
-        include Constants
-        attr_reader :last_app
-
-        def defer
-          defer = EM::DefaultDeferrable.new
-          Thread.current[GOLIATH_ENV].defer_stack << defer
-          defer
-        end
-
-        def on_body(env, body)
-          defer.callback do |api|
-            api.on_body(env, body) if api.respond_to?(:on_body)
-          end
-        end
-
-        def on_headers(env, headers)
-          defer.callback do |api|
-            api.on_headers(env, headers) if api.respond_to?(:on_headers)
-          end
-        end
-
-        def on_close(env)
-          defer.callback do |api|
-            api.on_close(env) if api.respond_to?(:on_close)
-          end
-        end
-      end
-
       # Builds the rack middleware chain for the given API
       #
       # @param klass [Class] The API class to build the middlewares for
@@ -57,7 +28,6 @@ module Goliath
             use(mw_klass, *args, &blk)
           end
           if klass.maps?
-            klass.instance_eval "include MappingHandlers", __FILE__, __LINE__
             klass.maps.each do |path, route_klass, opts, blk|
               route = klass.router.add(path, opts.dup)
               route.api_class = route_klass
@@ -71,6 +41,7 @@ module Goliath
                   builder.instance_eval { use mw[0], *mw[1], &mw[2] }
                 end if route_klass
                 if route_klass or blk.nil?
+                  raise "You cannot use `run' and supply a routing class at the same time" if builder.inner_app
                   builder.instance_eval { run env.event_handler }
                 end
                 builder.to_app.call(env)
@@ -82,7 +53,6 @@ module Goliath
           end
         end
       end
-
     end
   end
 end
