@@ -125,9 +125,6 @@ module Goliath
       def map(name, *args, &block)
         opts = args.last.is_a?(Hash) ? args.pop : {}
         klass = args.first
-        if klass && block_given?
-          raise "Can't provide class and block to map"
-        end
         maps.push([name, klass, opts, block])
       end
 

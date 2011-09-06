@@ -140,5 +140,22 @@ describe RackRoutes do
       end
     end
 
+    context "with event handlers" do
+      it "collects header events" do
+        with_api(RackRoutes) do
+          get_request({:path => '/headers'}, err) do |c|
+            c.response_header.status.should == 200
+            c.response.should == 'headers: {"Connection"=>"close", "Host"=>"localhost:9900", "User-Agent"=>"EventMachine HttpClient"}'
+          end
+
+          post_request({:path => '/headers'}, err) do |c|
+            # the /headers route only supports GET requests
+            c.response_header.status.should == 405
+            c.response.should == '[:error, "Invalid request method"]'
+            c.response_header['ALLOW'].should == 'GET'
+          end
+        end
+      end
+    end
   end
 end

@@ -26,6 +26,17 @@ class PostHelloWorld < Goliath::API
   end
 end
 
+class HeaderCollector < Goliath::API
+  def on_headers(env, header)
+    @headers ||= {}
+    @headers.merge!(header)
+  end
+
+  def response(env)
+    [200, {}, "headers: #{@headers.inspect}"]
+  end
+end
+
 class HelloNumber < Goliath::API
   use Goliath::Rack::Params
   def response(env)
@@ -74,6 +85,10 @@ class RackRoutes < Goliath::API
 
   get "/hello_world" do
     run HelloWorld.new
+  end
+
+  map "/headers", HeaderCollector do
+    use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
 
   map "/bonjour" do
