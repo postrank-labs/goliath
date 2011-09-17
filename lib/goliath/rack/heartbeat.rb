@@ -7,13 +7,16 @@ module Goliath
     #  use Goliath::Rack::Heartbeat
     #
     class Heartbeat
-      def initialize(app)
-        @app = app
+      def initialize(app, opts = {})
+        @app  = app
+        @opts = opts
+        @opts[:path]     ||= '/status'
+        @opts[:response] ||= [200, {}, 'OK']
       end
 
       def call(env)
-        if env['PATH_INFO'] == '/status'
-          [200, {}, 'OK']
+        if env['PATH_INFO'] == @opts[:path]
+          @opts[:response]
         else
           @app.call(env)
         end
