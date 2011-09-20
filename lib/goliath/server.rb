@@ -69,11 +69,10 @@ module Goliath
     #
     # @return Does not return until the server has halted.
     def start(&blk)
+      EM.epoll
       EM.synchrony do
         trap("INT")  { EM.stop }
         trap("TERM") { EM.stop }
-
-        EM.epoll
 
         load_config(options[:config])
         load_plugins
