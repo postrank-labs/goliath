@@ -80,6 +80,12 @@ module Goliath
         EM.set_effective_user(options[:user]) if options[:user]
 
         EM.start_server(address, port, Goliath::Connection) do |conn|
+          conn.start_tls(
+            :private_key_file => options[:ssl_key],
+            :cert_chain_file  => options[:ssl_cert],
+            :verify_peer      => options[:ssl_verify]
+          ) if options[:ssl]
+
           conn.port = port
           conn.app = app
           conn.api = api
