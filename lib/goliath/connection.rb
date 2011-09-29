@@ -34,6 +34,7 @@ module Goliath
         r = Goliath::Request.new(@app, self, env)
         r.parse_header(h, @parser) do
           @api.set_event_handler!(env)
+
           env[ASYNC_HEADERS] = env.event_handler.method(:on_headers) if env.event_handler.respond_to? :on_headers
           env[ASYNC_BODY]    = env.event_handler.method(:on_body)    if env.event_handler.respond_to? :on_body
           env[ASYNC_CLOSE]   = env.event_handler.method(:on_close)   if env.event_handler.respond_to? :on_close

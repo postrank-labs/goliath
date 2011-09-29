@@ -259,16 +259,6 @@ module Goliath
       [status_code, headers, Goliath::Response::STREAMING]
     end
 
-    def set_event_handler!(env)
-      if self.class.maps?
-        response = self.class.router.recognize(env)
-        if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class
-          env.event_handler = response.path.route.api_class.new
-        end
-      end
-      env.event_handler ||= self
-    end
-
     # Helper method for chunked transfer streaming response apis
     #
     # Chunked transfer streaming is transparent to all clients (it's just as
@@ -288,5 +278,20 @@ module Goliath
     def chunked_streaming_response(status_code = 200, headers = {})
       streaming_response(status_code, headers.merge(Goliath::Response::CHUNKED_STREAM_HEADERS))
     end
+
+    # Helper method to initialize the approriate API handler
+    #
+    # Called by the parser once headers are available to detect
+    # which API class should be handling the incoming request
+    def set_event_handler!(env)
+      if self.class.maps?
+        response = self.class.router.recognize(env)
+        if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class
+          env.event_handler = response.path.route.api_class.new
+        end
+      end
+      env.event_handler ||= self
+    end
+
   end
 end
