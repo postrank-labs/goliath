@@ -6,8 +6,6 @@ The framework is powered by an EventMachine reactor, a high-performance HTTP par
 
 Each HTTP request within Goliath is executed in its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, and so on.
 
-
-
 ## Installation & Prerequisites
 
 * Install Ruby 1.9 (via RVM or natively)
@@ -59,7 +57,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
     * Mongrel is a threaded web-server, and both Passenger and Unicorn fork an entire VM to isolate each request from each other. By contrast, Goliath builds a single instance of the Rack app and runs all requests in parallel through a single VM, which leads to a much smaller memory footprint and less overhead.
 
 * How do I deploy Goliath in production?
-    * We recommend deploying Goliath behind a reverse proxy such as HAProxy, Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
+    * We recommend deploying Goliath behind a reverse proxy such as HAProxy ([sample config](https://github.com/postrank-labs/goliath/wiki/HAProxy)), Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
 
 ## Guides
 
