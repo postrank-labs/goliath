@@ -15,7 +15,6 @@ module Goliath
     attr_reader   :parser
 
     AsyncResponse = [-1, {}, []]
-
     def post_init
       @current = nil
       @requests = []
@@ -33,12 +32,13 @@ module Goliath
         env[REMOTE_ADDR] = remote_address
 
         r = Goliath::Request.new(@app, self, env)
-        r.parse_header(h, @parser) {
+        r.parse_header(h, @parser) do
           @api.set_event_handler!(env)
           env[ASYNC_HEADERS] = env.event_handler.method(:on_headers) if env.event_handler.respond_to? :on_headers
           env[ASYNC_BODY]    = env.event_handler.method(:on_body)    if env.event_handler.respond_to? :on_body
           env[ASYNC_CLOSE]   = env.event_handler.method(:on_close)   if env.event_handler.respond_to? :on_close
-        }
+        end
+
         @requests.push(r)
       end
 
