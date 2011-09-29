@@ -75,6 +75,7 @@ describe RackRoutes do
           end
         end
       end
+
       it 'should reject other request methods' do
         with_api(RackRoutes) do
           put_request({:path => '/hello_world'}, err) do |c|
@@ -94,6 +95,7 @@ describe RackRoutes do
           end
         end
       end
+
       it 'should allow head' do
         with_api(RackRoutes) do
           head_request({:path => '/hello_world'}, err) do |c|
@@ -147,7 +149,11 @@ describe RackRoutes do
             c.response_header.status.should == 200
             c.response.should == 'headers: {"Connection"=>"close", "Host"=>"localhost:9900", "User-Agent"=>"EventMachine HttpClient"}'
           end
+        end
+      end
 
+      it "rejects POST request" do
+        with_api(RackRoutes) do
           post_request({:path => '/headers'}, err) do |c|
             # the /headers route only supports GET requests
             c.response_header.status.should == 405
