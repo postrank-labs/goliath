@@ -1,27 +1,27 @@
 require 'spec_helper'
-require File.join(File.dirname(__FILE__), '../../', 'examples/error')
+require File.join(File.dirname(__FILE__), '../../', 'examples/early_abort')
 
-describe Error do
+describe EarlyAbort do
   let(:err) { Proc.new { fail "API request failed" } }
 
   after do
-    File.unlink(Error::TEST_FILE) if File.exist?(Error::TEST_FILE)
+    File.unlink(EarlyAbort::TEST_FILE) if File.exist?(EarlyAbort::TEST_FILE)
   end
 
   it "should return OK" do
-    with_api(Error) do
+    with_api(EarlyAbort) do
       get_request({}, err) do |c|
         c.response.should == "OK"
       end
     end
   end
-  
+
   # The following two tests are very brittle, since they depend on the speed
   # of the machine executing the test and the size of the incoming data
   # packets. I hope someone more knowledgeable will be able to refactor these
   # ;-)
   it 'fails without going in the response method if exception is raised in on_header hook' do
-    with_api(Error) do
+    with_api(EarlyAbort) do
       request_data = {
         :body => (["abcd"] * 200_000).join,
         :head => {'X-Crash' => 'true'}
@@ -33,9 +33,9 @@ describe Error do
       end
     end
   end
-  
+
   it 'fails without going in the response method if exception is raised in on_body hook' do
-    with_api(Error) do
+    with_api(EarlyAbort) do
       request_data = {
         :body => (["abcd"] * 200_000).join
       }
