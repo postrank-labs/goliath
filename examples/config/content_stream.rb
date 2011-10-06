@@ -10,20 +10,16 @@ amqp_config = {
 }
 
 conn = AMQP.connect(amqp_config)
-
 xchange = AMQP::Channel.new(conn).fanout('stream')
+
 q = AMQP::Channel.new(conn).queue('stream/StreamAPI')
 q.bind(xchange)
 
-# pull data off the exchange and push to streams
-q.pop do |data|
-  if data.nil?
-    EM.add_timer(1) { q.pop }
-  else
-    config['channel'].push(data)
-    q.pop
-  end
+def handle_message(metadata, payload)
+  config['channel'].push(payload)
 end
+
+q.subscribe(&method(:handle_message))
 
 # push data into the stream. (Just so we have stuff going in)
 count = 0
