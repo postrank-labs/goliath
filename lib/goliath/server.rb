@@ -73,6 +73,7 @@ module Goliath
       EM.synchrony do
         trap("INT")  { EM.stop }
         trap("TERM") { EM.stop }
+        trap("HUP")  { load_config(options[:config]) }
 
         load_config(options[:config])
         load_plugins
