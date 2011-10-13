@@ -79,7 +79,7 @@ module Goliath
         # if downstream resp is final, pass it to the aroundware; it will invoke
         # the callback chain at its leisure. Our response is *always* async.
         if final_response?(downstream_resp)
-          aroundware.accept_response(:downstream_resp, true, resp)
+          aroundware.accept_response(:downstream_resp, true, downstream_resp)
         end
         return Goliath::Connection::AsyncResponse
       end
