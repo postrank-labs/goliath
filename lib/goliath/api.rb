@@ -134,7 +134,7 @@ module Goliath
           opts = args.last.is_a?(Hash) ? args.pop : {}
           klass = args.first
           opts[:conditions] ||= {}
-          opts[:conditions][:request_method] = [#{http_method == :get ? "'HEAD', 'GET'" : http_method.to_s.upcase.inspect}]
+          opts[:conditions][:request_method] = [#{http_method.to_s.upcase.inspect}]
           map(name, klass, opts, &block)
         end
         EOT
