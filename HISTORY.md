@@ -1,33 +1,48 @@
-HISTORY
-=======
+# HISTORY
 
-v0.9.1 (Apr 12, 2011)
----------------------
+## v0.9.3 (Oct 16, 2011)
+
+  - new router DSL - much improved, see examples
+  - refactored async_aroundware
+  - make jruby friendlier (removed 1.9 req in gemspec)
+  - enable epoll
+  - SSL support
+  - unix socket support
+  - reload config on HUP
+  - and a number of small bugfixes + other improvements..
+  - See full list @ https://github.com/postrank-labs/goliath/compare/v0.9.2...v0.9.3
+
+## v0.9.2 (July 21, 2011)
+
+  - See full list @ https://github.com/postrank-labs/goliath/compare/v0.9.1...v0.9.2
+
+## v0.9.1 (Apr 12, 2011)
+
   - Added extra messaging around the class not matching the file name (Carlos Brando)
-  
+
   - Fix issue with POST parameters not being parsed by Goliath::Rack::Params
   - Added support for multipart encoded POST bodies
   - Added support for parsing nested query string parameters (Nolan Evans)
   - Added support for parsing application/json POST bodies
   - Content-Types outside of multipart, urlencoded and application/json will not be parsed automatically.
-  
+
   - added 'run as user' option
   - SERVER_NAME and SERVER_PORT are set to values in HOST header
-  
+
   - Cleaned up spec examples (Justin Ko)
-  
+
   - moved logger into 'rack.logger' key to be more Rack compliant (Env#logger added to
     keep original API consistent)
   - add command line option for specifying config file
   - HTTP_CONTENT_LENGTH and HTTP_CONTENT_TYPE were changed to CONTENT_TYPE and CONTENT_LENGTH
     to be more Rack compliant
   - fix issue with loading config file in development mode
-  
+
   - Rack::Reloader will be loaded automatically by the framework in development mode.
 
 
-v0.9.0 (Mar 9, 2011)
---------------------
+## v0.9.0 (Mar 9, 2011)
+
 (Initial Public Release)
 
 Goliath is an open source version of the non-blocking (asynchronous) Ruby web server framework
@@ -47,4 +62,3 @@ internal and external applications. Many of the Goliath processes have been runn
 a time (read: no memory leaks) and have served hundreds of gigabytes of data without restarts. To
 scale up and provide failover and redundancy, our individual Goliath servers at PostRank are usually
 deployed behind a reverse proxy (such as HAProxy).
-
