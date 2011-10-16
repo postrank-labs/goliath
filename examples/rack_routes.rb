@@ -87,6 +87,10 @@ class RackRoutes < Goliath::API
     run HelloWorld.new
   end
 
+  head "/hello_world" do
+    run HelloWorld.new
+  end
+
   map "/headers", HeaderCollector do
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
