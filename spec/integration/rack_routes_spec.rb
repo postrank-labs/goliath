@@ -95,7 +95,9 @@ describe RackRoutes do
           end
         end
       end
+    end
 
+    context 'routes defined with head' do
       it 'should allow head' do
         with_api(RackRoutes) do
           head_request({:path => '/hello_world'}, err) do |c|
