@@ -3,7 +3,7 @@ require 'goliath/rack/formatters/json'
 
 describe Goliath::Rack::Formatters::JSON do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Formatters::JSON.new('my app') }.should_not raise_error Exception
+    lambda { Goliath::Rack::Formatters::JSON.new('my app') }.should_not raise_error
   end
 
   describe 'with a formatter' do
@@ -30,7 +30,7 @@ describe Goliath::Rack::Formatters::JSON do
       @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
 
       status, header, body = @js.call({})
-      lambda { Yajl::Parser.parse(body.first)['a'].should == 1 }.should_not raise_error Exception
+      lambda { Yajl::Parser.parse(body.first)['a'].should == 1 }.should_not raise_error
     end
 
     it "doesn't format to json if the type is not application/json" do

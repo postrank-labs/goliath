@@ -4,14 +4,12 @@ $:<< '../lib' << 'lib'
 require 'goliath'
 
 class Valid < Goliath::API
-
-  # reload code on every request in dev environment
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Params
-  use Goliath::Rack::ValidationError
-
   use Goliath::Rack::Validation::RequiredParam, {:key => 'test'}
+
+  # If you are using Golaith version <=0.9.1 you need to use Goliath::Rack::ValidationError
+  # to prevent the request from remaining open after an error occurs
+  #use Goliath::Rack::ValidationError
 
   def response(env)
     [200, {}, 'OK']

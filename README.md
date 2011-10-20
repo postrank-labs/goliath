@@ -20,21 +20,23 @@ Each HTTP request within Goliath is executed in its own Ruby fiber and all async
 
 ## Getting Started: Hello World
 
-    require 'goliath'
+```ruby
+require 'goliath'
 
-    class Hello < Goliath::API
-      # reload code on every request in dev environment
-      use ::Rack::Reloader, 0 if Goliath.dev?
+class Hello < Goliath::API
+  def response(env)
+    [200, {}, "Hello World"]
+  end
+end
 
-      def response(env)
-        [200, {}, "Hello World"]
-      end
-    end
+> ruby hello.rb -sv
+> [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
+```
 
-    > ruby hello.rb -sv
-    > [97570:INFO] 2011-02-15 00:33:51 :: Starting server on 0.0.0.0:9000 in development mode. Watch out for stones.
+See examples directory for more, hands-on examples of building Goliath powered web-services. Are you new to EventMachine, or want a detailed walk-through of building a Goliath powered API? You're in luck, we have two super-awesome peepcode screencasts which will teach you all you need to know:
 
-See examples directory for more, hands-on examples of building Goliath powered web-services.
+* [Meet EventMachine: Part 1](http://peepcode.com/products/eventmachine) - introduction to EM, Fibers, etc.
+* [Meet EventMachine: Part 2](http://peepcode.com/products/eventmachine-ii) - building an API with Goliath
 
 ## Performance: MRI, JRuby, Rubinius
 
@@ -55,7 +57,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
     * Mongrel is a threaded web-server, and both Passenger and Unicorn fork an entire VM to isolate each request from each other. By contrast, Goliath builds a single instance of the Rack app and runs all requests in parallel through a single VM, which leads to a much smaller memory footprint and less overhead.
 
 * How do I deploy Goliath in production?
-    * We recommend deploying Goliath behind a reverse proxy such as HAProxy, Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
+    * We recommend deploying Goliath behind a reverse proxy such as HAProxy ([sample config](https://github.com/postrank-labs/goliath/wiki/HAProxy)), Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
 
 ## Guides
 
@@ -66,6 +68,7 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 
 ### Hands-on applications:
 
+* [Peepcode](http://peepcode.com/products/eventmachine) [screencasts](http://peepcode.com/products/eventmachine-ii)
 * [Asynchronous HTTP, MySQL, etc](https://github.com/postrank-labs/goliath/wiki/Asynchronous-Processing)
 * [Response streaming with Goliath](https://github.com/postrank-labs/goliath/wiki/Streaming)
 * [Examples](https://github.com/postrank-labs/goliath/tree/master/examples)
@@ -74,6 +77,10 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 
 * [Goliath: Non-blocking, Ruby 1.9 Web Server](http://www.igvita.com/2011/03/08/goliath-non-blocking-ruby-19-web-server)
 * [Stage left: Enter Goliath - HTTP Proxy + MongoDB](http://everburning.com/news/stage-left-enter-goliath/)
+* [InfoQ: Meet the Goliath of Ruby Application Servers](http://www.infoq.com/articles/meet-goliath)
+* [Node.jsはコールバック・スパゲティを招くか](http://el.jibun.atmarkit.co.jp/rails/2011/03/nodejs-d123.html)
+* [Goliath on LinuxFr.org (french)](http://linuxfr.org/news/en-vrac-spécial-ruby-jruby-sinatra-et-goliath)
+* [Goliath et ses amis (slides in french)](http://nono.github.com/Presentations/20110416_Goliath/)
 
 ## Discussion and Support
 
@@ -84,3 +91,4 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 ## License & Acknowledgments
 
 Goliath is distributed under the MIT license, for full details please see the LICENSE file.
+Rock favicon CC-BY from [Douglas Feer](http://www.favicon.cc/?action=icon&file_id=375421)

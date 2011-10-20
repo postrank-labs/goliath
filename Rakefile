@@ -5,6 +5,7 @@ require 'yard'
 require 'rspec/core/rake_task'
 
 task :default => [:spec]
+task :test => [:spec]
 
 desc "run spec tests"
 RSpec::Core::RakeTask.new('spec') do |t|

@@ -27,9 +27,7 @@ class Gziped < Goliath::API
   end
 
   use Goliath::Rack::Params             # parse & merge query and body parameters
-  use Goliath::Rack::Formatters::JSON   # JSON output formatter
-  use Goliath::Rack::Render             # auto-negotiate response format
-  use Goliath::Rack::ValidationError    # catch and render validation errors
+  use Goliath::Rack::Render, 'json'     # auto-negotiate response format
 
   use Goliath::Rack::Validation::RequestMethod, %w(GET)           # allow GET requests only
   use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}  # must provide ?echo= query or body param

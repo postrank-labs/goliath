@@ -19,13 +19,9 @@ class User < ActiveRecord::Base
 end
 
 class Srv < Goliath::API
-  use ::Rack::Reloader, 0 if Goliath.dev?
-
   use Goliath::Rack::Params
   use Goliath::Rack::DefaultMimeType
-  use Goliath::Rack::Formatters::JSON
-  use Goliath::Rack::Render
-  use Goliath::Rack::ValidationError
+  use Goliath::Rack::Render, 'json'
 
   use Goliath::Rack::Validation::RequiredParam, {:key => 'id', :type => 'ID'}
   use Goliath::Rack::Validation::NumericRange, {:key => 'id', :min => 1}

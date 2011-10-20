@@ -11,21 +11,11 @@ module Goliath
     #
     class Render
       include ::Rack::RespondTo
+      include Goliath::Rack::AsyncMiddleware
 
       def initialize(app, types = nil)
         @app = app
         ::Rack::RespondTo.media_types = [types].flatten if types
-      end
-
-      def call(env)
-        async_cb = env['async.callback']
-
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body))
-        end
-
-        status, headers, body = @app.call(env)
-        post_process(env, status, headers, body)
       end
 
       def post_process(env, status, headers, body)
@@ -35,11 +25,9 @@ module Goliath
         # setting of selected_media_type, so it's required
 
         respond_to do |format|
-          format.json { body }
-          format.html { body }
-          format.xml { body }
-          format.rss { body }
-          format.js { body }
+          ::Rack::RespondTo.media_types.each do |type|
+            format.send(type, Proc.new { body })
+          end
         end
 
         extra = { 'Content-Type' => get_content_type(env),
@@ -50,14 +38,17 @@ module Goliath
       end
 
       def get_content_type(env)
-        fmt = env.params['format']
-        fmt = fmt.last if fmt.is_a?(Array)
+        type = if env.respond_to? :params
+          fmt = env.params['format']
+          fmt = fmt.last if fmt.is_a?(Array)
 
-        type = if fmt.nil? || fmt =~ /^\s*$/
-          ::Rack::RespondTo.selected_media_type
-        else
-          ::Rack::RespondTo::MediaType(fmt)
+          if !fmt.nil? && fmt !~ /^\s*$/
+            ::Rack::RespondTo::MediaType(fmt)
+          end
         end
+        
+        type = ::Rack::RespondTo.env['HTTP_ACCEPT'] if type.nil?
+        type = ::Rack::RespondTo.selected_media_type if type == '*/*'
 
         "#{type}; charset=utf-8"
       end

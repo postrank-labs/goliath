@@ -3,12 +3,12 @@ require 'goliath/rack/validation/required_value'
 
 describe Goliath::Rack::Validation::RequiredValue do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Validation::RequiredValue.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredValue.new('my app') }.should_not raise_error
   end
 
   it 'accepts options on create' do
     opts = { :key => 2, :values => ["foo", "bar"] }
-    lambda { Goliath::Rack::Validation::RequiredValue.new('my app', opts) }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequiredValue.new('my app', opts) }.should_not raise_error
   end
 
 
@@ -44,55 +44,52 @@ describe Goliath::Rack::Validation::RequiredValue do
 
     context '#value_valid!' do
       it 'raises exception if the key is not provided' do
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'raises exception if the key is blank' do
         @env['params']['mk'] = ''
-
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'raises exception if the key is nil' do
         @env['params']['mk'] = nil
-
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'raises exception if the key is does not match' do
         @env['params']['mk'] = "blarg"
-
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'handles an empty array' do
         @env['params']['mk'] = []
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'handles an array of nils' do
         @env['params']['mk'] = [nil, nil, nil]
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it 'handles an array of blanks' do
         @env['params']['mk'] = ['', '', '']
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
 
       it "doesn't raise if the key is value" do
         @env['params']['mk'] = 'Monkey'
-        lambda { @rv.value_valid!(@env['params']) }.should_not raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_true
       end
 
       it "doesn't raise if the array contains valid data" do
         @env['params']['mk'] = ['Monkey', 'frog']
-        lambda{ @rv.value_valid!(@env['params']) }.should_not raise_error
+        @rv.value_valid?(@env['params']).should be_true
       end
 
       it 'raises if any of the array elements do not match' do
         @env['params']['mk'] = ["Monkey", "frog", "bat"]
-        lambda { @rv.value_valid!(@env['params']) }.should raise_error(Goliath::Validation::Error)
+        @rv.value_valid?(@env['params']).should be_false
       end
     end
   end

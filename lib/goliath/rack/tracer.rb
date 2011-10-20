@@ -6,24 +6,23 @@ module Goliath
     #  use Goliath::Rack::Tracer
     #
     class Tracer
-      def initialize(app)
-        @app = app
+      include Goliath::Rack::AsyncMiddleware
+
+      def initialize(app, header_name=nil)
+        super(app)
+        @header_name = header_name || 'X-PostRank'
       end
 
       def call(env)
-        async_cb = env['async.callback']
-
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body))
-          env.logger.info env.trace_stats.collect{|s| s.join(':')}.join(', ')
-        end
-
-        status, headers, body = @app.call(env)
-        post_process(env, status, headers, body)
+        env.trace 'trace.start'
+        shb = super(env)
+        env.logger.info env.trace_stats.collect{|s| s.join(':')}.join(', ')
+        shb
       end
 
       def post_process(env, status, headers, body)
-        extra = { 'X-PostRank' => env.trace_stats.collect{|s| s.join(': ')}.join(', ')}
+        extra = { @header_name => env.trace_stats.collect{|s| s.join(': ')}.join(', ')}
+        env.logger.info env.trace_stats.collect{|s| s.join(':')}.join(', ')
         [status, headers.merge(extra), body]
       end
     end

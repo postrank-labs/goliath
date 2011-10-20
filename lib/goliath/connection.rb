@@ -1,5 +1,7 @@
 require 'http/parser'
 require 'goliath/env'
+require 'goliath/constants'
+require 'goliath/request'
 
 module Goliath
   # The Goliath::Connection class handles sending and receiving data
@@ -12,8 +14,7 @@ module Goliath
     attr_accessor :app, :api, :port, :logger, :status, :config, :options
     attr_reader   :parser
 
-    AsyncResponse = [-1, {}, []].freeze
-
+    AsyncResponse = [-1, {}, []]
     def post_init
       @current = nil
       @requests = []
@@ -22,21 +23,22 @@ module Goliath
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
 
-        env = Goliath::Env.new
-        env[OPTIONS]     = options
+        env = Thread.current[GOLIATH_ENV] = Goliath::Env.new
         env[SERVER_PORT] = port.to_s
-        env[LOGGER]      = logger
+        env[RACK_LOGGER] = logger
         env[OPTIONS]     = options
         env[STATUS]      = status
         env[CONFIG]      = config
         env[REMOTE_ADDR] = remote_address
 
-        env[ASYNC_HEADERS] = @api.method(:on_headers) if @api.respond_to? :on_headers
-        env[ASYNC_BODY]    = @api.method(:on_body) if @api.respond_to? :on_body
-        env[ASYNC_CLOSE]   = @api.method(:on_close) if @api.respond_to? :on_close
-
         r = Goliath::Request.new(@app, self, env)
-        r.parse_header(h, @parser)
+        r.parse_header(h, @parser) do
+          @api.set_event_handler!(env) if @api
+
+          env[ASYNC_HEADERS] = env.event_handler.method(:on_headers) if env.event_handler.respond_to? :on_headers
+          env[ASYNC_BODY]    = env.event_handler.method(:on_body)    if env.event_handler.respond_to? :on_body
+          env[ASYNC_CLOSE]   = env.event_handler.method(:on_close)   if env.event_handler.respond_to? :on_close
+        end
 
         @requests.push(r)
       end
@@ -87,7 +89,7 @@ module Goliath
       if req = @pending.shift
         @current = req
         @current.succeed
-      else
+      elsif @current
         @current.close
         @current = nil
       end

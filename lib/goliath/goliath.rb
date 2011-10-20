@@ -1,49 +1,64 @@
 require 'eventmachine'
 require 'http/parser'
 require 'async_rack'
+require 'goliath/constants'
+require 'goliath/version'
 
 # The Goliath Framework
 module Goliath
   module_function
 
-  @env = 'development'
+  ENVIRONMENTS = [:development, :production, :test, :staging]
 
   # Retrieves the current goliath environment
   #
   # @return [String] the current environment
   def env
-    @env
+    @env or fail "environment has not been set"
   end
 
   # Sets the current goliath environment
   #
-  # @param [String] env the environment string of [dev|prod|test]
-  def env=(env)
-    case(env)
-    when 'dev' then @env = 'development'
-    when 'prod' then @env = 'production'
-    when 'test' then @env = 'test'
+  # @param [String|Symbol] env the environment symbol of [dev | development | prod | production | test]
+  def env=(e)
+    es = case(e.to_sym)
+    when :dev  then :development
+    when :prod then :production
+    else e.to_sym
+    end
+
+    if ENVIRONMENTS.include?(es)
+      @env = es
+    else
+      fail "did not recognize environment: #{e}, expected one of: #{ENVIRONMENTS.join(', ')}"
     end
   end
 
   # Determines if we are in the production environment
   #
-  # @return [Boolean] true if current environemnt is production, false otherwise
+  # @return [Boolean] true if current environment is production, false otherwise
   def prod?
-    @env == 'production'
+    env == :production
   end
 
   # Determines if we are in the development environment
   #
-  # @return [Boolean] true if current environemnt is development, false otherwise
+  # @return [Boolean] true if current environment is development, false otherwise
   def dev?
-    @env == 'development'
+    env == :development
   end
 
   # Determines if we are in the test environment
   #
-  # @return [Boolean] true if current environemnt is test, false otherwise
+  # @return [Boolean] true if current environment is test, false otherwise
   def test?
-    @env == 'test'
+    env == :test
+  end
+
+  # Determines if we are in the staging environment
+  #
+  # @return [Boolean] true if current environment is staging.
+  def staging?
+    env == :staging
   end
 end

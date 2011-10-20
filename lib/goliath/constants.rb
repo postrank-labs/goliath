@@ -10,7 +10,6 @@ module Goliath
 
     HTTP_PREFIX     = 'HTTP_'
     LOCALHOST       = 'localhost'
-    LOGGER          = 'logger'
     STATUS          = 'status'
     CONFIG          = 'config'
     OPTIONS         = 'options'
@@ -22,6 +21,8 @@ module Goliath
     RACK_MULTIPROCESS = 'rack.multiprocess'
     RACK_RUN_ONCE   = 'rack.run_once'
     RACK_VERSION_NUM = [1, 0]
+    RACK_LOGGER     = 'rack.logger'
+    RACK_EXCEPTION  = 'rack.exception'
 
     ASYNC_CALLBACK  = 'async.callback'
     ASYNC_HEADERS   = 'async.headers'
@@ -37,6 +38,7 @@ module Goliath
     SCRIPT_NAME     = 'SCRIPT_NAME'
     REMOTE_ADDR     = 'REMOTE_ADDR'
     CONTENT_LENGTH  = 'CONTENT_LENGTH'
+    CONTENT_TYPE    = 'CONTENT_TYPE'
     REQUEST_METHOD  = 'REQUEST_METHOD'
     REQUEST_URI     = 'REQUEST_URI'
     QUERY_STRING    = 'QUERY_STRING'

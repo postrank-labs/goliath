@@ -6,6 +6,7 @@ module Goliath
   # Goliath::Env also provides access to the logger, configuration information
   # and anything else set into the config data during initialization.
   class Env < Hash
+    attr_accessor :event_handler
     include Constants
 
     # Create a new Goliath::Env object
@@ -47,7 +48,7 @@ module Goliath
     # @example
     #   [200, {}, {:meta => {:trace => env.trace_stats}}, {}]
     #
-    # @return [Array] Array of [name, time] pairs with a Total entry added.d
+    # @return [Array] Array of [name, time] pairs with a Total entry added.
     def trace_stats
       self[:trace] + [['total', self[:trace].collect { |s| s[1].to_f }.inject(:+).to_s]]
     end
@@ -67,12 +68,62 @@ module Goliath
       self[STREAM_CLOSE].call
     end
 
+    # Sends a chunk in a Chunked transfer encoding stream.
+    #
+    #     Each chunk starts with the number of octets of the data it embeds expressed
+    #     in hexadecimal followed by optional parameters (chunk extension) and a
+    #     terminating CRLF (carriage return and line feed) sequence, followed by the
+    #     chunk data. The chunk is terminated by CRLF. If chunk extensions are
+    #     provided, the chunk size is terminated by a semicolon followed with the
+    #     extension name and an optional equal sign and value
+    #
+    # Note: chunk extensions aren't provided yet
+    #
+    # This will do nothing if the chunk is empty -- sending a zero-length chunk
+    # signals the end of a stream.
+    #
+    def chunked_stream_send(chunk)
+      return if chunk.empty?
+      chunk_len_in_hex = chunk.bytesize.to_s(16)
+      body = [chunk_len_in_hex, "\r\n", chunk, "\r\n"].join
+      stream_send(body)
+    end
+
+    # Sends the terminating chunk in a chunked transfer encoding stream, and
+    # closes the stream.
+    #
+    #     The last chunk is a zero-length chunk, with the chunk size coded as 0, but
+    #     without any chunk data section.  The final chunk may be followed by an
+    #     optional trailer of additional entity header fields that are normally
+    #     delivered in the HTTP header to allow the delivery of data that can only
+    #     be computed after all chunk data has been generated. The sender may
+    #     indicate in a Trailer header field which additional fields it will send
+    #     in the trailer after the chunks.
+    #
+    # Note: trailer headers aren't provided yet
+    #
+    def chunked_stream_close
+      stream_send([0, "\r\n", "\r\n"].join)
+      stream_close
+    end
+
+    # Convenience method for accessing the rack.logger item in the environment.
+    #
+    # @return [Logger] The logger object
+    def logger
+      self[RACK_LOGGER]
+    end
+
     # @param name [Symbol] The method to check if we respond to it.
     # @return [Boolean] True if the Env responds to the method, false otherwise
     def respond_to?(name)
       return true if has_key?(name.to_s)
       return true if self['config'] && self['config'].has_key?(name.to_s)
       super
+    end
+
+    def defer_stack
+      @defer_stack ||= []
     end
 
     # The Goliath::Env will provide any of it's keys as a method. It will also provide

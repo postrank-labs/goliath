@@ -21,7 +21,7 @@ class Stream < Goliath::API
   def response(env)
     i = 0
     pt = EM.add_periodic_timer(1) do
-      env.stream_send("#{i} ")
+      env.stream_send("#{i}\n")
       i += 1
     end
 
@@ -32,6 +32,6 @@ class Stream < Goliath::API
       env.stream_close
     end
 
-    [200, {}, Goliath::Response::STREAMING]
+    streaming_response(202, {'X-Stream' => 'Goliath'})
   end
 end

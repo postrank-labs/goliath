@@ -9,7 +9,7 @@ describe Goliath::Rack::Validation::NumericRange do
 
   it 'accepts options on create' do
     opts = { :min => 1, :key => 2 }
-    lambda { Goliath::Rack::Validation::NumericRange.new('my app', opts) }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::NumericRange.new('my app', opts) }.should_not raise_error
   end
 
   describe 'with middleware' do
@@ -30,7 +30,7 @@ describe Goliath::Rack::Validation::NumericRange do
     end
 
     it 'uses the first value, if the value is an array' do
-      @env['params']['id'] = [10,11,12]
+      @env['params']['id'] = [10, 11, 12]
       @nr.call(@env)
       @env['params']['id'].should == 10
     end
@@ -58,12 +58,19 @@ describe Goliath::Rack::Validation::NumericRange do
     end
   end
 
+  it 'converts to a float with :as => Float' do
+    nr = Goliath::Rack::Validation::NumericRange.new(@app, {:key => 'id', :min => 1.1, :as => Float})
+    @env['params']['id'] = 1.5
+    nr.call(@env)
+    @env['params']['id'].should == 1.5
+  end
+
   it 'raises error if key is not set' do
-    lambda { Goliath::Rack::Validation::NumericRange.new('app', {:min => 5}) }.should raise_error(Exception)
+    lambda { Goliath::Rack::Validation::NumericRange.new('app', {:min => 5}) }.should raise_error
   end
 
   it 'raises error if neither min nor max set' do
-    lambda { Goliath::Rack::Validation::NumericRange.new('app', {:key => 5}) }.should raise_error(Exception)
+    lambda { Goliath::Rack::Validation::NumericRange.new('app', {:key => 5}) }.should raise_error
   end
 
   it 'uses min if default not set' do

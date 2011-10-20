@@ -1,5 +1,7 @@
 require 'eventmachine'
 require 'goliath/constants'
+require 'goliath/response'
+require 'goliath/validation'
 require 'async_rack'
 require 'stringio'
 
@@ -26,8 +28,11 @@ module Goliath
 
       @env[STREAM_SEND]  = proc { |data| callback { @conn.send_data(data) } }
       @env[STREAM_CLOSE] = proc { callback { @conn.terminate_request(false) } }
-      @env[STREAM_START] = proc do
+      @env[STREAM_START] = proc do |status, headers|
         callback do
+          @response.status = status
+          @response.headers = headers
+
           @conn.send_data(@response.head)
           @conn.send_data(@response.headers_output)
         end
@@ -47,7 +52,16 @@ module Goliath
         @env[HTTP_PREFIX + k.gsub('-','_').upcase] = v
       end
 
-      @env[STATUS]          = parser.status_code
+      %w(CONTENT_TYPE CONTENT_LENGTH).each do |name|
+        @env[name] = @env.delete("HTTP_#{name}") if @env["HTTP_#{name}"]
+      end
+
+      if @env['HTTP_HOST']
+        name, port = @env['HTTP_HOST'].split(':')
+        @env[SERVER_NAME] = name if name
+        @env[SERVER_PORT] = port if port
+      end
+
       @env[REQUEST_METHOD]  = parser.http_method
       @env[REQUEST_URI]     = parser.request_url
       @env[QUERY_STRING]    = parser.query_string
@@ -56,6 +70,8 @@ module Goliath
       @env[REQUEST_PATH]    = parser.request_path
       @env[PATH_INFO]       = parser.request_path
       @env[FRAGMENT]        = parser.fragment
+
+      yield if block_given?
 
       begin
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
@@ -116,13 +132,15 @@ module Goliath
     #
     # @return [Nil]
     def process
-      begin
-        @state = :finished
-        post_process(@app.call(@env))
-
-      rescue Exception => e
-        server_exception(e)
-      end
+      Fiber.new {
+        begin
+          @state = :finished
+          @env['rack.input'].rewind if @env['rack.input']
+          post_process(@app.call(@env))
+        rescue Exception => e
+          server_exception(e)
+        end
+      }.resume
     end
 
     # Invoked by the app / middleware once the request
@@ -153,11 +171,11 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-            @env[LOGGER].info("Status: #{@response.status}, " +
-                              "Content-Length: #{@response.headers['Content-Length']}, " +
-                              "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
+                                   "Content-Length: #{@response.headers['Content-Length']}, " +
+                                   "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
 
-            @conn.terminate_request(keep_alive)
+                                   @conn.terminate_request(keep_alive)
           rescue Exception => e
             server_exception(e)
           end
@@ -175,24 +193,37 @@ module Goliath
     # @param e [Exception] The exception to log
     # @return [Nil]
     def server_exception(e)
-      @env[LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-      post_process([500, {}, 'An error happened'])
+      if e.is_a?(Goliath::Validation::Error)
+        status, headers, body = [e.status_code, {}, ('{"error":"%s"}'%e.message)]  #
+      else
+        @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
+        status, headers, body = [500, {}, 'An error happened']
+      end
+      headers['Content-Length'] = body.bytesize.to_s
+      @env[:terminate_connection] = true
+      post_process([status, headers, body])
+
+      # Mark the request as complete to force a flush on the response.
+      # Note: #on_body and #response hooks may still fire if the data
+      # is already in the parser buffer.
+      succeed
     end
 
     # Used to determine if the connection should  be kept open
     #
     # @return [Boolean] True to keep the connection open, false otherwise
     def keep_alive
+      return false if @env[:terminate_connection]
       case @env[HTTP_VERSION]
         # HTTP 1.1: all requests are persistent requests, client
         # must send a Connection:close header to indicate otherwise
-        when '1.1' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+      when '1.1' then
+        (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
 
-          # HTTP 1.0: all requests are non keep-alive, client must
-          # send a Connection: Keep-Alive to indicate otherwise
-        when '1.0' then
-          (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+        # HTTP 1.0: all requests are non keep-alive, client must
+        # send a Connection: Keep-Alive to indicate otherwise
+      when '1.0' then
+        (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
       end
     end
   end

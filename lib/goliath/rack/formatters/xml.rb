@@ -9,25 +9,19 @@ module Goliath
       # @example
       #   use Goliath::Rack::Formatters::XML
       class XML
-        # Called by the framework to create the formatter.
-        #
-        # @return [Goliath::Rack::Formatters::XML] The XML formatter.
-        def initialize(app)
+        include Goliath::Rack::AsyncMiddleware
+
+        def initialize(app, opts = {})
           @app = app
+          @opts = opts
+          @opts[:root] ||= 'results'
+          @opts[:item] ||= 'item'
         end
 
-        def call(env)
-          async_cb = env['async.callback']
-          env['async.callback'] = Proc.new do |status, headers, body|
-            async_cb.call(post_process(status, headers, body))
+        def post_process(env, status, headers, body)
+          if xml_response?(headers)
+            body = [to_xml(body)]
           end
-
-          status, headers, body = @app.call(env)
-          post_process(status, headers, body)
-        end
-
-        def post_process(status, headers, body)
-          body = [to_xml(body, false)] if xml_response?(headers)
           [status, headers, body]
         end
 
@@ -35,18 +29,18 @@ module Goliath
           headers['Content-Type'] =~ %r{^application/xml}
         end
 
-        def to_xml(content, fragment=true, root='results', item='item')
+        def to_xml(content, fragment=false)
           xml_string = ''
-          xml_string += xml_header(root) unless fragment
+          xml_string << xml_header(@opts[:root]) unless fragment
 
-          xml_string += case(content.class.to_s)
-          when "Hash" then hash_to_xml(content, root, item)
-          when "Array" then array_to_xml(content, root, item)
+          xml_string << case(content.class.to_s)
+          when "Hash"   then hash_to_xml(content)
+          when "Array"  then array_to_xml(content, @opts[:item])
           when "String" then string_to_xml(content)
           else string_to_xml(content)
           end
 
-          xml_string += xml_footer(root) unless fragment
+          xml_string << xml_footer(@opts[:root]) unless fragment
           xml_string
         end
 
@@ -54,35 +48,33 @@ module Goliath
           ::Rack::Utils.escape_html(content.to_s)
         end
 
-        def hash_to_xml(content, root='results', item='item')
+        def hash_to_xml(content)
           xml_string = ''
           if content.key?('meta')
-            xml_string += xml_item('meta', content['meta'], root)
+            xml_string += xml_item('meta', content['meta'])
             content.delete('meta')
           end
 
-          content.each_pair { |key, value| xml_string += xml_item(key, value, root) }
+          content.each_pair { |key, value| xml_string << xml_item(key, value) }
           xml_string
         end
 
-        def array_to_xml(content, root='results', item='item')
+        def array_to_xml(content, item='item')
           xml_string = ''
-          content.each { |value| xml_string += xml_item(item, value, root) }
+          content.each { |value| xml_string << xml_item(item, value) }
           xml_string
         end
 
         def xml_header(root)
-          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-          "<#{root} xmlns:opensearch='http://a9.com/-/spec/opensearch/1.1/'\n" +
-          "         xmlns:postrank='http://www.postrank.com/xsd/2007-11-30/postrank'>\n"
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<#{root}>"
         end
 
         def xml_footer(root)
           "</#{root}>"
         end
 
-        def xml_item(key, value, root)
-          "<#{key}>#{to_xml(value, true, root)}</#{key}>\n"
+        def xml_item(key, value)
+          "<#{key}>#{to_xml(value, true)}</#{key}>\n"
         end
       end
     end

@@ -4,7 +4,7 @@ require 'goliath/env'
 
 describe Goliath::Rack::Heartbeat do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Heartbeat.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Heartbeat.new('my app') }.should_not raise_error
   end
 
   describe 'with the middleware' do
@@ -43,5 +43,15 @@ describe Goliath::Rack::Heartbeat do
       headers.should == {}
       body.should == 'OK'
     end
+
+    it 'allows path and response to be set using options' do
+      @hb = Goliath::Rack::Heartbeat.new(@app, :path => '/isup', :response => [204, {}, nil])
+      @env['PATH_INFO'] = '/isup'
+      status, headers, body = @hb.call(@env)
+      status.should == 204
+      headers.should == {}
+      body.should == nil
+    end
   end
 end
+

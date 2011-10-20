@@ -58,6 +58,7 @@ module Goliath
       @address = address
       @port = port
 
+      @options = {}
       @status = {}
       @config = {}
       @plugins = []
@@ -67,17 +68,27 @@ module Goliath
     # start listening for requests
     #
     # @return Does not return until the server has halted.
-    def start
+    def start(&blk)
+      EM.epoll
       EM.synchrony do
         trap("INT")  { EM.stop }
         trap("TERM") { EM.stop }
+        trap("HUP")  { load_config(options[:config]) }
 
-        EM.epoll
-
-        load_config
+        load_config(options[:config])
         load_plugins
 
+        EM.set_effective_user(options[:user]) if options[:user]
+
         EM.start_server(address, port, Goliath::Connection) do |conn|
+          if options[:ssl]
+            conn.start_tls(
+              :private_key_file => options[:ssl_key],
+              :cert_chain_file  => options[:ssl_cert],
+              :verify_peer      => options[:ssl_verify]
+            )
+          end
+
           conn.port = port
           conn.app = app
           conn.api = api
@@ -87,7 +98,7 @@ module Goliath
           conn.options = options
         end
 
-        EM.set_effective_user("nobody") if Goliath.prod?
+        blk.call(self) if blk
       end
     end
 
@@ -96,7 +107,7 @@ module Goliath
     # @param file [String] The file to load, if not set will use the basename of $0
     # @return [Nil]
     def load_config(file = nil)
-      api_name = api.class.to_s.gsub(/(.)([A-Z])/,'\1_\2').downcase!
+      api_name = api.class.to_s.gsub('::', '_').gsub(/([^_A-Z])([A-Z])/,'\1_\2').downcase!
       file ||= "#{config_dir}/#{api_name}.rb"
       return unless File.exists?(file)
 
@@ -107,11 +118,8 @@ module Goliath
     #
     # @return [String] THe full path to the config directory
     def config_dir
-      if Goliath.test?
-        "#{File.expand_path(ENV['PWD'])}/config"
-      else
-        "#{File.expand_path(File.dirname($0))}/config"
-      end
+      dir = options[:config] ? File.dirname(options[:config]) : './config'
+      File.expand_path(dir)
     end
 
     # Import callback for configuration files

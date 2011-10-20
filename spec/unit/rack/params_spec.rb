@@ -3,13 +3,14 @@ require 'goliath/rack/params'
 
 describe Goliath::Rack::Params do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error
   end
 
   describe 'with middleware' do
     before(:each) do
       @app = mock('app').as_null_object
       @env = {}
+      @env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded; charset=utf-8'
       @params = Goliath::Rack::Params.new(@app)
     end
 
@@ -18,26 +19,60 @@ describe Goliath::Rack::Params do
 
       ret = @params.retrieve_params(@env)
       ret['foo'].should == 'bar'
+      ret[:foo].should == 'bar'
       ret['baz'].should == 'bonkey'
+    end
+
+    it 'parses the nested query string' do
+      @env['QUERY_STRING'] = 'foo[bar]=baz'
+
+      ret = @params.retrieve_params(@env)
+      ret['foo'].should == {'bar' => 'baz'}
     end
 
     it 'parses the post body' do
       @env['rack.input'] = StringIO.new
-      @env['rack.input'] << "foo=bar&baz=bonkey"
+      @env['rack.input'] << "foo=bar&baz=bonkey&zonk[donk]=monk"
       @env['rack.input'].rewind
 
       ret = @params.retrieve_params(@env)
       ret['foo'].should == 'bar'
       ret['baz'].should == 'bonkey'
+      ret['zonk'].should == {'donk' => 'monk'}
+      ret[:zonk].should == {'donk' => 'monk'}
+      ret[:zonk][:donk].should == 'monk'
     end
 
     it 'parses arrays of data' do
-      @env['QUERY_STRING'] = 'foo=bar&foo=baz&foo=foos'
+      @env['QUERY_STRING'] = 'foo[]=bar&foo[]=baz&foo[]=foos'
 
       ret = @params.retrieve_params(@env)
       ret['foo'].is_a?(Array).should be_true
       ret['foo'].length.should == 3
       ret['foo'].should == %w(bar baz foos)
+      ret[:foo].should == %w(bar baz foos)
+    end
+
+    it 'parses multipart data' do
+      @env[Goliath::Constants::CONTENT_TYPE] = 'multipart/boundary="AaB03x"'
+      @env['rack.input'] = StringIO.new
+      @env['rack.input'] <<"--AaB03x\r
+Content-Disposition: form-data; name=\"submit-name\"\r
+\r
+Larry\r
+--AaB03x\r
+Content-Disposition: form-data; name=\"submit-name-with-content\"\r
+\r
+Berry\r
+--AaB03x--\r
+"
+
+      @env[Goliath::Constants::CONTENT_LENGTH] = @env['rack.input'].length
+
+      ret = @params.retrieve_params(@env)
+      ret['submit-name'].should == 'Larry'
+      ret[:"submit-name"].should == 'Larry'
+      ret['submit-name-with-content'].should == 'Berry'
     end
 
     it 'combines query string and post body params' do
@@ -89,6 +124,56 @@ describe Goliath::Rack::Params do
       status.should == 200
       headers.should == app_headers
       body.should == app_body
+    end
+
+    context 'content type' do
+      it "parses application/x-www-form-urlencoded" do
+        @env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded; charset=utf-8'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << "foos=bonkey"
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret['foos'].should == 'bonkey'
+      end
+
+      it "parses json" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar"}|
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret['foo'].should == 'bar'
+        ret[:foo].should == 'bar'
+      end
+      
+      it "handles empty input gracefully on JSON" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        
+        ret = @params.retrieve_params(@env)
+        ret.should be_empty
+      end
+
+      it "raises a BadRequestError on invalid JSON" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar" BORKEN}|
+        @env['rack.input'].rewind
+
+        lambda{ @params.retrieve_params(@env) }.should raise_error(Goliath::Validation::BadRequestError)
+      end
+
+      it "doesn't parse unknown content types" do
+        @env['CONTENT_TYPE'] = 'fake/form -- type'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|{"foo":"bar"}|
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret.should == {}
+      end
     end
   end
 end

@@ -3,11 +3,15 @@ require 'goliath/rack/validation/request_method'
 
 describe Goliath::Rack::Validation::RequestMethod do
   before(:each) do
+    @app_headers = {'Content-Type' => 'asdf'}
+    @app_body = {'a' => 'b'}
+
     @app = mock('app').as_null_object
+    @app.stub!(:call).and_return([200, @app_headers, @app_body])
   end
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Validation::RequestMethod.new('my app') }.should_not raise_error(Exception)
+    lambda { Goliath::Rack::Validation::RequestMethod.new('my app') }.should_not raise_error
   end
 
   describe 'with defaults' do
@@ -18,25 +22,21 @@ describe Goliath::Rack::Validation::RequestMethod do
 
     it 'raises error if method is invalid' do
       @env['REQUEST_METHOD'] = 'fubar'
-      lambda { @rm.call(@env) }.should raise_error(Goliath::Validation::Error)
+      @rm.call(@env).should == [405, {'Allow' => 'GET, POST'}, {:error => "Invalid request method"}]
     end
 
     it 'allows valid methods through' do
       @env['REQUEST_METHOD'] = 'GET'
-      lambda { @rm.call(@env) }.should_not raise_error
+      @rm.call(@env).should == [200, @app_headers, @app_body]
     end
 
     it 'returns app status, headers and body' do
-      app_headers = {'Content-Type' => 'asdf'}
-      app_body = {'a' => 'b'}
-      @app.should_receive(:call).and_return([200, app_headers, app_body])
-
       @env['REQUEST_METHOD'] = 'POST'
 
       status, headers, body = @rm.call(@env)
       status.should == 200
-      headers.should == app_headers
-      body.should == app_body
+      headers.should == @app_headers
+      body.should == @app_body
     end
   end
 

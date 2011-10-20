@@ -1,3 +1,20 @@
+require 'goliath/goliath'
+require 'goliath/runner'
+require 'goliath/rack'
+
+# Pre-load the goliath environment so it's available as we try to parse the class.
+# This means we can use Goliath.dev? or Goliath.prod? in the use statements.
+#
+# Note, as implmented, you have to have -e as it's own flag, you can't do -sve dev
+# as it won't pickup the e flag.
+env = ENV['RACK_ENV']
+env ||= begin
+          if ((i = ARGV.index('-e')) || (i = ARGV.index('--environment')))
+            ARGV[i + 1]
+          end
+        end
+Goliath.env = env if env
+
 module Goliath
   # The main execution class for Goliath. This will execute in the at_exit
   # handler to run the server.
@@ -6,9 +23,10 @@ module Goliath
   class Application
     # Most of this stuff is straight out of sinatra.
 
-    # Set of caller regex's to be skippe when looking for our API file
+    # Set of caller regex's to be skipped when looking for our API file
     CALLERS_TO_IGNORE = [ # :nodoc:
-      /\/goliath(\/(application))?\.rb$/, # all goliath code
+      /\/goliath(\/application)?\.rb$/, # all goliath code
+      /\/goliath(\/(rack|validation|plugins)\/)/, # all goliath code
       /rubygems\/custom_require\.rb$/,    # rubygems require hacks
       /bundler(\/runtime)?\.rb/,          # bundler require hacks
       /<internal:/                        # internal in ruby >= 1.9.2
@@ -40,34 +58,66 @@ module Goliath
       c
     end
 
+    # Returns the userland class which inherits the Goliath API
+    #
+    # @return [String] The app class
+    def self.app_class
+      @app_class
+    end
+
+    # Sets the userland class that should use the Goliath API
+    #
+    # @param app_class [String|Symbol|Constant] The new app class
+    # @return [String] app_class The new app class
+    def self.app_class=(app_class)
+      @app_class = app_class.to_s
+    end
+
+    # Retrive the base directory for the API before we've changed directories
+    #
+    # @note Note sure of a better way to handle this. Goliath will do a chdir
+    #       when the runner is executed. If you need the +root_path+ before
+    #       the runner is executing (like, in a use statement) you need this method.
+    #
+    # @param args [Array] Any arguments to append to the path
+    # @return [String] path for the given arguments
+    def self.app_path(*args)
+      @app_path ||= File.expand_path(File.dirname(app_file))
+      File.join(@app_path, *args)
+    end
+
+    # Retrieve the base directory for the API
+    #
+    # @param args [Array] Any arguments to append to the path
+    # @return [String] path for the given arguments
+    def self.root_path(*args)
+      return app_path(args) if Goliath.test?
+
+      @root_path ||= File.expand_path("./")
+      File.join(@root_path, *args)
+    end
+
     # Execute the application
     #
     # @return [Nil]
     def self.run!
-      file = File.basename(app_file, '.rb')
-      klass = begin
-        Kernel.const_get(camel_case(file))
+      unless @app_class
+        file = File.basename(app_file, '.rb')
+        @app_class = camel_case(file)
+      end
+
+      begin
+        klass = Kernel
+        @app_class.split('::').each do |con|
+          klass = klass.const_get(con)
+        end
       rescue NameError
-        raise NameError, "Class #{camel_case(file)} not found."
+        raise NameError, "Class #{@app_class} not found."
       end
       api = klass.new
 
       runner = Goliath::Runner.new(ARGV, api)
-      runner.load_app do
-        klass.middlewares.each do |mw|
-          use(*(mw[0..1].compact), &mw[2])
-        end
-
-        # If you use map you can't use run as
-        # the rack builder will blowup.
-        if klass.maps.empty?
-          run api
-        else
-          klass.maps.each do |mp|
-            map(mp.first, &mp.last)
-          end
-        end
-      end
+      runner.app = Goliath::Rack::Builder.build(klass, api)
 
       runner.load_plugins(klass.plugins)
       runner.run

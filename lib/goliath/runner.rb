@@ -4,7 +4,7 @@ require 'optparse'
 require 'log4r'
 
 module Goliath
-  # The Goliath::Runner is responsible for parsing any provided options, settting up the
+  # The Goliath::Runner is responsible for parsing any provided options, setting up the
   # rack application, creating a logger, and then executing the Goliath::Server with the loaded information.
   class Runner
     # The address of the server @example 127.0.0.1
@@ -63,6 +63,7 @@ module Goliath
     def initialize(argv, api)
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
+      Goliath.env = options.delete(:env)
 
       @api = api
       @address = options.delete(:address)
@@ -88,7 +89,8 @@ module Goliath
 
         :daemonize => false,
         :verbose => false,
-        :log_stdout => false
+        :log_stdout => false,
+        :env => :development,
       }
 
       @options_parser ||= OptionParser.new do |opts|
@@ -97,28 +99,34 @@ module Goliath
         opts.separator ""
         opts.separator "Server options:"
 
-        opts.on('-e', '--environment NAME', "Set the execution environment (prod, dev or test) (default: #{Goliath.env})") { |val| Goliath.env = val }
-
+        opts.on('-e', '--environment NAME', "Set the execution environment (prod, dev or test) (default: #{@options[:env]})") { |val| @options[:env] = val }
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
+        opts.on('-S', '--socket FILE', "Bind to unix domain socket") { |v| @options[:address] = v; @options[:port] = nil }
 
+        opts.separator ""
+        opts.separator "Daemon options:"
+
+        opts.on('-u', '--user USER', "Run as specified user") {|v| @options[:user] = v }
+        opts.on('-c', '--config FILE', "Config file (default: ./config/<server>.rb)") { |v| @options[:config] = v }
+        opts.on('-d', '--daemonize', "Run daemonized in the background (default: #{@options[:daemonize]})") { |v| @options[:daemonize] = v }
         opts.on('-l', '--log FILE', "Log to file (default: off)") { |file| @options[:log_file] = file }
         opts.on('-s', '--stdout', "Log to stdout (default: #{@options[:log_stdout]})") { |v| @options[:log_stdout] = v }
-
         opts.on('-P', '--pid FILE', "Pid file (default: off)") { |file| @options[:pid_file] = file }
-        opts.on('-d', '--daemonize', "Run daemonized in the background (default: #{@options[:daemonize]})") { |v| @options[:daemonize] = v }
-        opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
 
+        opts.separator ""
+        opts.separator "SSL options:"
+        opts.on('--ssl', 'Enables SSL (default: off)') {|v| @options[:ssl] = v }
+        opts.on('--ssl-key FILE', 'Path to private key') {|v| @options[:ssl_key] = v }
+        opts.on('--ssl-cert FILE', 'Path to certificate') {|v| @options[:ssl_cert] = v }
+        opts.on('--ssl-verify', 'Enables SSL certificate verification') {|v| @options[:ssl_verify] = v }
+
+        opts.separator ""
+        opts.separator "Common options:"
+
+        opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
         opts.on('-h', '--help', 'Display help message') { show_options(opts) }
       end
-    end
-
-    # Given a block, this will use Rack::Builder to create the application
-    #
-    # @param blk [Block] The application block to load
-    # @return [Object] The Rack application
-    def load_app(&blk)
-      @app = ::Rack::Builder.app(&blk)
     end
 
     # Stores the list of plugins to be used by the server
@@ -134,6 +142,11 @@ module Goliath
     #
     # @return [Nil]
     def run
+      unless Goliath.test?
+        $LOADED_FEATURES.unshift(File.basename($0))
+        Dir.chdir(File.expand_path(File.dirname($0)))
+      end
+
       if @daemonize
         Process.fork do
           Process.setsid
@@ -143,7 +156,6 @@ module Goliath
           @log_file ||= File.expand_path('goliath.log')
           store_pid(Process.pid)
 
-          Dir.chdir(File.dirname(__FILE__))
           File.umask(0000)
 
           stdout_log_file = "#{File.dirname(@log_file)}/#{File.basename(@log_file)}_stdout.log"

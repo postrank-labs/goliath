@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Goliath::Request do
   before(:each) do
-
     app = mock('app').as_null_object
     env = Goliath::Env.new
 
@@ -10,7 +9,6 @@ describe Goliath::Request do
   end
 
   describe 'initialization' do
-
     it 'initializes env defaults' do
       env = Goliath::Env.new
       env['INIT'] = 'init'
@@ -29,7 +27,6 @@ describe Goliath::Request do
   end
 
   describe 'process' do
-
     it 'executes the application' do
       app_mock = mock('app').as_null_object
       env_mock = mock('app').as_null_object
@@ -40,7 +37,6 @@ describe Goliath::Request do
 
       request.process
     end
-
   end
 
   describe 'finished?' do
@@ -54,6 +50,29 @@ describe Goliath::Request do
 
       @r.finished?.should be_true
     end
+  end
 
+  describe 'parse_headers' do
+    it 'sets content_type correctly' do
+      parser = mock('parser').as_null_object
+
+      @r.parse_header({'Content-Type' => 'text/plain'}, parser)
+      @r.env['CONTENT_TYPE'].should == 'text/plain'
+    end
+
+    it 'sets content_length correctly' do
+      parser = mock('parser').as_null_object
+
+      @r.parse_header({'Content-Length' => 42}, parser)
+      @r.env['CONTENT_LENGTH'].should == 42
+    end
+
+    it 'sets server_name and server_port correctly' do
+      parser = mock('parser').as_null_object
+
+      @r.parse_header({'Host' => 'myhost.com:3000'}, parser)
+      @r.env['SERVER_NAME'].should == 'myhost.com'
+      @r.env['SERVER_PORT'].should == '3000'
+    end
   end
 end

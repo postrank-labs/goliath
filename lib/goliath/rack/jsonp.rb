@@ -6,19 +6,7 @@ module Goliath
     #  use Goliath::Rack::JSONP
     #
     class JSONP
-      def initialize(app)
-        @app = app
-      end
-
-      def call(env)
-        async_cb = env['async.callback']
-
-        env['async.callback'] = Proc.new do |status, headers, body|
-          async_cb.call(post_process(env, status, headers, body))
-        end
-        status, headers, body = @app.call(env)
-        post_process(env, status, headers, body)
-      end
+      include Goliath::Rack::AsyncMiddleware
 
       def post_process(env, status, headers, body)
         return [status, headers, body] unless env.params['callback']

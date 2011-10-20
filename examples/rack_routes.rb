@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 $:<< '../lib' << 'lib'
 
 require 'goliath'
@@ -19,9 +20,57 @@ class HelloWorld < Goliath::API
   end
 end
 
+class PostHelloWorld < Goliath::API
+  def response(env)
+    [200, {}, "hello post world!"]
+  end
+end
+
+class HeaderCollector < Goliath::API
+  def on_headers(env, header)
+    @headers ||= {}
+    @headers.merge!(header)
+  end
+
+  def response(env)
+    [200, {}, "headers: #{@headers.inspect}"]
+  end
+end
+
+class HelloNumber < Goliath::API
+  use Goliath::Rack::Params
+  def response(env)
+    [200, {}, "number #{params[:number]}!"]
+  end
+end
+
+class BigNumber < Goliath::API
+  use Goliath::Rack::Params
+  def response(env)
+    [200, {}, "big number #{params[:number]}!"]
+  end
+end
+
 class Bonjour < Goliath::API
   def response(env)
     [200, {}, "bonjour!"]
+  end
+end
+
+class Hola < Goliath::API
+  use Goliath::Rack::Params
+  use Goliath::Rack::Validation::RequiredParam, {:key => "foo"}
+
+  def response(env)
+    [200, {}, "hola!"]
+  end
+end
+
+class Aloha < Goliath::API
+  use Goliath::Rack::Validation::RequestMethod, %w(GET)
+
+  def response(env)
+    [200, {}, "Aloha"]
   end
 end
 
@@ -30,15 +79,47 @@ class RackRoutes < Goliath::API
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end
 
-  map "/hello_world" do
+  post "/hello_world" do
+    run PostHelloWorld.new
+  end
+
+  get "/hello_world" do
     run HelloWorld.new
+  end
+
+  head "/hello_world" do
+    run HelloWorld.new
+  end
+
+  map "/headers", HeaderCollector do
+    use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
 
   map "/bonjour" do
     run Bonjour.new
   end
 
-  map '/' do
-    run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world or /bonjour"]] }
+  map "/hola" do
+    use Goliath::Rack::Validation::RequestMethod, %w(GET)
+    run Hola.new
+  end
+
+  map "/aloha", Aloha
+
+  map "/:number", :number => /\d+/ do
+    if params[:number].to_i > 100
+      run BigNumber.new
+    else
+      run HelloNumber.new
+    end
+  end
+
+  not_found('/') do
+    run Proc.new { |env| [404, {"Content-Type" => "text/html"}, ["Try /version /hello_world, /bonjour, or /hola"]] }
+  end
+
+  # You must use either maps or response, but never both!
+  def response(env)
+    raise RuntimeException.new("#response is ignored when using maps, so this exception won't raise. See spec/integration/rack_routes_spec.")
   end
 end

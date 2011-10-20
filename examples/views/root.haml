@@ -1,0 +1,28 @@
+%h2 Routes
+
+%ul
+  %li <a href="/joke">Tell me a joke</a>
+  %li <a href="/erb_me">Tell me a joke, but with a boring .erb layout</a>
+  %li <a href="/debug">debug info</a>
+  %li <a href="/oops">Template missing</a>
+
+%h2 Dashboard
+
+%table.vertical
+  %tr
+    %th  Script
+    %td= $0
+  %tr
+    %th  Server Port
+    %td= env['SERVER_PORT']
+  %tr
+    %th  Latency
+    %td= recent_latency
+  %tr
+    %th  Request took
+    %td= (Time.now.to_f - env[:start_time]).round(3)
+  %tr
+    %th  Config
+    %td
+      %pre
+        = "\n"+JSON.pretty_generate(env.config)

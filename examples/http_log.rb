@@ -15,7 +15,6 @@ require 'em-synchrony/em-http'
 require 'pp'
 
 class HttpLog < Goliath::API
-  use ::Rack::Reloader, 0 if Goliath.dev?
   use Goliath::Rack::Params
 
   def on_headers(env, headers)
@@ -57,6 +56,7 @@ class HttpLog < Goliath::API
   # Write the request information into mongo
   def record(process_time, resp, client_headers, response_headers)
     e = env
+    e.trace('http_log_record')
     EM.next_tick do
       doc = {
         request: {

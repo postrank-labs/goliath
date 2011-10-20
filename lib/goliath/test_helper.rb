@@ -2,6 +2,7 @@ require 'em-synchrony'
 require 'em-synchrony/em-http'
 
 require 'goliath/server'
+require 'goliath/rack'
 require 'rack'
 
 module Goliath
@@ -24,35 +25,27 @@ module Goliath
   #
   module TestHelper
     def self.included(mod)
-      Goliath.env = 'test'
-    end
-
-    # Builds the rack middleware chain for the given API
-    #
-    # @param klass [Class] The API class to build the middlewares for
-    # @return [Object] The Rack middleware chain
-    def build_app(klass)
-      ::Rack::Builder.new do
-        klass.middlewares.each do |mw|
-          use(*(mw[0..1].compact), &mw[2])
-        end
-        run klass.new
-      end
+      Goliath.env = :test
     end
 
     # Launches an instance of a given API server. The server
-    # will launch on the default settings of localhost port 9000.
+    # will launch on the specified port.
     #
     # @param api [Class] The API class to launch
     # @param port [Integer] The port to run the server on
-    # @return [Nil]
-    def server(api, port = 9000)
+    # @param options [Hash] The options hash to provide to the server
+    # @return [Goliath::Server] The executed server
+    def server(api, port, options = {}, &blk)
+      op = OptionParser.new
+
       s = Goliath::Server.new
       s.logger = mock('log').as_null_object
       s.api = api.new
-      s.app = build_app(api)
-      s.port = port
-      s.start
+      s.app = Goliath::Rack::Builder.build(api, s.api)
+      s.api.options_parser(op, options)
+      s.options = options
+      s.port = @test_server_port = port
+      s.start(&blk)
       s
     end
 
@@ -67,13 +60,11 @@ module Goliath
     # will start the EventMachine reactor running.
     #
     # @param api [Class] The API class to launch
+    # @param options [Hash] The options to pass to the server
     # @param blk [Proc] The code to execute after the server is launched.
     # @note This will not return until stop is called.
-    def with_api(api, &blk)
-      EM.synchrony do
-        @api_server = server(api)
-        blk.call
-      end
+    def with_api(api, options = {}, &blk)
+      server(api, options.delete(:port) || 9900, options, &blk)
     end
 
     # Helper method to setup common callbacks for various request methods.
@@ -93,14 +84,23 @@ module Goliath
       req.errback { stop }
     end
 
+    # Make a HEAD request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the HEAD request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def head_request(request_data = {}, errback = nil, &blk)
+      req = test_request(request_data).head(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
     # Make a GET request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the GET request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = nil, &blk)
-      path = request_data.delete(:path) || ''
-      req = EM::HttpRequest.new("http://localhost:9000#{path}").get(request_data)
+      req = test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -110,9 +110,33 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def post_request(request_data = {}, errback = nil, &blk)
-      path = request_data.delete(:path) || ''
-      req = EM::HttpRequest.new("http://localhost:9000#{path}").post(request_data)
+      req = test_request(request_data).post(request_data)
       hookup_request_callbacks(req, errback, &blk)
+    end
+
+    # Make a PUT request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the PUT request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def put_request(request_data = {}, errback = nil, &blk)
+      req = test_request(request_data).put(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
+    # Make a DELETE request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the DELETE request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def delete_request(request_data = {}, errback = nil, &blk)
+      req = test_request(request_data).delete(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
+    def test_request(request_data)
+      path = request_data.delete(:path) || ''
+      EM::HttpRequest.new("http://localhost:#{@test_server_port}#{path}")
     end
   end
 end
