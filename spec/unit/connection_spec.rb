@@ -43,7 +43,10 @@ describe Goliath::Connection do
       request_mock = mock("parser").as_null_object
       request_mock.should_receive(:<<)
 
+      current_mock = mock("current").as_null_object
+
       @c.instance_variable_set("@parser", request_mock)
+      @c.instance_variable_set("@current", current_mock)
       @c.receive_data('more_data')
     end
 
