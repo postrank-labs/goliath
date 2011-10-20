@@ -2,7 +2,7 @@ require 'em-synchrony'
 require 'em-synchrony/em-http'
 
 require 'goliath/server'
-require 'goliath/rack/builder'
+require 'goliath/rack'
 require 'rack'
 
 module Goliath
