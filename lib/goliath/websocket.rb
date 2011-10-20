@@ -18,10 +18,16 @@ module Goliath
     end
 
     def response(env)
-      request = {}.merge(env['goliath.request-headers'])
-      request['Path'] = env[REQUEST_PATH]
-      request['Method'] = env[REQUEST_METHOD]
-      request['Query'] = env[QUERY_STRING]
+      request = {}
+
+      # em-websockets expects the keys to all be lowercase so we need to convert
+      env['goliath.request-headers'].each_pair do |key, value|
+        request[key.downcase] = value
+      end
+
+      request['path'] = env[REQUEST_PATH]
+      request['method'] = env[REQUEST_METHOD]
+      request['query'] = env[QUERY_STRING]
 
       old_stream_send = env[STREAM_SEND]
       env[STREAM_SEND]  = proc { |data| env.handler.send_text_frame(data) }
@@ -58,6 +64,7 @@ module Goliath
         env['handler'] = EM::WebSocket::HandlerFactory.build_with_request(conn, request,
                                                                           upgrade_data, false, false)
       rescue Exception => e
+        env.logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
         return [500, {}, {:error => "Upgrade failed"}]
       end
 

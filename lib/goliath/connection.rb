@@ -22,7 +22,6 @@ module Goliath
 
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
-
         env = Thread.current[GOLIATH_ENV] = Goliath::Env.new
         env[SERVER_PORT] = port.to_s
         env[RACK_LOGGER] = logger
@@ -80,8 +79,8 @@ module Goliath
     end
 
     def unbind
-      @requests.map {|r| r.close }
-      @pending.map  {|r| r.close }
+      @requests.map { |r| r.close }
+      @pending.map  { |r| r.close }
       @current.close if @current
     end
 
