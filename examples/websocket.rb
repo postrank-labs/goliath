@@ -3,11 +3,11 @@ $:<< '../lib' << 'lib'
 
 require 'goliath'
 require 'goliath/websocket'
+require 'goliath/rack/templates'
 
-require 'yajl'
 require 'pp'
 
-class Websocket < Goliath::WebSocket
+class WebsocketEndPoint < Goliath::WebSocket
   def on_open(env)
     env.logger.info("WS OPEN")
     env['subscription'] = env.channel.subscribe { |m| env.stream_send(m) }
@@ -26,4 +26,20 @@ class Websocket < Goliath::WebSocket
   def on_error(env, error)
     env.logger.error error
   end
+end
+
+class WSInfo < Goliath::API
+  include Goliath::Rack::Templates
+
+  def response(env)
+    [200, {}, erb(:index, :views => Goliath::Application.root_path('ws'))]
+  end
+end
+
+class Websocket < Goliath::API
+  get '/' do
+    run WSInfo.new
+  end
+
+  map "/ws", WebsocketEndPoint
 end

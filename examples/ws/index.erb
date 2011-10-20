@@ -17,7 +17,7 @@
           return;
         }
 
-        var ws = new WebSocket("ws://localhost:9000/");
+        var ws = new WebSocket("ws://localhost:9000/ws");
         ws.onmessage = function(evt) { $("#msg").append("<p>" + evt.data + "</p>"); };
         ws.onclose = function() { debug("socket closed"); };
         ws.onopen = function() { debug("connected..."); };
