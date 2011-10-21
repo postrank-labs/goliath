@@ -37,9 +37,6 @@ class WSInfo < Goliath::API
 end
 
 class Websocket < Goliath::API
-  get '/' do
-    run WSInfo.new
-  end
-
-  map "/ws", WebsocketEndPoint
+  get '/', WSInfo
+  map '/ws', WebsocketEndPoint
 end
