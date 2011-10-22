@@ -37,6 +37,8 @@ class WSInfo < Goliath::API
 end
 
 class Websocket < Goliath::API
+  use Goliath::Rack::Favicon, File.expand_path(File.dirname(__FILE__) + '/ws/favicon.ico')
+
   get '/', WSInfo
   map '/ws', WebsocketEndPoint
 end

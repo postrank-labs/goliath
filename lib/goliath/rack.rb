@@ -6,6 +6,7 @@ module Goliath
     autoload :Builder,                'goliath/rack/builder'
     autoload :DefaultMimeType,        'goliath/rack/default_mime_type'
     autoload :DefaultResponseFormat,  'goliath/rack/default_response_format'
+    autoload :Favicon,                'goliath/rack/favicon'
     autoload :Formatters,             'goliath/rack/formatters'
     autoload :Heartbeat,              'goliath/rack/heartbeat'
     autoload :JSONP,                  'goliath/rack/jsonp'

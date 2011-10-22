@@ -2,7 +2,6 @@
 $: << File.dirname(__FILE__)+'/../../lib'
 require 'goliath'
 require 'postrank-uri'
-require File.dirname(__FILE__)+'/../favicon'
 
 # Install phantomjs: http://code.google.com/p/phantomjs/wiki/QuickStart
 # $> ruby rasterize.rb -sv
@@ -10,7 +9,7 @@ require File.dirname(__FILE__)+'/../favicon'
 
 class Rasterize < Goliath::API
   use Goliath::Rack::Params
-  use Favicon, File.expand_path(File.dirname(__FILE__)+"/../public/favicon.ico")
+  use Goliath::Rack::Favicon, File.expand_path(File.dirname(__FILE__)+"/../public/favicon.ico")
   use Goliath::Rack::Validation::RequestMethod, %w(GET)
   use Goliath::Rack::Validation::RequiredParam, {:key => 'url'}
 
