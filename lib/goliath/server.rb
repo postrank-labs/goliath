@@ -73,7 +73,10 @@ module Goliath
       EM.synchrony do
         trap("INT")  { EM.stop }
         trap("TERM") { EM.stop }
-        trap("HUP")  { load_config(options[:config]) }
+
+        if RUBY_PLATFORM !~ /mswin|mingw/
+          trap("HUP")  { load_config(options[:config]) }
+        end
 
         load_config(options[:config])
         load_plugins
