@@ -53,6 +53,9 @@ module Goliath
           @parent.on_message(@env, msg)
         end
 
+        def close_connection_after_writing
+        end
+
         def send_data(data)
           @stream_send.call(data)
         end
