@@ -36,6 +36,15 @@ module Goliath
       def middlewares
         @middlewares ||= []
 
+        unless @loaded_superclass_middlewares
+          if self.superclass != Goliath::API
+            @middlewares += self.superclass.middlewares
+            @middlewares = @middlewares.uniq
+          end
+
+          @loaded_superclass_middlewares = true
+        end
+
         unless @loaded_default_middlewares
           @middlewares.unshift([::Goliath::Rack::DefaultResponseFormat, nil, nil])
           @middlewares.unshift([::Rack::ContentLength, nil, nil])
