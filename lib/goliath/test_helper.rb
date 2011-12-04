@@ -39,7 +39,7 @@ module Goliath
       op = OptionParser.new
 
       s = Goliath::Server.new
-      s.logger = mock('log').as_null_object
+      s.logger = options[:log_file].nil? ? mock('log').as_null_object : Logger.new(options.delete(:log_file))
       s.api = api.new
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
