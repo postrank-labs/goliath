@@ -5,29 +5,27 @@ describe Goliath::API do
 
   DummyApi = Class.new(Goliath::API)
 
-  describe 'middlewares' do
+  describe "middlewares" do
     it "doesn't change after multi calls" do
-      2.times { Goliath::API.should have(2).middlewares }
+      2.times { DummyApi.should have(2).middlewares }
     end
-    
+
     it "should include all middlewares from superclasses" do
       c1 = Class.new(Goliath::API) do
         use Goliath::Rack::Params
       end
-      
+
       c2 = Class.new(c1) do
         use Goliath::Rack::DefaultMimeType
       end
-      
+
       base_middlewares = DummyApi.middlewares
-      
       middlewares = c2.middlewares - base_middlewares
-      
+
       middlewares.size.should == 2
       middlewares[0][0].should == Goliath::Rack::DefaultMimeType
       middlewares[1][0].should == Goliath::Rack::Params
     end
-    
   end
 
   describe ".maps?" do
@@ -44,6 +42,5 @@ describe Goliath::API do
       end
     end
   end
-
 
 end
