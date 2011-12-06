@@ -197,8 +197,9 @@ module Goliath
         status, headers, body = [e.status_code, {}, ('{"error":"%s"}'%e.message)]  #
       else
         @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-        status, headers, body = [500, {}, 'An error happened']
+        status, headers, body = [500, {}, e.message || 'An error happened']
       end
+
       headers['Content-Length'] = body.bytesize.to_s
       @env[:terminate_connection] = true
       post_process([status, headers, body])

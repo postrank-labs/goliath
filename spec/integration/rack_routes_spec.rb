@@ -108,7 +108,7 @@ describe RackRoutes do
           get_request({:path => '/bad_route'}, err) do |cb|
             # it doesn't raise required param error
             cb.response_header.status.should == 500
-            # cb.response.should == "hola!"
+            cb.response.should == "run disallowed: please mount a Goliath API class"
           end
         end
       end
