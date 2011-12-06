@@ -74,44 +74,38 @@ class Aloha < Goliath::API
   end
 end
 
+class Version < Goliath::API
+  def response(env)
+    [200, {"Content-Type" => "text/html"}, ["Version 0.1"]]
+  end
+end
+
+
 class RackRoutes < Goliath::API
-  map '/version' do
-    run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
-  end
 
-  post "/hello_world" do
-    run PostHelloWorld.new
-  end
+  # map Goliath API to a specific path
+  get  "/hello_world", HelloWorld
+  head "/hello_world", HelloWorld
+  post "/hello_world", PostHelloWorld
 
-  get "/hello_world" do
-    run HelloWorld.new
-  end
+  map "/bonjour", Bonjour
+  map "/aloha", Aloha
 
-  head "/hello_world" do
-    run HelloWorld.new
-  end
-
+  # map Goliath API to a specific path and inject validation middleware
+  # for this route only in addition to the middleware specified by the
+  # API class itself
   map "/headers", HeaderCollector do
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
 
-  map "/bonjour" do
-    run Bonjour.new
-  end
-
-  map "/hola" do
+  map "/hola", Hola do
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
-    run Hola.new
   end
 
-  map "/aloha", Aloha
-
-  map "/:number", :number => /\d+/ do
-    if params[:number].to_i > 100
-      run BigNumber.new
-    else
-      run HelloNumber.new
-    end
+  # bad route: you cannot run arbitrary procs or classes, please provide
+  # an implementation of the Goliath API
+  map "/bad_route", Hola do
+    run Hola.new
   end
 
   not_found('/') do
@@ -122,4 +116,5 @@ class RackRoutes < Goliath::API
   def response(env)
     raise RuntimeException.new("#response is ignored when using maps, so this exception won't raise. See spec/integration/rack_routes_spec.")
   end
+
 end

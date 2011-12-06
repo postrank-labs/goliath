@@ -116,15 +116,14 @@ module Goliath
       # Specify a router map to be used by the API
       #
       # @example
-      #  map '/version' do
-      #    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
-      #  end
+      #  map '/version', ApiClass
       #
       # @example
-      #  map '/user/:id', :id => /\d+/ do
-      #    # params[:id] will be a number
-      #    run Proc.new {|env| [200, {"Content-Type" => "text/html"}, ["Loading user #{params[:id]}"]] }
+      #  map '/version_get', ApiClass do
+      #    # inject GET validation middleware for this specific route
+      #    use Goliath::Rack::Validation::RequestMethod, %w(GET)
       #  end
+      #
       #
       # @param name [String] The URL path to map.
       #   Optional parts are supported via <tt>(.:format)</tt>, variables as <tt>:var</tt> and globs via <tt>*remaining_path</tt>.

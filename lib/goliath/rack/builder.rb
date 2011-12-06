@@ -8,13 +8,11 @@ module Goliath
   module Rack
     class Builder < ::Rack::Builder
       attr_accessor :params
-      attr_reader :inner_app
       include Params::Parser
 
       alias_method :original_run, :run
       def run(app)
-        @inner_app = app
-        original_run(app)
+        raise "run disallowed: please mount a Goliath API class"
       end
 
       # Builds the rack middleware chain for the given API
@@ -27,29 +25,37 @@ module Goliath
           klass.middlewares.each do |mw_klass, args, blk|
             use(mw_klass, *args, &blk)
           end
+
           if klass.maps?
             klass.maps.each do |path, route_klass, opts, blk|
               route = klass.router.add(path, opts.dup)
               route.api_class = route_klass
-              route.to {|env|
+
+              route.to do |env|
                 builder = Builder.new
                 env['params'] ||= {}
                 env['params'].merge!(env['router.params']) if env['router.params']
+
                 builder.params = builder.retrieve_params(env)
                 builder.instance_eval(&blk) if blk
-                route_klass.middlewares.each do |mw|
-                  builder.instance_eval { use mw[0], *mw[1], &mw[2] }
-                end if route_klass
-                if route_klass or blk.nil?
-                  raise "You cannot use `run' and supply a routing class at the same time" if builder.inner_app
-                  builder.instance_eval { run env.event_handler }
+
+                if route_klass
+                  route_klass.middlewares.each do |mw|
+                    builder.instance_eval { use mw[0], *mw[1], &mw[2] }
+                  end
                 end
+
+                if route_klass or blk.nil?
+                  builder.instance_eval { original_run env.event_handler }
+                end
+
                 builder.to_app.call(env)
-              }
+              end
             end
-            run klass.router
+
+            original_run klass.router
           else
-            run api
+            original_run api
           end
         end
       end

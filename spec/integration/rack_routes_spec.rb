@@ -22,6 +22,7 @@ describe RackRoutes do
           cb.response.should == 'Try /version /hello_world, /bonjour, or /hola'
         end
       end
+
       with_api(RackRoutes) do
         get_request({:path => '/'}, err) do |cb|
           cb.response_header.status.should == 404
@@ -44,24 +45,6 @@ describe RackRoutes do
         get_request({:path => '/bonjour'}, err) do |c|
           c.response_header.status.should == 200
           c.response.should == 'bonjour!'
-        end
-      end
-    end
-
-    it 'routes to the correct API using regex filters' do
-      with_api(RackRoutes) do
-        get_request({:path => '/98'}, err) do |c|
-          c.response_header.status.should == 200
-          c.response.should == 'number 98!'
-        end
-      end
-    end
-
-    it 'routes to the correct API referencing params in the body of the buidler' do
-      with_api(RackRoutes) do
-        get_request({:path => '/123123'}, err) do |c|
-          c.response_header.status.should == 200
-          c.response.should == 'big number 123123!'
         end
       end
     end
@@ -97,8 +80,8 @@ describe RackRoutes do
       end
     end
 
-    context 'routes defined with head' do
-      it 'should allow head' do
+    context "routes defined with head" do
+      it "should allow head" do
         with_api(RackRoutes) do
           head_request({:path => '/hello_world'}, err) do |c|
             c.response_header.status.should == 200
@@ -109,30 +92,30 @@ describe RackRoutes do
     end
 
     context "defined in blocks" do
-      it 'uses middleware defined in the block' do
+      it "uses middleware defined in the block" do
         with_api(RackRoutes) do
-          post_request({:path => '/hola'}, err) do |c|
+          post_request({:path => '/hola'}, err) do |cb|
             # the /hola route only supports GET requests
-            c.response_header.status.should == 405
-            c.response.should == '[:error, "Invalid request method"]'
-            c.response_header['ALLOW'].should == 'GET'
+            cb.response_header.status.should == 405
+            cb.response.should == '[:error, "Invalid request method"]'
+            cb.response_header['ALLOW'].should == 'GET'
           end
         end
       end
 
-      it "doesn't use middleware defined in the API" do
+      it "disallows routing class and run for same route" do
         with_api(RackRoutes) do
-          get_request({:path => '/hola'}, err) do |cb|
+          get_request({:path => '/bad_route'}, err) do |cb|
             # it doesn't raise required param error
-            cb.response_header.status.should == 200
-            cb.response.should == "hola!"
+            cb.response_header.status.should == 500
+            # cb.response.should == "hola!"
           end
         end
       end
     end
 
     context "defined in classes" do
-      it 'uses API middleware' do
+      it "uses API middleware" do
         with_api(RackRoutes) do
           post_request({:path => '/aloha'}, err) do |c|
             # the /hola route only supports GET requests
