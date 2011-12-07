@@ -74,10 +74,23 @@ class Aloha < Goliath::API
   end
 end
 
+class SayMyName < Goliath::API
+  def initialize(name)
+    @name = name
+  end
+  
+  def response(env)
+    [200, {}, "Hello #{@name}"]
+  end
+end
+
 class RackRoutes < Goliath::API
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.1"]] }
   end
+  
+  get '/name', SayMyName.new("Leonard")
+  get '/name2', SayMyName.new("Helena")
 
   post "/hello_world" do
     run PostHelloWorld.new

@@ -1,7 +1,7 @@
 require 'http_router'
 
 class HttpRouter::Route
-  attr_accessor :api_class
+  attr_accessor :api_class_or_object
 end
 
 module Goliath
@@ -28,9 +28,12 @@ module Goliath
             use(mw_klass, *args, &blk)
           end
           if klass.maps?
-            klass.maps.each do |path, route_klass, opts, blk|
+            klass.maps.each do |path, route_klass_or_object, opts, blk|
+              
+              route_klass = route_klass_or_object.is_a?(Class) ? route_klass_or_object : route_klass_or_object.class
+              
               route = klass.router.add(path, opts.dup)
-              route.api_class = route_klass
+              route.api_class_or_object = route_klass_or_object
               route.to {|env|
                 builder = Builder.new
                 env['params'] ||= {}
@@ -39,8 +42,8 @@ module Goliath
                 builder.instance_eval(&blk) if blk
                 route_klass.middlewares.each do |mw|
                   builder.instance_eval { use mw[0], *mw[1], &mw[2] }
-                end if route_klass
-                if route_klass or blk.nil?
+                end if route_klass_or_object
+                if route_klass_or_object or blk.nil?
                   raise "You cannot use `run' and supply a routing class at the same time" if builder.inner_app
                   builder.instance_eval { run env.event_handler }
                 end
