@@ -14,6 +14,27 @@ describe RackRoutes do
         end
       }.to_not raise_error
     end
+    
+    it 'can map to instances' do
+      with_api(RackRoutes) do
+        get_request({:path => '/name'}, err) do |cb|
+          cb.response_header.status.should == 200
+          cb.response.should == 'Hello Leonard'
+        end        
+      end
+    end
+    
+    it 'can map to instances 2' do
+      with_api(RackRoutes) do        
+        get_request({:path => '/name2'}, err) do |cb|
+          cb.response_header.status.should == 200
+          cb.response.should == 'Hello Helena'
+        end
+        
+      end
+    end
+    
+    
 
     it 'fallback not found to missing' do
       with_api(RackRoutes) do

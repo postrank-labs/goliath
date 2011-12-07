@@ -286,8 +286,9 @@ module Goliath
     def set_event_handler!(env)
       if self.class.maps?
         response = self.class.router.recognize(env)
-        if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class
-          env.event_handler = response.path.route.api_class.new
+        if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class_or_object
+          api_class_or_object = response.path.route.api_class_or_object
+          env.event_handler = api_class_or_object.is_a?(Goliath::API) ? api_class_or_object : api_class_or_object.new
         end
       end
       env.event_handler ||= self
