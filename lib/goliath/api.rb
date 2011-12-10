@@ -38,7 +38,7 @@ module Goliath
 
         unless @loaded_superclass_middlewares
           if self.superclass != Goliath::API
-            @middlewares += self.superclass.middlewares
+            @middlewares = self.superclass.middlewares + @middlewares
             @middlewares = @middlewares.uniq
           end
 
