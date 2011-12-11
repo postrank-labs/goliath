@@ -80,13 +80,9 @@ class Version < Goliath::API
   end
 end
 
-class SayMyName < Goliath::API
-  def initialize(options = {})
-    @name = options.delete(:name)
-  end
-  
+class SayMyName < Goliath::API  
   def response(env)
-    [200, {}, ["Hello #{@name}"]]
+    [200, {}, ["Hello #{@opts[:name]}"]]
   end
 end
 
