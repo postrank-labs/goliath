@@ -39,7 +39,23 @@ describe RackRoutes do
         end
       end
     end
-
+    
+    it 'can pass options to api contructor' do
+      with_api(RackRoutes) do
+        get_request({:path => '/name1'}, err) do |cb|
+          cb.response_header.status.should == 200
+          cb.response.should == 'Hello Leonard'
+        end        
+      end
+      
+      with_api(RackRoutes) do        
+        get_request({:path => '/name2'}, err) do |cb|
+          cb.response_header.status.should == 200
+          cb.response.should == 'Hello Helena'
+        end
+      end
+    end
+   
     it 'routes to the correct API' do
       with_api(RackRoutes) do
         get_request({:path => '/bonjour'}, err) do |c|
