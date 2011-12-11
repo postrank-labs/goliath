@@ -23,8 +23,8 @@ describe Goliath::API do
       middlewares = c2.middlewares - base_middlewares
 
       middlewares.size.should == 2
-      middlewares[0][0].should == Goliath::Rack::DefaultMimeType
-      middlewares[1][0].should == Goliath::Rack::Params
+      middlewares[0][0].should == Goliath::Rack::Params
+      middlewares[1][0].should == Goliath::Rack::DefaultMimeType
     end
   end
 
