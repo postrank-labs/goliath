@@ -80,6 +80,16 @@ class Version < Goliath::API
   end
 end
 
+class SayMyName < Goliath::API
+  def initialize(options = {})
+    @name = options.delete(:name)
+  end
+  
+  def response(env)
+    [200, {}, ["Hello #{@name}"]]
+  end
+end
+
 
 class RackRoutes < Goliath::API
 
@@ -90,6 +100,9 @@ class RackRoutes < Goliath::API
 
   map "/bonjour", Bonjour
   map "/aloha", Aloha
+  
+  get '/name1', SayMyName, :api_options => {:name => "Leonard"}
+  get '/name2', SayMyName, :api_options => {:name => "Helena"}
 
   # map Goliath API to a specific path and inject validation middleware
   # for this route only in addition to the middleware specified by the

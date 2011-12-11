@@ -295,7 +295,11 @@ module Goliath
       if self.class.maps?
         response = self.class.router.recognize(env)
         if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class
-          env.event_handler = response.path.route.api_class.new
+          if response.path.route.api_class.instance_method(:initialize).arity == 0
+            env.event_handler = response.path.route.api_class.new
+          else
+            env.event_handler = response.path.route.api_class.new(response.path.route.api_options)
+          end
         end
       end
       env.event_handler ||= self
