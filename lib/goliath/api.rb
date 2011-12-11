@@ -82,6 +82,7 @@ module Goliath
         end
 
         @middlewares << [name, args, block]
+        @middlewares = @middlewares.uniq
       end
 
       # Returns the plugins configured for this API
