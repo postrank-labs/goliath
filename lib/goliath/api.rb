@@ -165,6 +165,16 @@ module Goliath
         other_paths.each {|path| router.add(path).to(app) }
       end
     end
+    
+    ##
+    # The default constructor does nothing with the options
+    # passed, redefine your own to use them.
+    # 
+    # @param [Hash] opts options passed to a map call if any
+    # 
+    def initialize(opts = {})
+      @opts = opts
+    end
 
     # Default stub method to add options into the option parser.
     #
@@ -295,7 +305,7 @@ module Goliath
       if self.class.maps?
         response = self.class.router.recognize(env)
         if response = self.class.router.recognize(env) and response.respond_to?(:path) and response.path.route.api_class
-          env.event_handler = response.path.route.api_class.new
+          env.event_handler = response.path.route.api_class.new(response.path.route.api_options)
         end
       end
       env.event_handler ||= self
