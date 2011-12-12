@@ -16,6 +16,7 @@ module Goliath
 
       def call(env)
         if env['PATH_INFO'] == @opts[:path]
+          env[Constants::GOLIATH_SKIP_LOG] = !!@opts[:no_log]
           @opts[:response]
         else
           @app.call(env)

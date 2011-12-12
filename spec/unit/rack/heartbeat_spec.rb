@@ -42,6 +42,7 @@ describe Goliath::Rack::Heartbeat do
       status.should == 200
       headers.should == {}
       body.should == 'OK'
+      @env[Goliath::Constants::GOLIATH_SKIP_LOG].should == false
     end
 
     it 'allows path and response to be set using options' do
@@ -51,6 +52,13 @@ describe Goliath::Rack::Heartbeat do
       status.should == 204
       headers.should == {}
       body.should == nil
+    end
+
+    it "doesn't log if set in options" do
+      @hb = Goliath::Rack::Heartbeat.new(@app, :no_log => true)
+      @env['PATH_INFO'] = '/status'
+      @hb.call(@env)
+      @env[Goliath::Constants::GOLIATH_SKIP_LOG].should == true
     end
   end
 end
