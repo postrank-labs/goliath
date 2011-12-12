@@ -16,6 +16,7 @@ module Goliath
     autoload :SimpleAroundwareFactory, 'goliath/rack/simple_aroundware_factory'
     autoload :Templates,              'goliath/rack/templates'
     autoload :Tracer,                 'goliath/rack/tracer'
+    autoload :Types,                 'goliath/rack/types'
     autoload :Validator,              'goliath/rack/validator'
     autoload :Validation,             'goliath/rack/validation'
     #

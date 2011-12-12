@@ -1,92 +1,69 @@
-require 'multi_json'
-
 module Goliath
   module Rack
     module Validation
-      # A middleware to coerce a given value to a given type. This will attempt to do the following
-      # conversions:
-      #  int | integer
-      #  str | string
-      #  bool | boolean = 'true' | 't' | 1 | 'false' | 'f' | 0
-      #  json
+      class FailedCoerce < StandardError
+        attr_reader :error
+        def initialize(error)
+          @error = error
+        end
+      end
+
+      # A middleware to coerce a given value to a given type. By default, Goliath supports Integer, Boolean, String, Float and Symbol. You can also create a custom coerce type by simply create a class that has an instance method, coerce. An example would be:
       #
-      # If the option default is not provided, validation_error will be returned from call(env)
+      # class CustomJSON
+      #   def coerce(value, default)
+      #     MultiJson.decode(value)
+      #   end
+      # end
+      #
+      # Where value is the value that should be coerced and default is the default value optionally specified in the middleware declaration. This means default will be nil if it was not set.
+      #
+      # If default is not set, Integer, Boolean, String, Float and Symbol will return validation_error, otherwise params[key] will be set to default.
+      #
+      # For your custom CoerceTypes, you can raise Goliath::Rack::Validation::FailedCoerce.new(value) where value is what will be returned from the call method.
       #
       # @example
-      # use Goliath::Rack::Validation::CoerceValue, {:key => 'user_id', :as => :integer}
-      # use Goliath::Rack::Validation::CoerceValue, {:key => 'private', :as => :boolean, :default => 0}
+      # use Goliath::Rack::Validation::CoerceValue, :key => 'flag', :type => Goliath::Rack::Types::Boolean
+      #
+      # (or include Goliath::Rack::Types to reference the types without the namespaces.)
+      #
+      # include Goliath::Rack::Types
+      # use Goliath::Rack::Validation::CoerceValue, :key => 'user_id', :type => Integer, :default => "admin"
+      #
       #
       # It is recommended to use Goliath::Rack::Validation::RequiredParam to protect against not given
       # values.
       #
       class CoerceValue
         include Goliath::Rack::Validator
-        attr_reader :key, :as, :default
+        attr_reader :key, :type, :default
 
         # Creates the Goliath::Rack::Validation::CoerceValue validator
         #
         # @param app The app object
         # @param opts [Hash] The validator options
         # @option opts [String] :key The key to look for in params (default: id)
-        # @option opts [String | Symbol] :as The as symbol/string to coerce params[key] to. (default: string)
+        # @option opts [String | Symbol] :type The type to coerce params[key] to. (default: String)
         # @option opts [String] :default (default: validation_error)
         # @return [Goliath::Rack::Validation::CoerceValue] The validator
         def initialize(app, opts={})
           @app = app
           @key = opts[:key] || 'id'
-          @as = (opts[:as] || :string).to_sym
+          @type = opts[:type] || Goliath::Rack::Types::String
+          @type_instance = @type.new
+          unless @type_instance.respond_to?(:coerce)
+            raise Exception.new("#{@type_instance} does not respond to coerce")
+          end
           @default = opts[:default]
-          check_opts!
         end
 
         def call(env)
           begin
-            env['params'][@key] = mapping[@as].call(env['params'][@key])
-          rescue => e
-            if !@default
-              return validation_error(400, "#{@key} is not a valid #{@as}")
-            else
-              env['params'][@key] = @default
-            end
+            env['params'][@key] = @type_instance.coerce(env['params'][@key], @default)
+          rescue FailedCoerce => e
+            return e.error
           end
           @app.call(env)
-        end
-
-        private
-
-        def mapping
-          @_mapping ||= begin
-                          mapping = {
-                            :integer => proc {|val| Integer(val)},
-                            :string =>  proc {|val| String(val)},
-                            :boolean => proc { |val|
-                            if ['true', 't'].include?(val.downcase)
-                              true
-                            elsif ['false', 'f'].include?(val.downcase)
-                              false
-                            elsif Integer(val) == 1
-                              true
-                            elsif Integer(val) == 0
-                              false
-                            else
-                              raise "#{val} not boolean"
-                            end
-                          },
-                            :json => proc {|val| MultiJson.decode(val)},
-                          }
-
-                          mapping[:int] = mapping[:integer]
-                          mapping[:str] = mapping[:string]
-                          mapping[:bool] = mapping[:boolean]
-                          mapping
-                        end
-        end
-
-        def check_opts!
-          unless mapping.include?(@as)
-            raise Exception.new("CoerceValue as value should be one of these: "\
-                                "#{mapping.keys.join(", ")}. #{@as} is not supported.")
-          end
         end
       end
     end
