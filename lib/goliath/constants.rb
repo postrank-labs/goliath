@@ -50,5 +50,6 @@ module Goliath
     UPGRADE_DATA    = 'UPGRADE_DATA'
 
     GOLIATH_ENV     = 'goliath.env'
+    GOLIATH_SKIP_LOG = 'goliath.skip_log'
   end
 end

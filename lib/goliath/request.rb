@@ -171,11 +171,13 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
-                                   "Content-Length: #{@response.headers['Content-Length']}, " +
-                                   "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            unless @env[GOLIATH_SKIP_LOG]
+              @env[RACK_LOGGER].info("Status: #{@response.status}, " +
+                                     "Content-Length: #{@response.headers['Content-Length']}, " +
+                                     "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            end
 
-                                   @conn.terminate_request(keep_alive)
+            @conn.terminate_request(keep_alive)
           rescue Exception => e
             server_exception(e)
           end
