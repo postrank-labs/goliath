@@ -21,16 +21,16 @@ describe Goliath::Rack::Validation::CoerceValue do
   it "uses a default value if as is not supplied" do
     cv = Goliath::Rack::Validation::CoerceValue.new(@app)
     cv.type.should == Goliath::Rack::Types::String
-
   end
 
-  it "should have default be optional" do
+  it "should have default and message be optional" do
     cv = nil
     lambda {
       cv = Goliath::Rack::Validation::CoerceValue.new(@app, {:key => 'flag', :type => Goliath::Rack::Types::Boolean})
     }.should_not raise_error
 
-      cv.default.should == nil
+    cv.default.should be_nil
+    cv.failure_message.should be_nil
 
   end
 
@@ -66,7 +66,10 @@ describe Goliath::Rack::Validation::CoerceValue do
         it "should not coerce #{type} with #{value}" do
           @env['params']['user'] = value
           cv = Goliath::Rack::Validation::CoerceValue.new(@app, {:key => 'user', :type => type})
-          cv.call(@env).should == [400, {}, {:error => "#{value} is not a valid #{type.name.split("::").last} or can't convert into a #{type.name.split("::").last}."}]
+          result = cv.call(@env)
+          result.should be_an_instance_of(Array)
+          result.first.should == 400
+          result.last.should have_key(:error)
         end
       end
     end
@@ -78,6 +81,17 @@ describe Goliath::Rack::Validation::CoerceValue do
         cv = Goliath::Rack::Validation::CoerceValue.new(@app, {:key => 'user', :type => Goliath::Rack::Types::Boolean , :default => 'default'})
       }.should_not raise_error
       @env['params']['user'] = 'default'
+    end
+
+    it "should be able to take a custom fail message" do
+      @env['params']['user'] = "boo"
+      cv = Goliath::Rack::Validation::CoerceValue.new(@app, {:key => 'user', :type => Goliath::Rack::Types::Integer, :failure_message => "custom message"})
+
+      result = cv.call(@env)
+      result.should be_an_instance_of(Array)
+      result.first.should == 400
+      result.last.should have_key(:error)
+      result.last[:error].should == "custom message"
     end
   end
 

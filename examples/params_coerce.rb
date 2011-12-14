@@ -5,11 +5,11 @@ require 'goliath'
 require 'multi_json'
 
 class CustomJSON
-  def coerce(value, default)
+  def coerce(value, opts={})
     begin
       MultiJson.decode(value)
     rescue
-      return default if default
+      return opts[:default] if opts[:default]
       raise Goliath::Rack::Validation::FailedCoerce.new([400, {}, "Invalid JSON"])
     end
   end
@@ -19,7 +19,7 @@ class ParamsCoerce < Goliath::API
   include Goliath::Rack::Types
   use Goliath::Rack::Params
   use Goliath::Rack::Validation::CoerceValue, :key => 'user_id', :type => Integer, :default => "admin"
-  use Goliath::Rack::Validation::CoerceValue, :key => 'flag', :type => Boolean
+  use Goliath::Rack::Validation::CoerceValue, :key => 'flag', :type => Boolean, :failure_message => "Flag needs to be a boolean"
   use Goliath::Rack::Validation::CoerceValue, :key => 'amount', :type => Float
   use Goliath::Rack::Validation::CoerceValue, :key => "json", :type => CustomJSON
   use Goliath::Rack::Validation::CoerceValue, :key => "json_default", :type => CustomJSON,

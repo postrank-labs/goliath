@@ -11,14 +11,19 @@ module Goliath
       # A middleware to coerce a given value to a given type. By default, Goliath supports Integer, Boolean, String, Float and Symbol. You can also create a custom coerce type by simply create a class that has an instance method, coerce. An example would be:
       #
       # class CustomJSON
-      #   def coerce(value, default)
+      #   def coerce(value, opts={})
       #     MultiJson.decode(value)
       #   end
       # end
       #
-      # Where value is the value that should be coerced and default is the default value optionally specified in the middleware declaration. This means default will be nil if it was not set.
+      # Where value is the value that should be coerced and opts is a hash that contains two potential values:
+      #
+      # - default is the default value optionally specified in the middleware declaration. This means default will be nil if it was not set.
+      # - failure_message is the failure message optionally specified in the middleware declaration. This means failure_message will be nil if it was not set.
       #
       # If default is not set, Integer, Boolean, String, Float and Symbol will return validation_error, otherwise params[key] will be set to default.
+      #
+      # If failure_message is not set, it will have the error message of the exception caught by the coercion, otherwise the error message will be set to failure_message.
       #
       # For your custom CoerceTypes, you can raise Goliath::Rack::Validation::FailedCoerce.new(value) where value is what will be returned from the call method.
       #
@@ -36,7 +41,7 @@ module Goliath
       #
       class CoerceValue
         include Goliath::Rack::Validator
-        attr_reader :key, :type, :default
+        attr_reader :key, :type, :default, :failure_message
 
         # Creates the Goliath::Rack::Validation::CoerceValue validator
         #
@@ -45,6 +50,7 @@ module Goliath
         # @option opts [String] :key The key to look for in params (default: id)
         # @option opts [String | Symbol] :type The type to coerce params[key] to. (default: String)
         # @option opts [String] :default (default: validation_error)
+        # @option opts [String] :message Custom messagse when returning a 400 error (default: raised exception message)
         # @return [Goliath::Rack::Validation::CoerceValue] The validator
         def initialize(app, opts={})
           @app = app
@@ -54,12 +60,13 @@ module Goliath
           unless @type_instance.respond_to?(:coerce)
             raise Exception.new("#{@type_instance} does not respond to coerce")
           end
-          @default = opts[:default]
+          @default, @failure_message = opts[:default], opts[:failure_message]
         end
 
         def call(env)
           begin
-            env['params'][@key] = @type_instance.coerce(env['params'][@key], @default)
+            opts = {:default => @default, :failure_message => @failure_message}
+            env['params'][@key] = @type_instance.coerce(env['params'][@key], opts)
           rescue FailedCoerce => e
             return e.error
           end

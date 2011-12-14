@@ -8,12 +8,14 @@ module Goliath
             @short_name = self.class.name.split("::").last
           end
 
-          def coerce(val, default)
+          def coerce(val, opts={})
             begin
               _coerce(val)
             rescue => e
-              return default if default
-              raise Goliath::Rack::Validation::FailedCoerce.new(validation_error(400, "#{val} is not a valid #{@short_name} or can't convert into a #{@short_name}."))
+              return opts[:default] if opts[:default]
+              raise Goliath::Rack::Validation::FailedCoerce.new(
+                validation_error(400, opts[:failure_message] || e.message)
+              )
             end
           end
       end
