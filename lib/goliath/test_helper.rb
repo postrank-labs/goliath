@@ -40,7 +40,6 @@ module Goliath
 
       s = Goliath::Server.new
       s.logger = setup_logger(options)
-#      s.logger = options[:log_file].nil? ? mock('log').as_null_object : Log4r::Logger.new(options.delete(:log_file))
       s.api = api.new
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
