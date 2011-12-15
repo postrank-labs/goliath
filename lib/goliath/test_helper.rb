@@ -40,7 +40,7 @@ module Goliath
       op = OptionParser.new
 
       s = Goliath::Server.new
-      s.logger = options[:log_file].nil? ? mock('log').as_null_object : Logger.new(options.delete(:log_file))
+      s.logger = options[:log_file].nil? ? mock('log').as_null_object : Log4r::Logger.new(options.delete(:log_file))
       s.api = api.new
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
@@ -49,6 +49,7 @@ module Goliath
       s.start(&blk)
       s
     end
+
 
     # Stops the launched API
     #
@@ -148,7 +149,7 @@ module Goliath
         fiber = Fiber.current
         @connection = EventMachine::WebSocketClient.connect(url)
         @connection.errback do |e|
-          puts "Error encountered during connection: #{e}" 
+          puts "Error encountered during connection: #{e}"
           EM::stop_event_loop
         end
   
