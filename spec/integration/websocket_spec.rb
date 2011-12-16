@@ -4,11 +4,24 @@ require File.join(File.dirname(__FILE__), '../../', 'lib/goliath/websocket')
 
 class WebSocketEndPoint < Goliath::WebSocket
   def on_open(env)
-    puts "FRED !!"
   end
+
+  def on_error(env, error)
+    env.logger.error error
+  end
+
+  def on_message(env, msg)
+    env.stream_send(msg)
+  end
+
+  def on_close(env)
+  end
+
+
 end
 
 class DummyServer < Goliath::API
+  map '/ws', WebSocketEndPoint
 end
 
 describe "WebSocket" do
@@ -17,17 +30,18 @@ describe "WebSocket" do
   let(:err) { Proc.new { |c| fail "HTTP Request failed #{c.response}" } }
 
   it "should accept connection" do
-    with_api(DummyServer, {:verbose => true, :log_file => "test.log"}) do |server|
-#      wsendpoint = mock('wsendpoint').as_null_object
-      wsendpoint = WebSocketEndPoint.new
-      server.api.class.map '/ws', wsendpoint
-      wsendpoint.should_receive(:on_open)
-      puts "FRED: before client connect"
+    with_api(DummyServer, {:verbose => true, :log_stdout => true}) do |server|
+      ws_client_connect('/ws')
+    end
+  end
+
+  it "should accept traffic" do
+    with_api(DummyServer, {:verbose => true, :log_stdout => true}) do |server|
       ws_client_connect('/ws') do |client|
-        client.send "foo"
+        client.send "hello"
+        client.receive.should == "hello"
       end
     end
-
   end
 end
 

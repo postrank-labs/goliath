@@ -172,7 +172,7 @@ module Goliath
           puts "Error encountered during connection: #{e}"
           EM::stop_event_loop
         end
-  
+
         @connection.callback do
           fiber.resume
         end
@@ -202,6 +202,8 @@ module Goliath
       url = "ws://localhost:#{@test_server_port}#{path}"
       client = WSHelper.new( url )
       blk.call( client ) if blk
+      stop
     end
+
   end
 end
