@@ -1,4 +1,5 @@
 require 'spec_helper'
+require File.join(File.dirname(__FILE__), '../../', 'lib/goliath/test_helper_ws')
 require File.join(File.dirname(__FILE__), '../../', 'lib/goliath')
 require File.join(File.dirname(__FILE__), '../../', 'lib/goliath/websocket')
 
