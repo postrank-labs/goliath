@@ -40,7 +40,7 @@ module Goliath
       op = OptionParser.new
 
       s = Goliath::Server.new
-      s.logger = options[:log_file].nil? ? mock('log').as_null_object : Log4r::Logger.new(options.delete(:log_file))
+      s.logger = setup_logger(options)
       s.api = api.new
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
@@ -50,6 +50,26 @@ module Goliath
       s
     end
 
+    def setup_logger(opts)
+      if opts[:log_file].nil? && opts[:log_stdout].nil?
+        return mock('log').as_null_object
+      end
+      log = Log4r::Logger.new('goliath')
+      log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
+      log.level = opts[:verbose].nil? ? Log4r::INFO : Log4r::DEBUG
+
+      if opts[:log_stdout]
+        log.add(Log4r::StdoutOutputter.new('console', :formatter => log_format))
+      elsif opts[:log_file]
+        file = opts[:log_file]
+        FileUtils.mkdir_p(File.dirname(file))
+
+       log.add(Log4r::FileOutputter.new('fileOutput', {:filename => file,
+                                                       :trunc => false,
+                                                       :formatter => log_format}))
+      end
+      log
+    end
 
     # Stops the launched API
     #
