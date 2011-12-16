@@ -1,5 +1,6 @@
 require 'em-synchrony'
 require 'em-synchrony/em-http'
+require 'em-websocket-client'
 
 require 'goliath/server'
 require 'goliath/rack'
