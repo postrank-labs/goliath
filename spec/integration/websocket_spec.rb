@@ -32,6 +32,7 @@ describe "WebSocket" do
 
   it "should accept connection" do
     with_api(DummyServer, {:verbose => true, :log_stdout => true}) do |server|
+      WebSocketEndPoint.any_instance.should_receive(:on_open)
       ws_client_connect('/ws')
     end
   end
