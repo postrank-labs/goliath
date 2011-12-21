@@ -2,11 +2,11 @@ require 'spec_helper'
 require 'json'
 require File.join(File.dirname(__FILE__), '../../', 'examples/valid')
 
-describe Valid do
+describe ValidSingleParam do
   let(:err) { Proc.new { fail "API request failed" } }
 
   it 'returns OK with param' do
-    with_api(Valid) do
+    with_api(ValidSingleParam) do
       get_request({:query => {:test => 'test'}}, err) do |c|
         c.response.should == 'OK'
       end
@@ -14,7 +14,7 @@ describe Valid do
   end
 
   it 'returns error without param' do
-    with_api(Valid) do
+    with_api(ValidSingleParam) do
       get_request({}, err) do |c|
         c.response.should == '[:error, "Test identifier missing"]'
       end
