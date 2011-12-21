@@ -34,6 +34,10 @@ module Goliath
           @key = opts[:key] || 'id'
           @type = opts[:type] || @key.capitalize
           @message = opts[:message] || 'identifier missing'
+          
+          if @key.is_a?(String) && @key.include?('.')
+            @key = @key.split('.')
+          end
         end
 
         def call(env)
