@@ -21,7 +21,7 @@ module Goliath
         # @return [Goliath::Rack::Validation::RequestMethod] The validator
         def initialize(app, methods = [])
           @app = app
-          @methods = methods
+          @methods = Array(methods)
         end
 
         def call(env)

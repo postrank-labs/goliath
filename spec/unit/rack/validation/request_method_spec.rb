@@ -44,4 +44,9 @@ describe Goliath::Rack::Validation::RequestMethod do
     rm = Goliath::Rack::Validation::RequestMethod.new('my app', ['GET', 'DELETE', 'HEAD'])
     rm.methods.should == ['GET', 'DELETE', 'HEAD']
   end
+  
+  it 'accepts string method on initialize' do
+    rm = Goliath::Rack::Validation::RequestMethod.new('my app', 'GET')
+    rm.methods.should == ['GET']
+  end
 end
