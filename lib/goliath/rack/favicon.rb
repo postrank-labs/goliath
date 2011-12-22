@@ -19,7 +19,7 @@ module Goliath
         if env['REQUEST_PATH'] == '/favicon.ico'
           env.logger.info('Serving favicon.ico')
 
-          [200, {'Last-Modified' => @last_mod,
+          [200, {'Last-Modified' => @last_modified,
                  'Expires' => @expires,
                  'Content-Type' => "image/vnd.microsoft.icon"}, @favicon]
         else
