@@ -32,7 +32,7 @@ module Goliath
         def initialize(app, opts = {})
           @app = app
           @key = opts[:key] || 'id'
-          @type = opts[:type] || @key.capitalize
+          @type = opts[:type] || @key
           @message = opts[:message] || 'identifier missing'
           
           if @key.is_a?(String) && @key.include?('.')

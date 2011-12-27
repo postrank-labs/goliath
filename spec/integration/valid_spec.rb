@@ -16,7 +16,7 @@ describe ValidSingleParam do
   it 'returns error without param' do
     with_api(ValidSingleParam) do
       get_request({}, err) do |c|
-        c.response.should == '[:error, "Test identifier missing"]'
+        c.response.should == '[:error, "test identifier missing"]'
       end
     end
   end
