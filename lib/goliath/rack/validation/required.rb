@@ -1,0 +1,59 @@
+module Goliath
+  module Rack
+    module Validation
+      module Required
+        if defined?(Encoding) && "".respond_to?(:encode)
+          NON_WHITESPACE_REGEXP = %r![^[:space:]]!
+        else
+          NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
+        end
+        def self.included(base)
+          base.send(:include, InstanceMethods)
+          base.send :attr_reader, :required_message
+        end
+
+        module InstanceMethods
+          def required_setup!(opts={})
+            @required_message = opts[:required_message] || 'identifier missing'
+            if @key.is_a?(String) && @key.include?('.')
+              @key = @key.split('.')
+            end
+          end
+
+          def call(env)
+            unless @optional
+              return validation_error(400, "#{@type} #{@required_message}") unless key_valid?(env['params'])
+            end
+            super if defined?(super)
+          end
+        end
+
+        def key_valid?(params)
+          val = fetch_key(params)
+
+          case val
+          when nil
+            return false
+
+          when String
+            # if val is a string it must not be empty
+            return false if val !~ NON_WHITESPACE_REGEXP
+
+          when Array
+            unless val.compact.empty?
+              val.each do |k|
+                return true unless k.is_a?(String)
+                return true unless k !~ NON_WHITESPACE_REGEXP
+              end
+            end
+
+            return false
+          end
+
+          true
+        end
+      end
+    end
+  end
+end
+
