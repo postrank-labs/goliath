@@ -33,8 +33,6 @@ module Goliath
         end
 
         def fetch_key(params, set_value=nil)
-          # cant do ||= because _real_key may be nil
-          # Dont want to short circuit with cached version if we want to set a value.
           key_path = Array(@key)
           current_value = params
 
