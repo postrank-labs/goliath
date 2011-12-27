@@ -19,7 +19,7 @@ module Goliath
         else
           NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
         end
-        
+
         # Creates the Goliath::Rack::Validation::RequiredParam validator
         #
         # @param app The app object
@@ -34,7 +34,7 @@ module Goliath
           @key = opts[:key] || 'id'
           @type = opts[:type] || @key
           @message = opts[:message] || 'identifier missing'
-          
+
           if @key.is_a?(String) && @key.include?('.')
             @key = @key.split('.')
           end
@@ -48,7 +48,7 @@ module Goliath
         def key_valid?(params)
           key_path = Array(@key)
           current_value = params
-                    
+
           # check that the full path is present
           # omit the last part of the path
           key_path[0...-1].each do |key_part|
@@ -56,21 +56,21 @@ module Goliath
             if !current_value.is_a?(Hash) || current_value[key_part].nil?
               return false
             end
-            
+
             current_value = current_value[key_part]
           end
-          
+
           # if we are here the full path is available, now test the real key
           val = current_value[key_path[-1]]
-          
+
           case val
           when nil
             return false
-            
+
           when String
             # if val is a string it must not be empty
             return false if val !~ NON_WHITESPACE_REGEXP
-          
+
           when Array
             unless val.compact.empty?
                val.each do |k|
@@ -78,10 +78,10 @@ module Goliath
                  return true unless k !~ NON_WHITESPACE_REGEXP
                end
              end
-            
+
             return false
           end
-          
+
           true
         end
       end
