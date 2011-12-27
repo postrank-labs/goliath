@@ -328,7 +328,7 @@ describe Goliath::Rack::Validation::Param do
     end
 
     it "should do required param + coerce (nested)" do
-      cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other", :as => Goliath::Rack::Types::Integer
+      cv = Goliath::Rack::Validation::Param.new @app, :key => ['login', 'other'], :as => Goliath::Rack::Types::Integer
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
@@ -358,7 +358,7 @@ describe Goliath::Rack::Validation::Param do
     end
 
     it "should do required param + not coerce (nested)" do
-      cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other"
+      cv = Goliath::Rack::Validation::Param.new @app, :key => ['login', 'other']
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
@@ -394,7 +394,7 @@ describe Goliath::Rack::Validation::Param do
 
       @env['params']['login'] = {}
       @env['params']['login']['other'] = nil
-      cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other", :as => Goliath::Rack::Types::Integer, :optional => true
+      cv = Goliath::Rack::Validation::Param.new @app, :key => ['login', 'other'], :as => Goliath::Rack::Types::Integer, :optional => true
       result = cv.call(@env)
       result.should_not be_an_instance_of(Array) #implying its OK
     end
@@ -412,7 +412,7 @@ describe Goliath::Rack::Validation::Param do
     end
 
     it "should do optional param and not coerce (nested)" do
-      cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other", :optional => true
+      cv = Goliath::Rack::Validation::Param.new @app, :key => ['login', 'other'], :optional => true
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
