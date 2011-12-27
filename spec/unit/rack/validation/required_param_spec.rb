@@ -100,7 +100,77 @@ describe Goliath::Rack::Validation::RequiredParam do
       it "doesn't raise if the key provided is an array and contains multiline with blanks" do
         @env['params']['mk'] = ["my\n  \nvalue", "my\n  \nother\n  \nvalue"]
         @rp.key_valid?(@env['params']).should be_true
-      end
+      end      
     end
   end
+  
+  describe 'Nested keys tests' do
+    before do
+      @app = mock('app').as_null_object
+      @env = {'params' => {}}
+      @rp = Goliath::Rack::Validation::RequiredParam.new(@app,
+          :type => 'Monkey',
+          :key => ['data', 'credentials', 'login'],
+          :message => 'is required'
+        )
+    end
+
+    it "return false if key's missing" do
+      @env['params'] = {'data' => {
+          'credentials' => {
+              'login2' => "user",
+              'pass' => "password"}
+            }
+        }
+      
+      @rp.key_valid?(@env['params']).should be_false
+    end
+    
+    it "return true if key is present" do
+      @env['params'] = {'data' => {
+          'credentials' => {
+              'login' => "user",
+              'pass' => "password"}
+            }
+        }
+      
+      @rp.key_valid?(@env['params']).should be_true
+    end
+  end
+  
+  describe 'Nested keys tests (with string)' do
+    before do
+      @app = mock('app').as_null_object
+      @env = {'params' => {}}
+      @rp = Goliath::Rack::Validation::RequiredParam.new(@app,
+          :type => 'Monkey',
+          :key => 'data.credentials.login',
+          :message => 'is required'
+        )
+    end
+
+    it "return false if key's missing" do
+      @env['params'] = {'data' => {
+          'credentials' => {
+              'login2' => "user",
+              'pass' => "password"}
+            }
+        }
+      
+      @rp.key_valid?(@env['params']).should be_false
+    end
+    
+    it "return true if key is present" do
+      @env['params'] = {'data' => {
+          'credentials' => {
+              'login' => "user",
+              'pass' => "password"}
+            }
+        }
+      
+      @rp.key_valid?(@env['params']).should be_true
+    end
+  end
+  
+  
 end

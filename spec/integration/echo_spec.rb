@@ -20,7 +20,7 @@ describe Echo do
       get_request({}, err) do |c|
         b = Yajl::Parser.parse(c.response)
         b['error'].should_not be_nil
-        b['error'].should == 'Echo identifier missing'
+        b['error'].should == 'echo identifier missing'
       end
     end
   end
