@@ -53,7 +53,7 @@ module Goliath
           # omit the last part of the path
           key_path[0...-1].each do |key_part|
             # if the key is missing or is nil the validation failed
-            if !current_value.is_a?(Hash) || (current_value[key_part] == nil)
+            if !current_value.is_a?(Hash) || current_value[key_part].nil?
               return false
             end
             
