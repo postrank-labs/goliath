@@ -14,7 +14,7 @@ module Goliath
             rescue => e
               return opts[:default] if opts[:default]
               raise Goliath::Rack::Validation::FailedCoerce.new(
-                validation_error(400, opts[:failure_message] || e.message)
+                validation_error(400, opts[:message] || e.message)
               )
             end
           end

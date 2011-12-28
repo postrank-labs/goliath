@@ -9,12 +9,10 @@ module Goliath
         end
         def self.included(base)
           base.send(:include, InstanceMethods)
-          base.send :attr_reader, :required_message
         end
 
         module InstanceMethods
           def required_setup!(opts={})
-            @required_message = opts[:required_message] || 'identifier missing'
             if @key.is_a?(String) && @key.include?('.')
               @key = @key.split('.')
             end
@@ -22,7 +20,7 @@ module Goliath
 
           def call(env)
             unless @optional
-              return validation_error(400, "#{@type} #{@required_message}") unless key_valid?(env['params'])
+              return validation_error(400, "#{@type} #{@message}") unless key_valid?(env['params'])
             end
             super if defined?(super)
           end

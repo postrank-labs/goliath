@@ -19,13 +19,13 @@ class ParamsCoerce < Goliath::API
   include Goliath::Rack::Types
   use Goliath::Rack::Params
   use Goliath::Rack::Validation::Param, :key => 'user_id', :as => Integer, :coerce_default => "admin"
-  use Goliath::Rack::Validation::Param, :key => 'flag', :as => Boolean, :coerce_message => "Flag needs to be a boolean"
+  use Goliath::Rack::Validation::Param, :key => 'flag', :as => Boolean, :message => "Flag needs to be a boolean"
   use Goliath::Rack::Validation::Param, :key => 'amount', :as => Float
   use Goliath::Rack::Validation::Param, :key => "json", :as => CustomJSON
   use Goliath::Rack::Validation::Param, :key => "json_default", :as => CustomJSON,
                                               :coerce_default => "nojson", :optional => true
 
-  use Goliath::Rack::Validation::Param, :key => 'name', :type => "Big Name", :required_message => "cant be found"
+  use Goliath::Rack::Validation::Param, :key => 'name', :type => "Big Name", :message => "cant be found"
 
   def response(env)
     [200, {}, params.to_s]

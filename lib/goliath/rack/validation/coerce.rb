@@ -11,7 +11,7 @@ module Goliath
       module Coerce
         def self.included(base)
           base.send(:include, InstanceMethods)
-          base.send :attr_reader, :coerce_default, :coerce_message
+          base.send :attr_reader, :coerce_default
         end
 
         module InstanceMethods
@@ -19,7 +19,6 @@ module Goliath
           INVALID_COERCE_TYPE = "%s does not respond to coerce"
           def coerce_setup!(opts={})
             @coerce_default = opts[:coerce_default]
-            @coerce_message = opts[:coerce_message]
 
             if opts[:as]
               unless Class === opts[:as]
@@ -43,15 +42,11 @@ module Goliath
           end
 
           def coerce_value(params)
-            opts = {:default => @coerce_default, :failure_message => @coerce_message}
+            opts = {:default => @coerce_default, :message => @message}
             value_before_coerce = fetch_key(params)
             value_after_coerce = @coerce_instance.coerce(value_before_coerce, opts)
             fetch_key(params, value_after_coerce)
           end
-        end
-
-        module ClassMethods
-          attr_reader :coerce_default, :coerce_message
         end
       end
     end

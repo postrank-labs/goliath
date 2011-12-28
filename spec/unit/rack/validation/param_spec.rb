@@ -29,9 +29,8 @@ describe Goliath::Rack::Validation::Param do
       cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag', :as => Goliath::Rack::Types::Boolean})
     }.should_not raise_error
 
-      cv.coerce_default.should be_nil
-    cv.coerce_message.should be_nil
-    cv.required_message.should_not be_nil
+    cv.coerce_default.should be_nil
+    cv.message.should_not be_nil
 
   end
 
@@ -85,7 +84,7 @@ describe Goliath::Rack::Validation::Param do
       @rp.type.should_not be_nil
       @rp.type.should_not =~ /^\s*$/
 
-      @rp.required_message.should == 'identifier missing'
+      @rp.message.should == 'identifier missing'
     end
 
 
@@ -93,7 +92,7 @@ describe Goliath::Rack::Validation::Param do
       before(:each) do
         @app = mock('app').as_null_object
         @env = {'params' => {}}
-        @rp = Goliath::Rack::Validation::Param.new(@app, {:type => 'Monkey', :key => 'mk', :required_message => 'is required'})
+        @rp = Goliath::Rack::Validation::Param.new(@app, {:type => 'Monkey', :key => 'mk', :message => 'is required'})
       end
 
       it 'stores type and key options' do
@@ -300,7 +299,7 @@ describe Goliath::Rack::Validation::Param do
 
       it "should be able to take a custom fail message" do
         @env['params']['user'] = "boo"
-        cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Goliath::Rack::Types::Integer, :coerce_message => "custom message"})
+        cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Goliath::Rack::Types::Integer, :message => "custom message"})
 
         result = cv.call(@env)
         result.should be_an_instance_of(Array)
