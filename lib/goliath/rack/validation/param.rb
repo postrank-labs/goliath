@@ -13,7 +13,7 @@ module Goliath
         include Coerce
         include Required
 
-        attr_reader :key, :type, :optional, :message
+        attr_reader :key, :type, :optional, :message, :default
 
         def initialize(app, opts = {})
           @app = app
@@ -21,6 +21,7 @@ module Goliath
           @key = opts[:key] || 'id'
           @type = opts[:type] || @key
           @message = opts[:message] || 'identifier missing'
+          @default = opts[:default]
 
           coerce_setup!(opts)
           required_setup!(opts)

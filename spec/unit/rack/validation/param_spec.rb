@@ -29,7 +29,7 @@ describe Goliath::Rack::Validation::Param do
       cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag', :as => Goliath::Rack::Types::Boolean})
     }.should_not raise_error
 
-    cv.coerce_default.should be_nil
+    cv.default.should be_nil
     cv.message.should_not be_nil
 
   end
@@ -292,7 +292,7 @@ describe Goliath::Rack::Validation::Param do
         cv = nil
         @env['params']['user'] = "boo"
         lambda {
-          cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Goliath::Rack::Types::Boolean , :coerce_default => 'default'})
+          cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Goliath::Rack::Types::Boolean , :default => 'default'})
         }.should_not raise_error
           @env['params']['user'] = 'default'
       end

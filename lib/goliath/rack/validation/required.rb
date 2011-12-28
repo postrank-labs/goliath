@@ -7,23 +7,18 @@ module Goliath
         else
           NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
         end
-        def self.included(base)
-          base.send(:include, InstanceMethods)
+
+        def required_setup!(opts={})
+          if @key.is_a?(String) && @key.include?('.')
+            @key = @key.split('.')
+          end
         end
 
-        module InstanceMethods
-          def required_setup!(opts={})
-            if @key.is_a?(String) && @key.include?('.')
-              @key = @key.split('.')
-            end
+        def call(env)
+          unless @optional
+            return validation_error(400, "#{@type} #{@message}") unless key_valid?(env['params'])
           end
-
-          def call(env)
-            unless @optional
-              return validation_error(400, "#{@type} #{@message}") unless key_valid?(env['params'])
-            end
-            super if defined?(super)
-          end
+          super if defined?(super)
         end
 
         def key_valid?(params)
@@ -54,4 +49,3 @@ module Goliath
     end
   end
 end
-
