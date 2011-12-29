@@ -2,11 +2,7 @@ module Goliath
   module Rack
     module Validation
       module Required
-        if defined?(Encoding) && "".respond_to?(:encode)
-          NON_WHITESPACE_REGEXP = %r![^[:space:]]!
-        else
-          NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
-        end
+        NON_WHITESPACE_REGEXP = %r![^[:space:]]!
 
         def required_setup!(opts={})
           if @key.is_a?(String) && @key.include?('.')

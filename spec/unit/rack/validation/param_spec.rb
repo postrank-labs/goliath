@@ -31,7 +31,13 @@ describe Goliath::Rack::Validation::Param do
 
     cv.default.should be_nil
     cv.message.should_not be_nil
+  end
 
+  it "should fail if given an invalid option" do
+    cv = nil
+    lambda {
+      cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag', :as => Goliath::Rack::Types::Boolean, :animal => :monkey})
+    }.should raise_error
   end
 
   context "fetch_key" do
@@ -258,7 +264,6 @@ describe Goliath::Rack::Validation::Param do
         Goliath::Rack::Types::Integer => [['24', 24]],
         Goliath::Rack::Types::Float => [['24.3', 24.3]],
         Goliath::Rack::Types::Symbol => [['hi', :hi]],
-        Goliath::Rack::Types::String => [["hi", "hi"]],
       }.each do |type, values|
         values.each do |value|
           it "should coerce #{type} from #{value.first} to #{value[1]}" do

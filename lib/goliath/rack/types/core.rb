@@ -1,7 +1,7 @@
 module Goliath
   module Rack
     module Types
-      CORE_TYPES = [Integer, String, Float]
+      CORE_TYPES = [Integer, Float]
 
       CORE_TYPES.each do |type|
         klass = Class.new(Base)

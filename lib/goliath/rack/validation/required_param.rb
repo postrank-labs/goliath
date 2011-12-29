@@ -7,25 +7,23 @@ module Goliath
       #
       # @example
       #  use Goliath::Rack::Validation::RequiredParam, {:key => 'mode', :type => 'Mode'}
-      #  use Goliath::Rack::Validation::RequiredParam, {:key => %w(data credentials login), :type => 'Login'}
+      #  use Goliath::Rack::Validation::RequiredParam, {:key => 'data.credentials.login', :type => 'Login'}
+      #  use Goliath::Rack::Validation::RequiredParam, {:key => %w(data credentials password), :type => 'Password'}
       #
       class RequiredParam
         include Goliath::Rack::Validator
         attr_reader :type, :key, :message
 
         # extracted from activesupport 3.0.9
-        if defined?(Encoding) && "".respond_to?(:encode)
-          NON_WHITESPACE_REGEXP = %r![^[:space:]]!
-        else
-          NON_WHITESPACE_REGEXP = %r![^\s#{[0x3000].pack("U")}]!
-        end
+        NON_WHITESPACE_REGEXP = %r![^[:space:]]!
 
         # Creates the Goliath::Rack::Validation::RequiredParam validator
         #
         # @param app The app object
         # @param opts [Hash] The validator options
         # @option opts [String] :key The key to look for in params (default: id)
-        #   if the value is an array it defines path with nested keys (ex: ["data", "login"])
+        #   if the value is an array it defines path with nested keys (ex: ["data", "login"] or
+        #   dot syntax: 'data.login')
         # @option opts [String] :type The type string to put in the error message. (default: :key)
         # @option opts [String] :message The message string to display after the type string. (default: 'identifier missing')
         # @return [Goliath::Rack::Validation::RequiredParam] The validator
