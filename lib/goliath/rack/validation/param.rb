@@ -12,9 +12,8 @@ module Goliath
       # and/or coerce a given parameter to a given type.
       #
       # By default, Goliath supports Integer, Boolean, Float and Symbol.
-      # You can also create a custom coerce type by simply create a
+      # You can also create a custom coerce type by creating a
       # class that has an instance method, coerce. Example:
-      #
       #
       # class CustomJSON
       #   def coerce(value, opts={})
