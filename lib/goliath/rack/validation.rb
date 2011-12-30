@@ -1,6 +1,9 @@
 module Goliath
   module Rack
     module Validation
+      autoload :Coerce, 'goliath/rack/validation/coerce'
+      autoload :Required, 'goliath/rack/validation/required'
+      autoload :Param,  'goliath/rack/validation/param'
       autoload :BooleanValue,  'goliath/rack/validation/boolean_value'
       autoload :DefaultParams, 'goliath/rack/validation/default_params'
       autoload :NumericRange,  'goliath/rack/validation/numeric_range'
