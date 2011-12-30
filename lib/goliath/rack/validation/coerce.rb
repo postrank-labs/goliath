@@ -12,7 +12,8 @@ module Goliath
         NOT_CLASS_ERROR = "Params as must be a class"
         INVALID_COERCE_TYPE = "%s does not respond to coerce"
         def coerce_setup!(opts={})
-          if as = opts.delete(:as)
+          as = opts.delete(:as)
+          if as
             unless Class === as
               raise Exception.new(NOT_CLASS_ERROR)
             end
