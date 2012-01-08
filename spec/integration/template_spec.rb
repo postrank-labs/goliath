@@ -18,6 +18,15 @@ describe Template do
       end
     end
   end
+  
+  it 'renders haml template from string with default haml layout' do
+    
+    with_api(Template, api_options) do
+      get_request(:path => '/haml_str') do |c|
+        c.response.should =~ %r{<h1>Header</h1>}
+      end
+    end
+  end
 
   it 'renders a markdown template with default haml layout' do
     with_api(Template, api_options) do

@@ -36,6 +36,7 @@ class Template < Goliath::API
   def response(env)
     case env['PATH_INFO']
     when '/'         then [200, {}, haml(:root)]
+    when '/haml_str' then [200, {}, haml("%h1 Header")]
     when '/debug'    then [200, {}, haml(:debug)]
     when '/oops'     then [200, {}, haml(:no_such_template)] # will 500
     when '/joke'     then
