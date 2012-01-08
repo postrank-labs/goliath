@@ -1,3 +1,5 @@
+require 'em-websocket-client'
+
 module Goliath
   module TestHelper
     class WSHelper
