@@ -69,7 +69,9 @@ module Goliath
         def initialize(app, opts = {})
           @app = app
           @optional = opts.delete(:optional) || false
-          @key = opts.delete(:key) || 'id'
+          @key = opts.delete(:key)
+          raise Exception.new("key option required") unless @key
+          
           @type = opts.delete(:type) || @key
           @message = opts.delete(:message) || 'identifier missing'
           @default = opts.delete(:default)
