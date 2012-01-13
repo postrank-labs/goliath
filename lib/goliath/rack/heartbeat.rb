@@ -16,7 +16,7 @@ module Goliath
 
       def call(env)
         if env['PATH_INFO'] == @opts[:path]
-          env[Goliath::Constants::RACK_LOGGER] = Log4r::Logger.root if @opts[:no_log]
+          env[Goliath::Constants::RACK_LOGGER] = Log4r::Logger.root unless @opts[:log]
 
           @opts[:response]
         else
