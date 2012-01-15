@@ -16,6 +16,20 @@ module Goliath
 
     attr_accessor :app, :conn, :env, :response, :body
 
+    ##
+    # Allow user to redefine how fibers are handled, the
+    # default is to spawn a new fiber each time but another
+    # option is to use a pool of fibers.
+    # 
+    class << self
+      attr_accessor :execute_block
+    end
+
+    self.execute_block = proc do |&block|
+      Fiber.new(&block).resume
+    end
+
+
     def initialize(app, conn, env)
       @app  = app
       @conn = conn
@@ -132,7 +146,7 @@ module Goliath
     #
     # @return [Nil]
     def process
-      Fiber.new {
+      Goliath::Request.execute_block.call do
         begin
           @state = :finished
           @env['rack.input'].rewind if @env['rack.input']
@@ -140,7 +154,7 @@ module Goliath
         rescue Exception => e
           server_exception(e)
         end
-      }.resume
+      end
     end
 
     # Invoked by the app / middleware once the request
