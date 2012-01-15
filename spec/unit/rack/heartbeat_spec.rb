@@ -52,6 +52,19 @@ describe Goliath::Rack::Heartbeat do
       headers.should == {}
       body.should == nil
     end
+
+    it 'does not log the request by default' do
+      @env['PATH_INFO'] = '/status'
+      @hb.call(@env)
+      @env[Goliath::Constants::RACK_LOGGER].should == Log4r::Logger.root
+    end
+
+    it 'logs the request only if asked' do
+      @env['PATH_INFO'] = '/status'
+      @hb = Goliath::Rack::Heartbeat.new(@app, :log => true)
+      @hb.call(@env)
+      @env[Goliath::Constants::RACK_LOGGER].should_not == Log4r::Logger.root
+    end
   end
 end
 
