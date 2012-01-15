@@ -42,15 +42,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'bluecloth'
-  
+
   s.add_development_dependency 'guard',       '~> 0.8.8'
   s.add_development_dependency 'guard-rspec', '~> 0.5.9'
-  
+
   if RUBY_PLATFORM.include?('darwin')
     s.add_development_dependency 'growl',       '~> 1.0.3'
     s.add_development_dependency 'rb-fsevent',  '0.4.3.1'
   end
-  
 
   ignores = File.readlines(".gitignore").grep(/\S+/).map {|s| s.chomp }
   dotfiles = [".gemtest", ".gitignore", ".rspec", ".yardopts"]
