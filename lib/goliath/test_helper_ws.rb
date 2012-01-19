@@ -14,18 +14,11 @@ module Goliath
           EM::stop_event_loop
         end
 
-        @connection.callback do
-          fiber.resume
-        end
+        @connection.callback { fiber.resume }
+        @connection.disconnect { EM::stop_event_loop }
+        @connection.stream { |m| @queue.push(m) }
 
-        @connection.disconnect do
-          EM::stop_event_loop
-        end
-
-       @connection.stream do |m|
-          @queue.push(m)
-        end
-       Fiber.yield
+        Fiber.yield
       end
 
       def send(m)
@@ -41,8 +34,8 @@ module Goliath
 
     def ws_client_connect(path,&blk)
       url = "ws://localhost:#{@test_server_port}#{path}"
-      client = WSHelper.new( url )
-      blk.call( client ) if blk
+      client = WSHelper.new(url)
+      blk.call(client) if blk
       stop
     end
   end

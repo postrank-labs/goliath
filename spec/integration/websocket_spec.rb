@@ -17,8 +17,6 @@ class WebSocketEndPoint < Goliath::WebSocket
 
   def on_close(env)
   end
-
-
 end
 
 class DummyServer < Goliath::API
