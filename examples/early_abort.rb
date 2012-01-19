@@ -4,6 +4,7 @@ require 'goliath'
 
 class EarlyAbort < Goliath::API
   include Goliath::Validation
+
   MAX_SIZE = 10
   TEST_FILE = "/tmp/goliath-test-error.log"
 
@@ -12,7 +13,8 @@ class EarlyAbort < Goliath::API
     env['async-headers'] = headers
 
     if env['HTTP_X_CRASH'] && env['HTTP_X_CRASH'] == 'true'
-      raise Goliath::Validation::NotImplementedError.new("Can't handle requests with X-Crash: true.")
+      raise Goliath::Validation::NotImplementedError.new(
+          "Can't handle requests with X-Crash: true.")
     end
   end
 
@@ -22,7 +24,8 @@ class EarlyAbort < Goliath::API
     size = env['async-body'].size
 
     if size >= MAX_SIZE
-      raise Goliath::Validation::BadRequestError.new("Payload size can't exceed #{MAX_SIZE} bytes. Received #{size.inspect} bytes.")
+      raise Goliath::Validation::BadRequestError.new(
+          "Payload size can't exceed #{MAX_SIZE} bytes. Received #{size.inspect} bytes.")
     end
   end
 
@@ -31,7 +34,7 @@ class EarlyAbort < Goliath::API
   end
 
   def response(env)
-    File.open(TEST_FILE, "w+") { |f| f << "response that should not be here"}
+    File.open(TEST_FILE, "w+") { |f| f << "response that should not be here\n"}
     [200, {}, "OK"]
   end
 end
