@@ -1,6 +1,7 @@
 require 'em-synchrony'
 require 'em-synchrony/em-http'
 
+require 'goliath/api'
 require 'goliath/server'
 require 'goliath/rack'
 require 'rack'
@@ -50,9 +51,8 @@ module Goliath
     end
 
     def setup_logger(opts)
-      if opts[:log_file].nil? && opts[:log_stdout].nil?
-        return mock('log').as_null_object
-      end
+      return fake_logger if opts[:log_file].nil? && opts[:log_stdout].nil?
+
       log = Log4r::Logger.new('goliath')
       log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
       log.level = opts[:verbose].nil? ? Log4r::INFO : Log4r::DEBUG
@@ -74,7 +74,7 @@ module Goliath
     #
     # @return [Nil]
     def stop
-      EM.stop
+      EM.stop_event_loop
     end
 
     # Wrapper for launching API and executing given code block. This
@@ -111,7 +111,7 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def head_request(request_data = {}, errback = nil, &blk)
-      req = test_request(request_data).head(request_data)
+      req = create_test_request(request_data).head(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -121,7 +121,7 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = nil, &blk)
-      req = test_request(request_data).get(request_data)
+      req = create_test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -131,7 +131,7 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def post_request(request_data = {}, errback = nil, &blk)
-      req = test_request(request_data).post(request_data)
+      req = create_test_request(request_data).post(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -141,7 +141,7 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def put_request(request_data = {}, errback = nil, &blk)
-      req = test_request(request_data).put(request_data)
+      req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
@@ -151,13 +151,23 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def delete_request(request_data = {}, errback = nil, &blk)
-      req = test_request(request_data).delete(request_data)
+      req = create_test_request(request_data).delete(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
-    def test_request(request_data)
+    def create_test_request(request_data)
       path = request_data.delete(:path) || ''
       EM::HttpRequest.new("http://localhost:#{@test_server_port}#{path}")
+    end
+
+    private
+
+    def fake_logger
+      Class.new do
+        def method_missing(name, *args, &blk)
+          nil
+        end
+      end.new
     end
   end
 end
