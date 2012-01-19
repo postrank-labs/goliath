@@ -18,6 +18,7 @@ module Goliath
           response = body
         end
 
+        headers[Goliath::Constants::CONTENT_TYPE] = 'application/javascript'
         [status, headers, ["#{env.params['callback']}(#{response})"]]
       end
     end
