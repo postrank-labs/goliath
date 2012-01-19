@@ -20,7 +20,7 @@ module Goliath
     # Allow user to redefine how fibers are handled, the
     # default is to spawn a new fiber each time but another
     # option is to use a pool of fibers.
-    # 
+    #
     class << self
       attr_accessor :execute_block
     end
@@ -28,7 +28,6 @@ module Goliath
     self.execute_block = proc do |&block|
       Fiber.new(&block).resume
     end
-
 
     def initialize(app, conn, env)
       @app  = app
@@ -185,11 +184,12 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
-                                   "Content-Length: #{@response.headers['Content-Length']}, " +
-                                   "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
 
-                                   @conn.terminate_request(keep_alive)
+            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
+                "Content-Length: #{@response.headers['Content-Length']}, " +
+                "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+
+            @conn.terminate_request(keep_alive)
           rescue Exception => e
             server_exception(e)
           end
@@ -208,7 +208,7 @@ module Goliath
     # @return [Nil]
     def server_exception(e)
       if e.is_a?(Goliath::Validation::Error)
-        status, headers, body = [e.status_code, {}, ('{"error":"%s"}'%e.message)]  #
+        status, headers, body = [e.status_code, {}, ('{"error":"%s"}' % e.message)]
       else
         @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
         status, headers, body = [500, {}, e.message || 'An error happened']

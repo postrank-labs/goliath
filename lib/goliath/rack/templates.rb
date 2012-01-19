@@ -320,7 +320,7 @@ module Goliath
         else
           Tilt.new(layout_filename, nil, options)
         end
-        
+
         # mimic sinatra behavior, if a string is given consider it as a template source
         # otherwise a symbol is expected to be a template path
         if data.is_a?(Symbol)
@@ -328,18 +328,18 @@ module Goliath
           unless template_filename
             raise Goliath::Validation::InternalServerError, "Template #{data} not found in #{views} for #{engine}"
           end
-          
+
           template = Tilt.new(template_filename, nil, options)
           output = layout_template.render(scope, locals) do
             template.render(scope, locals)
           end
-          
+
         else
           template = Tilt[engine].new(nil, nil, options){ data }
           output = layout_template.render(scope, locals) do
             template.render(scope, locals)
           end
-          
+
         end
 
         output.extend(ContentTyped).content_type = content_type if content_type

@@ -56,7 +56,7 @@ module Goliath
           @pending.push(req)
         end
 
-        req.process if !@parser.upgrade?
+        req.process if !@parser.upgrade? && !req.env[:terminate_connection]
       end
     end
 

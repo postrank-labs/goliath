@@ -16,14 +16,10 @@ describe EarlyAbort do
     end
   end
 
-  # The following two tests are very brittle, since they depend on the speed
-  # of the machine executing the test and the size of the incoming data
-  # packets. I hope someone more knowledgeable will be able to refactor these
-  # ;-)
   it 'fails without going in the response method if exception is raised in on_header hook' do
     with_api(EarlyAbort) do
       request_data = {
-        :body => (["abcd"] * 200_000).join,
+        :body => "a" * 20,
         :head => {'X-Crash' => 'true'}
       }
 
@@ -36,9 +32,7 @@ describe EarlyAbort do
 
   it 'fails without going in the response method if exception is raised in on_body hook' do
     with_api(EarlyAbort) do
-      request_data = {
-        :body => (["abcd"] * 200_000).join
-      }
+      request_data = { :body => "a" * 20 }
 
       post_request(request_data, err) do |c|
         c.response.should =~ /Payload size can't exceed 10 bytes/
@@ -46,5 +40,4 @@ describe EarlyAbort do
       end
     end
   end
-
 end

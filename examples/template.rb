@@ -24,8 +24,8 @@ class Template < Goliath::API
   include Goliath::Rack::Templates      # render templated files from ./views
 
   use(Rack::Static,                     # render static files from ./public
-            :root => Goliath::Application.app_path("public"),
-            :urls => ["/favicon.ico", '/stylesheets', '/javascripts', '/images'])
+      :root => Goliath::Application.app_path("public"),
+      :urls => ["/favicon.ico", '/stylesheets', '/javascripts', '/images'])
 
   plugin Goliath::Plugin::Latency       # ask eventmachine reactor to track its latency
 
@@ -35,7 +35,8 @@ class Template < Goliath::API
 
   def response(env)
     case env['PATH_INFO']
-    when '/'         then [200, {}, haml(:root)]
+    # TODO(dj2): change /root -> / when rack > 1.4.0 is released
+    when '/root'         then [200, {}, haml(:root)]
     when '/haml_str' then [200, {}, haml("%h1 Header")]
     when '/debug'    then [200, {}, haml(:debug)]
     when '/oops'     then [200, {}, haml(:no_such_template)] # will 500
