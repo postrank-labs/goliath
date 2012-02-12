@@ -16,13 +16,18 @@ module Goliath
 
     attr_accessor :app, :conn, :env, :response, :body
 
-    ##
-    # Allow user to redefine how fibers are handled, the
-    # default is to spawn a new fiber each time but another
-    # option is to use a pool of fibers.
-    #
     class << self
+      ##
+      # Allow user to redefine how fibers are handled, the
+      # default is to spawn a new fiber each time but another
+      # option is to use a pool of fibers.
+      #
       attr_accessor :execute_block
+      
+      ##
+      # Allow users to redefine what exactly is logged
+      # 
+      attr_accessor :log_block
     end
 
     self.execute_block = proc do |&block|
@@ -184,10 +189,21 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-
-            @env[RACK_LOGGER].info("Status: #{@response.status}, " +
-                "Content-Length: #{@response.headers['Content-Length']}, " +
-                "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            
+            if Goliath::Request.log_block
+              elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
+              begin
+                Goliath::Request.log_block.call(@env, @response, elapsed_time)
+              rescue => err
+                # prevent an infinite loop if the block raised
+                @env[RACK_LOGGER].error("log block raised #{err}")
+              end
+              
+            else
+              @env[RACK_LOGGER].info("Status: #{@response.status}, " +
+                  "Content-Length: #{@response.headers['Content-Length']}, " +
+                  "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            end
 
             @conn.terminate_request(keep_alive)
           rescue Exception => e
