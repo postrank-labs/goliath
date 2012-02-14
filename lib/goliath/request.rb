@@ -29,6 +29,12 @@ module Goliath
       # 
       attr_accessor :log_block
     end
+    
+    self.log_block = proc{|env, response, elapsed_time|
+      env[RACK_LOGGER].info("Status: #{response.status}, " +
+          "Content-Length: #{response.headers['Content-Length']}, " +
+          "Response Time: #{"%.2f" % elapsed_time}ms")
+    }
 
     self.execute_block = proc do |&block|
       Fiber.new(&block).resume
@@ -190,19 +196,12 @@ module Goliath
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
             
-            if Goliath::Request.log_block
-              elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
-              begin
-                Goliath::Request.log_block.call(@env, @response, elapsed_time)
-              rescue => err
-                # prevent an infinite loop if the block raised
-                @env[RACK_LOGGER].error("log block raised #{err}")
-              end
-              
-            else
-              @env[RACK_LOGGER].info("Status: #{@response.status}, " +
-                  "Content-Length: #{@response.headers['Content-Length']}, " +
-                  "Response Time: #{"%.2f" % ((Time.now.to_f - @env[:start_time]) * 1000)}ms")
+            elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
+            begin
+              Goliath::Request.log_block.call(@env, @response, elapsed_time)
+            rescue => err
+              # prevent an infinite loop if the block raised an error
+              @env[RACK_LOGGER].error("log block raised #{err}")
             end
 
             @conn.terminate_request(keep_alive)
