@@ -137,7 +137,7 @@ module Goliath
         maps.push([name, klass, opts, block])
       end
 
-      [:get, :post, :head, :put, :delete].each do |http_method|
+      [:get, :post, :head, :put, :delete, :patch].each do |http_method|
         class_eval <<-EOT, __FILE__, __LINE__ + 1
         def #{http_method}(name, *args, &block)
           opts = args.last.is_a?(Hash) ? args.pop : {}
