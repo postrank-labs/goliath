@@ -1,9 +1,12 @@
 Gemfile.lock
 
+bin/
 .bundle/
 doc/
+.idea/
 pkg/
 _site
+vendor/
 
 .yardoc
 .livereload
