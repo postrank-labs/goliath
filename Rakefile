@@ -20,6 +20,23 @@ RSpec::Core::RakeTask.new('spec') do |t|
   t.pattern = 'spec/**/*_spec.rb'
 end
 
+namespace :issues do
+  desc "run closed issue tests"
+  RSpec::Core::RakeTask.new(:closed) do |t|
+    t.pattern = 'spec/issues/*_spec.rb'
+    t.rspec_opts = %w{--tag ~status:open}
+  end
+  desc "run open issue tests"
+  RSpec::Core::RakeTask.new(:open) do |t|
+    t.pattern = 'spec/issues/*_spec.rb'
+    t.rspec_opts = %w{--tag ~status:closed}
+  end
+  desc "run all issue tests"
+  RSpec::Core::RakeTask.new(:all) do |t|
+    t.pattern = 'spec/issues/*_spec.rb'
+  end
+end
+
 desc 'Generate documentation'
 YARD::Rake::YardocTask.new do |t|
   t.files   = ['lib/**/*.rb', '-', 'LICENSE']
