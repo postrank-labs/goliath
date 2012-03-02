@@ -45,7 +45,8 @@ module Goliath
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
       s.options = options
-      s.port = @test_server_port = port
+      s.port = port
+      @test_server_port = s.port if blk
       s.start(&blk)
       s
     end
