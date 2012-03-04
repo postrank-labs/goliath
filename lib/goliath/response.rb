@@ -41,7 +41,9 @@ module Goliath
     #
     # @return [String] The HTTP headers
     def headers_output
-      headers[SERVER] = Goliath::Request::SERVER
+      unless headers[SERVER].nil? and headers.has_key? SERVER
+        headers[SERVER] = Goliath::Request::SERVER 
+      end
       headers[DATE] = Time.now.httpdate
 
       "#{headers.to_s}\r\n"
@@ -55,12 +57,12 @@ module Goliath
       return unless key_value_pairs
 
       key_value_pairs.each do |k, vs|
-        next unless vs
+        next unless vs or (empty_server = (k == SERVER))
 
         if vs.is_a?(String)
           vs.each_line { |v| @headers[k] = v.chomp }
 
-        elsif vs.is_a?(Time)
+        elsif vs.is_a?(Time) or empty_server
           @headers[k] = vs
 
         else
