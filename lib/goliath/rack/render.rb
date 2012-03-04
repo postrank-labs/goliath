@@ -10,18 +10,9 @@ module Goliath
     #  use Goliath::Rack::Render
     #
     class Render
+      include Constants
       include ::Rack::RespondTo
       include Goliath::Rack::AsyncMiddleware
-
-      VARY='Vary'
-      ACCEPT='Accept'
-      SERVER='PostRank Goliath API Server',
-      CONTENT_TYPE='Content-Type'
-      COMMA=','
-      FORMAT='format'
-      HTTP_ACCEPT='HTTP_ACCEPT'
-      MEDIA_ALL='*/*'
-      CHAR_SET="; charset=utf-8"
 
       def initialize(app, types = nil)
         @app = app
@@ -40,9 +31,10 @@ module Goliath
           end
         end
 
-        extra = { CONTENT_TYPE => get_content_type(env),
-                  VARY => [headers.delete(VARY), ACCEPT].compact.join(COMMA), 
-                  Goliath::Headers::SERVER => SERVER }
+        extra = { CONTENT_TYPE_HEADER => get_content_type(env),
+                  VARY_HEADER         => [headers.delete(VARY_HEADER),
+                                          ACCEPT_HEADER].compact.join(COMMA), 
+                  SERVER_HEADER       => SERVER }
 
         [status, extra.merge(headers), body]
       end

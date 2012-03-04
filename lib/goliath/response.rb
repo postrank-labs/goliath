@@ -9,6 +9,8 @@ module Goliath
   #
   # @private
   class Response
+    include Constants
+
     # The status code to send
     attr_accessor :status
 
@@ -17,13 +19,6 @@ module Goliath
 
     # The body to send
     attr_accessor :body
-
-    SERVER = 'Server'
-    DATE = 'Date'
-
-    # Used to signal that a response is a streaming response
-    STREAMING = :goliath_stream_response
-    CHUNKED_STREAM_HEADERS = { 'Transfer-Encoding' => 'chunked' }
 
     def initialize
       @headers = Goliath::Headers.new
@@ -41,10 +36,10 @@ module Goliath
     #
     # @return [String] The HTTP headers
     def headers_output
-      unless headers[SERVER].nil? and headers.has_key? SERVER
-        headers[SERVER] = Goliath::Request::SERVER 
+      unless headers[SERVER_HEADER].nil? and headers.has_key? SERVER_HEADER
+        headers[SERVER_HEADER] = Goliath::Request::SERVER 
       end
-      headers[DATE] = Time.now.httpdate
+      headers[DATE_HEADER] = Time.now.httpdate
 
       "#{headers.to_s}\r\n"
     end
@@ -57,7 +52,7 @@ module Goliath
       return unless key_value_pairs
 
       key_value_pairs.each do |k, vs|
-        next unless vs or (empty_server = (k == SERVER))
+        next unless vs or (empty_server = (k == SERVER_HEADER))
 
         if vs.is_a?(String)
           vs.each_line { |v| @headers[k] = v.chomp }
