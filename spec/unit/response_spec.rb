@@ -16,6 +16,29 @@ describe Goliath::Response do
     @r.headers.to_s.should == "my_key: my_headers\r\n"
   end
 
+  it 'allows unsetting Server header' do
+    @r.headers = [['Server', nil]]
+    @r.headers.to_s.should_not == "Server: PostRank Goliath API Server\r\n"
+    @r.headers.to_s.should_not == "Server: Goliath\r\n"
+    @r.headers.to_s.should_not == "Server: #{Goliath::Request::SERVER}\r\n" # Server: Goliath
+  end
+
+  it 'allows unsetting Server header' do
+    @r.headers = [['Server', nil]]
+    @r.headers.to_s.should_not == "Server: PostRank Goliath API Server\r\n"
+    @r.headers.to_s.should_not == "Server: Goliath\r\n"
+    @r.headers.to_s.should_not == "Server: #{Goliath::Request::SERVER}\r\n" # Server: Goliath
+  end
+
+  it 'allows a custom Server header' do
+    @r.headers = [['Server', 'Custom']]
+    @r.headers.to_s.should_not == "Server: PostRank Goliath API Server\r\n"
+    @r.headers.to_s.should     == "Server: Custom\r\n"
+    @r.headers.to_s.should_not == "Server: PostRank Goliath API Server\r\n"
+    @r.headers.to_s.should_not == "Server: Goliath\r\n"
+    @r.headers.to_s.should_not == "Server: #{Goliath::Request::SERVER}\r\n" # Server: Goliath
+  end
+
   it 'allows setting body' do
     @r.body = 'my body'
     @r.body.should == 'my body'

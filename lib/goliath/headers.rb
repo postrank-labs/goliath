@@ -1,8 +1,9 @@
+require 'goliath/constants'
+
 module Goliath
   # @private
   class Headers
-    HEADER_FORMAT      = "%s: %s\r\n"
-    ALLOWED_DUPLICATES = %w(Set-Cookie Set-Cookie2 Warning WWW-Authenticate)
+    include Constants
 
     def initialize
       @sent = {}
@@ -14,12 +15,12 @@ module Goliath
 
       value = case value
         when Time then value.httpdate
-        when NilClass then return
+        when NilClass then return unless key == SERVER_HEADER
         else value.to_s
       end
 
       @sent[key] = value
-      @out << HEADER_FORMAT % [key, value]
+      @out << HEADER_FORMAT % [key, value] unless value.nil?
     end
 
     def [](key)
@@ -27,7 +28,11 @@ module Goliath
     end
 
     def has_key?(key)
-      @sent[key] ? true : false
+      if key == SERVER_HEADER
+        @sent.has_key?(SERVER_HEADER)
+      else
+        @sent[key] ? true : false
+      end
     end
 
     def to_s

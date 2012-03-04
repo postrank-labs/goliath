@@ -10,6 +10,7 @@ module Goliath
     #  use Goliath::Rack::Render
     #
     class Render
+      include Constants
       include ::Rack::RespondTo
       include Goliath::Rack::AsyncMiddleware
 
@@ -30,16 +31,17 @@ module Goliath
           end
         end
 
-        extra = { 'Content-Type' => get_content_type(env),
-                  'Server' => 'PostRank Goliath API Server',
-                  'Vary' => [headers.delete('Vary'), 'Accept'].compact.join(',') }
+        extra = { CONTENT_TYPE_HEADER => get_content_type(env),
+                  VARY_HEADER         => [headers.delete(VARY_HEADER),
+                                          ACCEPT_HEADER].compact.join(COMMA), 
+                  SERVER_HEADER       => SERVER }
 
         [status, extra.merge(headers), body]
       end
 
       def get_content_type(env)
         type = if env.respond_to? :params
-          fmt = env.params['format']
+          fmt = env.params[FORMAT]
           fmt = fmt.last if fmt.is_a?(Array)
 
           if !fmt.nil? && fmt !~ /^\s*$/
@@ -47,10 +49,10 @@ module Goliath
           end
         end
         
-        type = ::Rack::RespondTo.env['HTTP_ACCEPT'] if type.nil?
-        type = ::Rack::RespondTo.selected_media_type if type == '*/*'
+        type = ::Rack::RespondTo.env[HTTP_ACCEPT] if type.nil?
+        type = ::Rack::RespondTo.selected_media_type if type == MEDIA_ALL
 
-        "#{type}; charset=utf-8"
+        type.nil? ? CHAR_SET : type + CHAR_SET
       end
     end
   end

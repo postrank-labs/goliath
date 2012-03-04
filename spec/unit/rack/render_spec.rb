@@ -85,7 +85,7 @@ describe Goliath::Rack::Render do
       it 'is set if not present' do
         env['params']['format'] = 'json'
         status, headers, body = render.call(env)
-        headers['Content-Type'].should =~ /; charset=utf-8$/
+        headers['Content-Type'].should == 'application/json; charset=utf-8'
       end
     end
   end
