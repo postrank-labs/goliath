@@ -145,7 +145,17 @@ module Goliath
       req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
-
+    
+    # Make a PATCH request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the PUT request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def patch_request(request_data = {}, errback = nil, &blk)
+      req = create_test_request(request_data).put(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+    
     # Make a DELETE request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the DELETE request.
