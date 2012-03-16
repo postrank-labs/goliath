@@ -152,7 +152,7 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def patch_request(request_data = {}, errback = nil, &blk)
-      req = create_test_request(request_data).put(request_data)
+      req = create_test_request(request_data).patch(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
     
