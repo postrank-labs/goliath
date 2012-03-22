@@ -46,6 +46,7 @@ module Goliath
       s.api.options_parser(op, options)
       s.options = options
       s.port = port
+      s.plugins = api.plugins
       @test_server_port = s.port if blk
       s.start(&blk)
       s
