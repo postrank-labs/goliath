@@ -32,7 +32,7 @@ module Goliath
       old_stream_send = env[STREAM_SEND]
       old_stream_close = env[STREAM_CLOSE]
       env[STREAM_SEND]  = proc { |data| env.handler.send_text_frame(data) }
-      env[STREAM_CLOSE] = proc { env.handler.close_websocket }
+      env[STREAM_CLOSE] = proc { |code, body| env.handler.close_websocket(code, body) }
       env[STREAM_START] = proc { }
 
       conn = Class.new do
