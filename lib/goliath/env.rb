@@ -64,8 +64,8 @@ module Goliath
 
     # If the API is a streaming API this will be executed by the API to signal that
     # the stream is complete. This will close the connection with the client.
-    def stream_close
-      self[STREAM_CLOSE].call
+    def stream_close *args
+      self[STREAM_CLOSE].call(args)
     end
 
     # Sends a chunk in a Chunked transfer encoding stream.

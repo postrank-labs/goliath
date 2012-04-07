@@ -45,7 +45,9 @@ module Goliath
       s.app = Goliath::Rack::Builder.build(api, s.api)
       s.api.options_parser(op, options)
       s.options = options
-      s.port = @test_server_port = port
+      s.port = port
+      s.plugins = api.plugins
+      @test_server_port = s.port if blk
       s.start(&blk)
       s
     end
@@ -144,7 +146,17 @@ module Goliath
       req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
-
+    
+    # Make a PATCH request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the PUT request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def patch_request(request_data = {}, errback = nil, &blk)
+      req = create_test_request(request_data).patch(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+    
     # Make a DELETE request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the DELETE request.
