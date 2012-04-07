@@ -166,13 +166,13 @@ module Goliath
         other_paths.each {|path| router.add(path).to(app) }
       end
     end
-    
+
     ##
     # The default constructor does nothing with the options
     # passed, redefine your own to use them.
-    # 
+    #
     # @param [Hash] opts options passed to a map call if any
-    # 
+    #
     def initialize(opts = {})
       @opts = opts
     end

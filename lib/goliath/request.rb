@@ -23,13 +23,13 @@ module Goliath
       # option is to use a pool of fibers.
       #
       attr_accessor :execute_block
-      
+
       ##
       # Allow users to redefine what exactly is logged
-      # 
+      #
       attr_accessor :log_block
     end
-    
+
     self.log_block = proc{|env, response, elapsed_time|
       env[RACK_LOGGER].info("Status: #{response.status}, " +
           "Content-Length: #{response.headers['Content-Length']}, " +
@@ -144,7 +144,7 @@ module Goliath
       begin
         @env[ASYNC_CLOSE].call(@env) if @env[ASYNC_CLOSE]
       rescue Exception => e
-        server_exception(e)
+        @env[RACK_LOGGER].error("on_close Exception: #{e.class}, message: #{e.message}")
       end
     end
 
@@ -195,7 +195,7 @@ module Goliath
           begin
             @response.status, @response.headers, @response.body = status, headers, body
             @response.each { |chunk| @conn.send_data(chunk) }
-            
+
             elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
             begin
               Goliath::Request.log_block.call(@env, @response, elapsed_time)
