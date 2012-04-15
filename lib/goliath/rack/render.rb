@@ -31,7 +31,6 @@ module Goliath
         end
 
         extra = { 'Content-Type' => get_content_type(env),
-                  'Server' => 'PostRank Goliath API Server',
                   'Vary' => [headers.delete('Vary'), 'Accept'].compact.join(',') }
 
         [status, extra.merge(headers), body]
