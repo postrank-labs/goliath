@@ -65,6 +65,15 @@ describe RackRoutes do
       end
     end
 
+    it 'returns string param keys' do
+      with_api(RackRoutes) do
+        get_request({:path => '/hola/bob?foo=key'}, err) do |c|
+          c.response_header.status.should == 200
+          c.response.should == 'hola! {"name"=>"bob", "foo"=>"key"}'
+        end
+      end
+    end
+
     context 'sinatra style route definition' do
       it 'should honor the request method' do
         with_api(RackRoutes) do
@@ -109,7 +118,7 @@ describe RackRoutes do
     context "defined in blocks" do
       it "uses middleware defined in the block" do
         with_api(RackRoutes) do
-          post_request({:path => '/hola'}, err) do |cb|
+          post_request({:path => '/hola/bob'}, err) do |cb|
             # the /hola route only supports GET requests
             cb.response_header.status.should == 405
             cb.response.should == '[:error, "Invalid request method"]'

@@ -62,7 +62,7 @@ class Hola < Goliath::API
   use Goliath::Rack::Validation::RequiredParam, {:key => "foo"}
 
   def response(env)
-    [200, {}, "hola!"]
+    [200, {}, "hola! #{params}"]
   end
 end
 
@@ -80,7 +80,7 @@ class Version < Goliath::API
   end
 end
 
-class SayMyName < Goliath::API  
+class SayMyName < Goliath::API
   def response(env)
     [200, {}, ["Hello #{@opts[:name]}"]]
   end
@@ -96,7 +96,7 @@ class RackRoutes < Goliath::API
 
   map "/bonjour", Bonjour
   map "/aloha", Aloha
-  
+
   get '/name1', SayMyName, :api_options => {:name => "Leonard"}
   get '/name2', SayMyName, :api_options => {:name => "Helena"}
 
@@ -107,7 +107,7 @@ class RackRoutes < Goliath::API
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
 
-  map "/hola", Hola do
+  map "/hola/:name", Hola do
     use Goliath::Rack::Validation::RequestMethod, %w(GET)
   end
 

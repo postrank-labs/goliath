@@ -34,8 +34,11 @@ module Goliath
 
               route.to do |env|
                 builder = Builder.new
+
                 env['params'] ||= {}
-                env['params'].merge!(env['router.params']) if env['router.params']
+                if env['router.params']
+                  env['router.params'].each {|k,v| env['params'][k.to_s] = v}
+                end
 
                 builder.params = builder.retrieve_params(env)
                 builder.instance_eval(&blk) if blk
