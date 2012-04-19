@@ -17,7 +17,7 @@ module Goliath
       #
       # class CustomJSON
       #   def coerce(value, opts={})
-      #     MultiJson.decode(value)
+      #     MultiJson.load(value)
       #   end
       # end
       #

@@ -7,7 +7,7 @@ require 'multi_json'
 class CustomJSON
   def coerce(value, opts={})
     begin
-      MultiJson.decode(value)
+      MultiJson.load(value)
     rescue
       return opts[:default] if opts[:default]
       raise Goliath::Rack::Validation::FailedCoerce.new([400, {}, "Invalid JSON"])

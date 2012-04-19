@@ -13,7 +13,7 @@ module Goliath
 
         def post_process(env, status, headers, body)
           if json_response?(headers)
-            body = [MultiJson.encode(body)]
+            body = [MultiJson.dump(body)]
           end
           [status, headers, body]
         end
