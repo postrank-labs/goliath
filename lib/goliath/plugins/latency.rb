@@ -6,6 +6,10 @@ module Goliath
     #  plugin Goliath::Plugin::Latency
     #
     class Latency
+      
+      # Number of seconds to wait before logging latency
+      LATENCY_TIMING = 1
+      
       # Called by the framework to initialize the plugin
       #
       # @param port [Integer] Unused
@@ -28,9 +32,9 @@ module Goliath
 
       # Called automatically to start the plugin
       def run
-        EM.add_periodic_timer(1) do
-          @@recent_latency = (Time.now.to_f - @last)
-          @logger.info "LATENCY: #{@@recent_latency}"
+        EM.add_periodic_timer(LATENCY_TIMING) do
+          @@recent_latency = ((Time.now.to_f - @last) - LATENCY_TIMING)
+          @logger.info "LATENCY: #{(@@recent_latency * 1000)} ms"
           @last = Time.now.to_f
         end
       end
