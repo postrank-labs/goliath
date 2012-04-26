@@ -17,7 +17,7 @@ module Goliath
 
   # Sets the current goliath environment
   #
-  # @param [String|Symbol] the environment symbol 
+  # @param [String|Symbol] the environment symbol
   def env=(e)
     es = case(e.to_sym)
     when :dev  then :development
@@ -41,17 +41,21 @@ module Goliath
     env == :development
   end
 
-  # Determines if we are in the test environment
+  # Determines if we are in a custom environment
   #
-  # @return [Boolean] true if current environment is test, false otherwise
-  def test?
-    env == :test
+  # @return [Boolean] true if current environment matches, false otherwise
+  def method_missing(name, *args)
+    if name[-1] == "?"
+      env == name[0..-2].to_sym
+    else
+      super
+    end
   end
 
-  # Determines if we are in the staging environment
+  # Method missing implementation responds to predicate methods
   #
-  # @return [Boolean] true if current environment is staging.
-  def staging?
-    env == :staging
+  # @return [Boolean] true if argument is a predicate method
+  def respond_to?(method)
+    method[-1] == "?" || super
   end
 end
