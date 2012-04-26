@@ -8,8 +8,6 @@ require 'goliath/version'
 module Goliath
   module_function
 
-  ENVIRONMENTS = [:development, :production, :test, :staging]
-
   # Retrieves the current goliath environment
   #
   # @return [String] the current environment
@@ -19,19 +17,14 @@ module Goliath
 
   # Sets the current goliath environment
   #
-  # @param [String|Symbol] env the environment symbol of [dev | development | prod | production | test]
+  # @param [String|Symbol] the environment symbol 
   def env=(e)
     es = case(e.to_sym)
     when :dev  then :development
     when :prod then :production
     else e.to_sym
     end
-
-    if ENVIRONMENTS.include?(es)
-      @env = es
-    else
-      fail "did not recognize environment: #{e}, expected one of: #{ENVIRONMENTS.join(', ')}"
-    end
+    @env = es
   end
 
   # Determines if we are in the production environment
