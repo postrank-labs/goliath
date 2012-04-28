@@ -50,8 +50,9 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'growl',       '~> 1.0.3'
     s.add_development_dependency 'rb-fsevent',  '0.4.3.1'
   end
+  
 
-  ignores = File.readlines(".gitignore").grep(/\S+/).map {|f| f.chomp }
+  ignores = File.readlines(".gitignore").grep(/\S+/).map {|s| s.chomp }
   dotfiles = [".gemtest", ".gitignore", ".rspec", ".yardopts"]
 
   s.files = Dir["**/*"].reject {|f| File.directory?(f) || ignores.any? {|i| File.fnmatch(i, f) } } + dotfiles
