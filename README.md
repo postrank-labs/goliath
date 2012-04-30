@@ -59,6 +59,10 @@ Goliath has been in production at PostRank for over a year, serving a sustained 
 * How do I deploy Goliath in production?
     * We recommend deploying Goliath behind a reverse proxy such as HAProxy ([sample config](https://github.com/postrank-labs/goliath/wiki/HAProxy)), Nginx or equivalent. Using one of the above, you can easily run multiple instances of the same application and load balance between them within the reverse proxy.
 
+## Build Status [<img src="https://secure.travis-ci.org/postrank-labs/goliath.png?travis"/>](http://travis-ci.org/postrank-labs/goliath)
+
+## Dependency Status [<img src="https://gemnasium.com/postrank-labs/goliath.png?travis"/>](https://gemnasium.com/postrank-labs/goliath)
+
 ## Guides
 
 * [Server Options](https://github.com/postrank-labs/goliath/wiki/Server)
