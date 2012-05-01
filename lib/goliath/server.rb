@@ -114,7 +114,8 @@ module Goliath
       file ||= "#{config_dir}/#{api_name}.rb"
       return unless File.exists?(file)
 
-      eval(IO.read(file))
+      proc = Proc.new {} # create proc to grab binding
+      eval(IO.read(file), proc.binding, file)
     end
 
     # Retrieves the configuration directory for the server
