@@ -9,6 +9,15 @@
 # create table users (id int not null auto_increment primary key, name varchar(255), email varchar(255));
 # insert into users (name, email) values ('dan', 'dj2@everyburning.com'), ('Ilya', 'ilya@igvita.com');
 
+# To start server
+# ruby ./srv.rb 
+# 
+# Example output:
+# curl http://localhost:9000/?id=1
+#=> "{\"user\":{\"email\":\"dj2@everyburning.com\",\"id\":1,\"name\":\"dan\"}}"
+# curl http://localhost:9000/?id=2
+#=> "{\"user\":{\"email\":\"ilya@igvita.com\",\"id\":2,\"name\":\"Ilya\"}}"
+
 $: << "../../lib" << "./lib"
 
 require 'goliath'
