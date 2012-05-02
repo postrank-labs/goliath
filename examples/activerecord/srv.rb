@@ -27,7 +27,6 @@ class Srv < Goliath::API
   use Goliath::Rack::Validation::NumericRange, {:key => 'id', :min => 1}
 
   def response(env)
-    User.find_by_sql("SELECT SLEEP(10)")
-    [200, {}, User.find(params['id'])]
+    [200, {}, User.find(params['id']).to_json]
   end
 end
