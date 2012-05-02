@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# gem install activerecord
+# gem install em-synchrony
 # gem install mysql2
 
 # create database goliath_test
@@ -12,7 +12,7 @@
 $: << "../../lib" << "./lib"
 
 require 'goliath'
-require 'active_record'
+require 'em-synchrony/activerecord'
 require 'yajl'
 
 class User < ActiveRecord::Base
