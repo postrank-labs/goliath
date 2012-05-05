@@ -3,12 +3,13 @@ require 'http/parser'
 require 'async_rack'
 require 'goliath/constants'
 require 'goliath/version'
+require 'goliath/deprecated/environment_helpers'
 
 # The Goliath Framework
 module Goliath
   module_function
 
-  ENVIRONMENTS = [:development, :production, :test, :staging]
+  extend EnvironmentHelpers
 
   # Retrieves the current goliath environment
   #
@@ -19,7 +20,7 @@ module Goliath
 
   # Sets the current goliath environment
   #
-  # @param [String|Symbol] env the environment symbol of [dev | development | prod | production | test]
+  # @param [String|Symbol] env the environment symbol
   def env=(e)
     es = case(e.to_sym)
     when :dev  then :development
@@ -27,38 +28,13 @@ module Goliath
     else e.to_sym
     end
 
-    if ENVIRONMENTS.include?(es)
-      @env = es
-    else
-      fail "did not recognize environment: #{e}, expected one of: #{ENVIRONMENTS.join(', ')}"
-    end
+    @env = es
   end
 
-  # Determines if we are in the production environment
+  # Determines if we are in a particular environment
   #
-  # @return [Boolean] true if current environment is production, false otherwise
-  def prod?
-    env == :production
-  end
-
-  # Determines if we are in the development environment
-  #
-  # @return [Boolean] true if current environment is development, false otherwise
-  def dev?
-    env == :development
-  end
-
-  # Determines if we are in the test environment
-  #
-  # @return [Boolean] true if current environment is test, false otherwise
-  def test?
-    env == :test
-  end
-
-  # Determines if we are in the staging environment
-  #
-  # @return [Boolean] true if current environment is staging.
-  def staging?
-    env == :staging
+  # @return [Boolean] true if current environment matches, false otherwise
+  def env?(e)
+    env == e.to_sym
   end
 end
