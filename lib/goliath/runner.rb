@@ -165,6 +165,7 @@ module Goliath
           STDERR.reopen(STDOUT)
 
           run_server
+          remove_pid
         end
       else
         run_server
@@ -243,6 +244,13 @@ module Goliath
      def store_pid(pid)
        FileUtils.mkdir_p(File.dirname(@pid_file))
        File.open(@pid_file, 'w') { |f| f.write(pid) }
+     end
+
+     # Remove the pid file specified by @pid_file
+     #
+     # @return [Nil]
+     def remove_pid
+       File.delete(@pid_file)
      end
   end
 end
