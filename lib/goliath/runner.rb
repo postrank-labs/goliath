@@ -234,6 +234,8 @@ module Goliath
        server.plugins = @plugins || []
        server.options = @server_options
        server.start
+     ensure
+       remove_pid if @daemonize
      end
 
      # Store the servers pid into the @pid_file
@@ -243,6 +245,13 @@ module Goliath
      def store_pid(pid)
        FileUtils.mkdir_p(File.dirname(@pid_file))
        File.open(@pid_file, 'w') { |f| f.write(pid) }
+     end
+
+     # Remove the pid file specified by @pid_file
+     #
+     # @return [Nil]
+     def remove_pid
+       File.delete(@pid_file)
      end
   end
 end
