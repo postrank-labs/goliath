@@ -142,7 +142,7 @@ module Goliath
     #
     # @return [Nil]
     def run
-      unless Goliath.test?
+      unless Goliath.env?(:test)
         $LOADED_FEATURES.unshift(File.basename($0))
         Dir.chdir(File.expand_path(File.dirname($0)))
       end

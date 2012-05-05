@@ -3,7 +3,7 @@ require 'goliath/runner'
 require 'goliath/rack'
 
 # Pre-load the goliath environment so it's available as we try to parse the class.
-# This means we can use Goliath.dev? or Goliath.prod? in the use statements.
+# This means we can use Goliath.env?(:development) or Goliath.env?(:produdction) in the use statements.
 #
 # Note, as implmented, you have to have -e as it's own flag, you can't do -sve dev
 # as it won't pickup the e flag.
@@ -91,7 +91,7 @@ module Goliath
     # @param args [Array] Any arguments to append to the path
     # @return [String] path for the given arguments
     def self.root_path(*args)
-      return app_path(args) if Goliath.test?
+      return app_path(args) if Goliath.env?(:test)
 
       @root_path ||= File.expand_path("./")
       File.join(@root_path, *args)

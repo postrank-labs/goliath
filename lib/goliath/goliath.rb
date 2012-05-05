@@ -3,10 +3,13 @@ require 'http/parser'
 require 'async_rack'
 require 'goliath/constants'
 require 'goliath/version'
+require 'goliath/deprecated/environment_helpers'
 
 # The Goliath Framework
 module Goliath
   module_function
+
+  extend EnvironmentHelpers
 
   # Retrieves the current goliath environment
   #
@@ -17,45 +20,21 @@ module Goliath
 
   # Sets the current goliath environment
   #
-  # @param [String|Symbol] the environment symbol
+  # @param [String|Symbol] env the environment symbol
   def env=(e)
     es = case(e.to_sym)
     when :dev  then :development
     when :prod then :production
     else e.to_sym
     end
+
     @env = es
   end
 
-  # Determines if we are in the production environment
-  #
-  # @return [Boolean] true if current environment is production, false otherwise
-  def prod?
-    env == :production
-  end
-
-  # Determines if we are in the development environment
-  #
-  # @return [Boolean] true if current environment is development, false otherwise
-  def dev?
-    env == :development
-  end
-
-  # Determines if we are in a custom environment
+  # Determines if we are in a particular environment
   #
   # @return [Boolean] true if current environment matches, false otherwise
-  def method_missing(name, *args)
-    if name[-1] == "?"
-      env == name[0..-2].to_sym
-    else
-      super
-    end
-  end
-
-  # Method missing implementation responds to predicate methods
-  #
-  # @return [Boolean] true if argument is a predicate method
-  def respond_to?(method)
-    method[-1] == "?" || super
+  def env?(e)
+    env == e.to_sym
   end
 end
