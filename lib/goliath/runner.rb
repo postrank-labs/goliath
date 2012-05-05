@@ -165,6 +165,7 @@ module Goliath
           STDERR.reopen(STDOUT)
 
           run_server
+          remove_pid
         end
       else
         run_server
@@ -234,8 +235,6 @@ module Goliath
        server.plugins = @plugins || []
        server.options = @server_options
        server.start
-     ensure
-       remove_pid if @daemonize
      end
 
      # Store the servers pid into the @pid_file
