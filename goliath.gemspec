@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack-respond_to'
   s.add_dependency 'async-rack'
   s.add_dependency 'multi_json'
-  s.add_dependency 'http_router', '~> 0.9.0'
 
   s.add_development_dependency 'rake', '>=0.8.7'
   s.add_development_dependency 'rspec', '>2.0'

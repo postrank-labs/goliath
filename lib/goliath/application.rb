@@ -9,10 +9,10 @@ require 'goliath/rack'
 # as it won't pickup the e flag.
 env = ENV['RACK_ENV']
 env ||= begin
-          if ((i = ARGV.index('-e')) || (i = ARGV.index('--environment')))
-            ARGV[i + 1]
-          end
-        end
+      if ((i = ARGV.index('-e')) || (i = ARGV.index('--environment')))
+        ARGV[i + 1]
+      end
+    end
 Goliath.env = env if env
 
 module Goliath
@@ -108,12 +108,11 @@ module Goliath
 
       begin
         klass = Kernel
-        @app_class.split('::').each do |con|
-          klass = klass.const_get(con)
-        end
+        @app_class.split('::').each { |con| klass = klass.const_get(con) }
       rescue NameError
         raise NameError, "Class #{@app_class} not found."
       end
+
       api = klass.new
 
       runner = Goliath::Runner.new(ARGV, api)

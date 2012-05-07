@@ -5,9 +5,11 @@ require 'goliath'
 require 'goliath/websocket'
 require 'goliath/rack/templates'
 
-require 'pp'
+class Websocket < Goliath::WebSocket
+  include Goliath::Rack::Templates
 
-class WebsocketEndPoint < Goliath::WebSocket
+  use Goliath::Rack::Favicon, File.expand_path(File.dirname(__FILE__) + '/ws/favicon.ico')
+
   def on_open(env)
     env.logger.info("WS OPEN")
     env['subscription'] = env.channel.subscribe { |m| env.stream_send(m) }
@@ -26,19 +28,12 @@ class WebsocketEndPoint < Goliath::WebSocket
   def on_error(env, error)
     env.logger.error error
   end
-end
-
-class WSInfo < Goliath::API
-  include Goliath::Rack::Templates
 
   def response(env)
-    [200, {}, erb(:index, :views => Goliath::Application.root_path('ws'))]
+    if env['REQUEST_PATH'] == '/ws'
+      super(env)
+    else
+      [200, {}, erb(:index, :views => Goliath::Application.root_path('ws'))]
+    end
   end
-end
-
-class Websocket < Goliath::API
-  use Goliath::Rack::Favicon, File.expand_path(File.dirname(__FILE__) + '/ws/favicon.ico')
-
-  get '/', WSInfo
-  map '/ws', WebsocketEndPoint
 end
