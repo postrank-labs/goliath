@@ -8,7 +8,6 @@ require 'goliath/deprecated/environment_helpers'
 # The Goliath Framework
 module Goliath
   module_function
-
   extend EnvironmentHelpers
 
   # Retrieves the current goliath environment
@@ -22,13 +21,11 @@ module Goliath
   #
   # @param [String|Symbol] env the environment symbol
   def env=(e)
-    es = case(e.to_sym)
+    @env = case(e.to_sym)
     when :dev  then :development
     when :prod then :production
     else e.to_sym
     end
-
-    @env = es
   end
 
   # Determines if we are in a particular environment

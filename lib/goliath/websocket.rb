@@ -62,19 +62,16 @@ module Goliath
         def send_data(data)
           @stream_send.call(data)
         end
-
       end.new(env, self, old_stream_send, old_stream_close)
 
       upgrade_data = env[UPGRADE_DATA]
-
       begin
         env['handler'] = EM::WebSocket::HandlerFactory.build_with_request(conn, request,
-                                                                          upgrade_data, false, false)
+            upgrade_data, false, false)
       rescue Exception => e
         env.logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
         return [500, {}, {:error => "Upgrade failed"}]
       end
-
       env['handler'].run
 
       Goliath::Connection::AsyncResponse

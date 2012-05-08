@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack-respond_to'
   s.add_dependency 'async-rack'
   s.add_dependency 'multi_json'
-  s.add_dependency 'http_router', '~> 0.9.0'
 
   s.add_development_dependency 'rake', '>=0.8.7'
   s.add_development_dependency 'rspec', '>2.0'
@@ -48,7 +47,7 @@ Gem::Specification.new do |s|
 
   if RUBY_PLATFORM.include?('darwin')
     s.add_development_dependency 'growl',       '~> 1.0.3'
-    s.add_development_dependency 'rb-fsevent',  '0.4.3.1'
+    s.add_development_dependency 'rb-fsevent'
   end
 
   ignores = File.readlines(".gitignore").grep(/\S+/).map {|s| s.chomp }
