@@ -63,7 +63,9 @@ module Goliath
     def initialize(argv, api)
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
-      Goliath.env = options.delete(:env)
+
+      options_env = options.delete(:env)
+      Goliath.env = options_env if !Goliath.env
 
       @api = api
       @address = options.delete(:address)

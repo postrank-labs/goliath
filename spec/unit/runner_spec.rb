@@ -10,13 +10,6 @@ describe Goliath::Runner do
     @r.stub!(:setup_logger).and_return(@log_mock)
   end
 
-  after(:each) do
-    # Runner default env is development.
-    # We do need to revert to test
-    Goliath.env = :test
-  end
-
-  
   describe 'server execution' do
     describe 'daemonization' do
       it 'daemonizes if specified' do
@@ -137,6 +130,11 @@ describe Goliath::Runner do
       server_mock.should_receive(:app=).with('my_app')
 
       @r.send(:run_server)
+    end
+
+    it 'will not reset the environment if already set' do
+      Goliath.should_not_receive(:env=)
+      Goliath::Runner.new(['-e', 'not_test'], nil)
     end
   end
 end
