@@ -61,12 +61,12 @@ end
 
 class APIServer < Goliath::API
 
-  def call(env)
+  def response(env)
     begin
       MyAPI.call(env)
     rescue Exception => e
       raise "#{e.message} - Backtrace: #{e.backtrace}"
     end
   end
-      
+
 end
