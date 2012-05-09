@@ -33,7 +33,6 @@ require 'goliath'
 require 'em-synchrony/activerecord'
 require 'yajl'
 require 'grape'
-require './config/database'
 
 class User < ActiveRecord::Base
 end
