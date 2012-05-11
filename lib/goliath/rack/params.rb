@@ -42,10 +42,8 @@ module Goliath
                 post_params = {}
               end
             end
-
             params.merge!(post_params)
           end
-
           params
         end
       end

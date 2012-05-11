@@ -4,8 +4,8 @@
 
 require 'goliath'
 require 'em-synchrony/em-http'
- 
-class TwilioResponse < Goliath::API
+
+class Twilio < Goliath::API
   use Goliath::Rack::Params
   use Goliath::Rack::JSONP
 
@@ -18,11 +18,7 @@ class TwilioResponse < Goliath::API
 
     http = EM::HttpRequest.new(url).get head: HEADERS
     logger.debug "Received #{http.response_header.status} from Twilio"
- 
+
     [200, {'X-Goliath' => 'Proxy','Content-Type' => 'application/javascript'}, http.response]
   end
-end
-
-class Twilio < Goliath::API
-  get %r{^/(Local|TollFree)}, TwilioResponse
 end

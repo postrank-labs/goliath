@@ -59,10 +59,8 @@ module Goliath
 
         if vs.is_a?(String)
           vs.each_line { |v| @headers[k] = v.chomp }
-
         elsif vs.is_a?(Time)
           @headers[k] = vs
-
         else
           vs.each { |v| @headers[k] = v.chomp }
         end
