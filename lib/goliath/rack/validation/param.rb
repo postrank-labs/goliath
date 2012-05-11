@@ -67,6 +67,9 @@ module Goliath
         #
         # @return [Goliath::Rack::Validation::Param] The validator
         def initialize(app, opts = {})
+          # do not touch the original hash
+          opts = opts.clone
+          
           @app = app
           @optional = opts.delete(:optional) || false
           @key = opts.delete(:key)
