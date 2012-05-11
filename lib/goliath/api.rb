@@ -178,7 +178,9 @@ module Goliath
         env.logger.error(e.message)
         env.logger.error(e.backtrace.join("\n"))
         env[RACK_EXCEPTION] = e
-        env[ASYNC_CALLBACK].call(validation_error(500, e.message))
+
+        message = Goliath.env?(:production) ? 'An error happened' : e.message
+        env[ASYNC_CALLBACK].call(validation_error(500, message))
       end
 
       Goliath::Connection::AsyncResponse

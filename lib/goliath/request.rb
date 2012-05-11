@@ -30,11 +30,11 @@ module Goliath
       attr_accessor :log_block
     end
 
-    self.log_block = proc{|env, response, elapsed_time|
+    self.log_block = proc do |env, response, elapsed_time|
       env[RACK_LOGGER].info("Status: #{response.status}, " +
           "Content-Length: #{response.headers['Content-Length']}, " +
           "Response Time: #{"%.2f" % elapsed_time}ms")
-    }
+    end
 
     self.execute_block = proc do |&block|
       Fiber.new(&block).resume
@@ -226,7 +226,9 @@ module Goliath
         status, headers, body = [e.status_code, {}, ('{"error":"%s"}' % e.message)]
       else
         @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-        status, headers, body = [500, {}, e.message || 'An error happened']
+        message = Goliath.env?(:production) ? 'An error happened' : e.message
+
+        status, headers, body = [500, {}, message]
       end
 
       headers['Content-Length'] = body.bytesize.to_s

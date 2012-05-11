@@ -6,6 +6,7 @@ require 'goliath/version'
 
 # The Goliath Framework
 module Goliath
+  module_function
 
   ENVIRONMENTS = [:development, :production, :test, :staging]
 
@@ -24,7 +25,6 @@ module Goliath
   alias :prod? :production?
   alias :dev? :development?
 
-  module_function
 
   # Retrieves the current goliath environment
   #
