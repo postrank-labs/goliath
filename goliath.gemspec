@@ -31,7 +31,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'em-http-request', '>=1.0.0'
   s.add_development_dependency 'em-mongo', '~> 0.4.0'
-  s.add_development_dependency 'yajl-ruby'
   s.add_development_dependency 'rack-rewrite'
   s.add_development_dependency 'multipart_body'
   s.add_development_dependency 'amqp', '>=0.7.1'
@@ -40,10 +39,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'tilt', '>=1.2.2'
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
-  s.add_development_dependency 'bluecloth'
 
   s.add_development_dependency 'guard',       '~> 0.8.8'
   s.add_development_dependency 'guard-rspec', '~> 0.5.9'
+
+  if RUBY_PLATFORM != 'java'
+    s.add_development_dependency 'yajl-ruby'
+    s.add_development_dependency 'bluecloth'
+  end
 
   if RUBY_PLATFORM.include?('darwin')
     s.add_development_dependency 'growl',       '~> 1.0.3'
