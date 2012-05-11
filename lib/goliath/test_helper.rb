@@ -146,7 +146,7 @@ module Goliath
       req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
-    
+
     # Make a PATCH request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the PUT request.
@@ -156,7 +156,7 @@ module Goliath
       req = create_test_request(request_data).patch(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
-    
+
     # Make a DELETE request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the DELETE request.
@@ -169,7 +169,8 @@ module Goliath
 
     def create_test_request(request_data)
       path = request_data.delete(:path) || ''
-      EM::HttpRequest.new("http://localhost:#{@test_server_port}#{path}")
+      opts = request_data.delete(:connection_options) || {}
+      EM::HttpRequest.new("http://localhost:#{@test_server_port}#{path}", opts)
     end
 
     private
