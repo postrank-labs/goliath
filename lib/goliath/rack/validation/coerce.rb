@@ -1,5 +1,6 @@
 module Goliath
   module Rack
+
     module Validation
       class FailedCoerce < StandardError
         attr_reader :error
@@ -11,6 +12,7 @@ module Goliath
       module Coerce
         NOT_CLASS_ERROR = "Params as must be a class"
         INVALID_COERCE_TYPE = "%s does not respond to coerce"
+
         def coerce_setup!(opts={})
           as = opts.delete(:as)
           if as

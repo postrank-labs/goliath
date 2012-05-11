@@ -3,12 +3,28 @@ require 'http/parser'
 require 'async_rack'
 require 'goliath/constants'
 require 'goliath/version'
-require 'goliath/deprecated/environment_helpers'
 
 # The Goliath Framework
 module Goliath
+
+  ENVIRONMENTS = [:development, :production, :test, :staging]
+
+  # for example:
+  #
+  #   def development?
+  #     env? :development
+  #   end
+  ENVIRONMENTS.each do |e|
+    define_method "#{e}?" do
+      warn "[DEPRECATION] `Goliath.#{e}?` is deprecated.  Please use `Goliath.env?(#{e})` instead."
+      env? e
+    end
+  end
+
+  alias :prod? :production?
+  alias :dev? :development?
+
   module_function
-  extend EnvironmentHelpers
 
   # Retrieves the current goliath environment
   #

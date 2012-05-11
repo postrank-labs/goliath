@@ -19,7 +19,5 @@ module Goliath
     autoload :Types,                 'goliath/rack/types'
     autoload :Validator,              'goliath/rack/validator'
     autoload :Validation,             'goliath/rack/validation'
-    #
-    autoload :AsyncAroundware,        'goliath/deprecated/async_aroundware'
   end
 end

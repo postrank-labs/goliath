@@ -63,7 +63,7 @@ module Goliath
 
     # If the API is a streaming API this will be executed by the API to signal that
     # the stream is complete. This will close the connection with the client.
-    def stream_close *args
+    def stream_close(*args)
       self[STREAM_CLOSE].call(args)
     end
 
