@@ -15,16 +15,17 @@ module Goliath
   #   def development?
   #     env? :development
   #   end
-  ENVIRONMENTS.each do |e|
-    define_method "#{e}?" do
-      warn "[DEPRECATION] `Goliath.#{e}?` is deprecated.  Please use `Goliath.env?(#{e})` instead."
-      env? e
+  class << self
+    ENVIRONMENTS.each do |e|
+      define_method "#{e}?" do
+        warn "[DEPRECATION] `Goliath.#{e}?` is deprecated.  Please use `Goliath.env?(#{e})` instead."
+        env? e
+      end
     end
+
+    alias :prod? :production?
+    alias :dev? :development?
   end
-
-  alias :prod? :production?
-  alias :dev? :development?
-
 
   # Retrieves the current goliath environment
   #
