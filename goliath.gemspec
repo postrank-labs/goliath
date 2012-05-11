@@ -14,10 +14,10 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>=1.9.2'
 
-  s.add_dependency 'eventmachine', '>= 1.0.0.beta.3'
+  s.add_dependency 'eventmachine', '>= 1.0.0.beta.4'
   s.add_dependency 'em-synchrony', '>= 1.0.0'
   s.add_dependency 'em-websocket'
-  s.add_dependency 'http_parser.rb', '~> 0.5.3'
+  s.add_dependency 'http_parser.rb', '0.5.3'
   s.add_dependency 'log4r'
 
   s.add_dependency 'rack', '>=1.2.2'
