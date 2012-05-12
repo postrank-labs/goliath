@@ -50,5 +50,6 @@ module Goliath
     UPGRADE_DATA    = 'UPGRADE_DATA'
 
     GOLIATH_ENV     = 'goliath.env'
+    GOLIATH_SIGNATURE = 'goliath.signature'
   end
 end
