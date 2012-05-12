@@ -83,7 +83,7 @@ module Goliath
 
         EM.set_effective_user(options[:user]) if options[:user]
 
-        EM.start_server(address, port, Goliath::Connection) do |conn|
+        config[Goliath::Constants::GOLIATH_SIGNATURE] = EM.start_server(address, port, Goliath::Connection) do |conn|
           if options[:ssl]
             conn.start_tls(
               :private_key_file => options[:ssl_key],
