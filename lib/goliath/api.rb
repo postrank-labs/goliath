@@ -37,7 +37,7 @@ module Goliath
 
         unless @loaded_default_middlewares
           @middlewares.unshift([::Goliath::Rack::DefaultResponseFormat, nil, nil])
-          @middlewares.unshift([::Rack::ContentLength, nil, nil])
+          @middlewares.unshift([::AsyncRack::ContentLength, nil, nil])
 
           if Goliath.env?(:development) && !@middlewares.detect {|mw| mw.first == ::Rack::Reloader}
             @middlewares.unshift([::Rack::Reloader, 0, nil])
