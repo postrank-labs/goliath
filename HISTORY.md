@@ -1,5 +1,15 @@
 # HISTORY
 
+## v1.0.0 (May 2x, 2012)
+
+  - removed router DSL for 1.0 release
+  - removed restriction on environments
+  - refactored validation handler logic
+  - refactored params coercion logic
+  - users can customize log formats
+  - cleanup of spec helpers
+  - many small bugfixes
+
 ## v0.9.3 (Oct 16, 2011)
 
   - new router DSL - much improved, see examples
