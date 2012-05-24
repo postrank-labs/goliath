@@ -107,7 +107,7 @@ module Goliath
       req.errback { stop }
     end
 
-    # Make a HEAD request the currently launched API.
+    # Make a HEAD request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the HEAD request.
     # @param errback [Proc] An error handler to attach
@@ -117,7 +117,7 @@ module Goliath
       hookup_request_callbacks(req, errback, &blk)
     end
 
-    # Make a GET request the currently launched API.
+    # Make a GET request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the GET request.
     # @param errback [Proc] An error handler to attach
@@ -127,7 +127,7 @@ module Goliath
       hookup_request_callbacks(req, errback, &blk)
     end
 
-    # Make a POST request the currently launched API.
+    # Make a POST request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the POST request.
     # @param errback [Proc] An error handler to attach
@@ -147,7 +147,7 @@ module Goliath
       hookup_request_callbacks(req, errback, &blk)
     end
 
-    # Make a PATCH request the currently launched API.
+    # Make a PATCH request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the PUT request.
     # @param errback [Proc] An error handler to attach
@@ -157,13 +157,23 @@ module Goliath
       hookup_request_callbacks(req, errback, &blk)
     end
 
-    # Make a DELETE request the currently launched API.
+    # Make a DELETE request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the DELETE request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def delete_request(request_data = {}, errback = nil, &blk)
       req = create_test_request(request_data).delete(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
+    # Make an OPTIONS request against the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the OPTIONS request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def options_request(request_data = {}, errback = nil, &blk)
+      req = create_test_request(request_data).options(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
