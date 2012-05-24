@@ -167,6 +167,16 @@ module Goliath
       hookup_request_callbacks(req, errback, &blk)
     end
 
+    # Make an OPTIONS request the currently launched API.
+    #
+    # @param request_data [Hash] Any data to pass to the OPTIONS request.
+    # @param errback [Proc] An error handler to attach
+    # @param blk [Proc] The callback block to execute
+    def options_request(request_data = {}, errback = nil, &blk)
+      req = create_test_request(request_data).options(request_data)
+      hookup_request_callbacks(req, errback, &blk)
+    end
+
     def create_test_request(request_data)
       path = request_data.delete(:path) || ''
       opts = request_data.delete(:connection_options) || {}
