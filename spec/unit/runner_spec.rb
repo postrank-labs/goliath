@@ -131,10 +131,26 @@ describe Goliath::Runner do
 
       @r.send(:run_server)
     end
+  end
+end
 
-    it 'will not reset the environment if already set' do
-      Goliath.should_not_receive(:env=)
-      Goliath::Runner.new(['-e', 'not_test'], nil)
-    end
+describe Goliath::EnvironmentParser do
+  before(:each) do
+    ENV['RACK_ENV'] = nil
+  end
+
+  it 'returns the default environment if no other options are set' do
+    Goliath::EnvironmentParser.parse.should == Goliath::DEFAULT_ENV
+  end
+
+  it 'gives precendence to RACK_ENV over the default' do
+    ENV['RACK_ENV'] = 'rack_env'
+    Goliath::EnvironmentParser.parse.should == :rack_env
+  end
+
+  it 'gives precendence to command-line flag over RACK_ENV' do
+    ENV['RACK_ENV'] = 'rack_env'
+    args = %w{ -e flag_env }
+    Goliath::EnvironmentParser.parse(args).should == :flag_env
   end
 end
