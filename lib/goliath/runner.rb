@@ -4,6 +4,44 @@ require 'optparse'
 require 'log4r'
 
 module Goliath
+
+  # The default run environment, should one not be set.
+  DEFAULT_ENV = :development
+
+  # The environment for a Goliath app can come from a variety of different
+  # sources.  Due to the loading order of middleware, we must parse this out
+  # at load-time rather than run time.
+  #
+  # Note that, as implemented, you cannot pass -e as part of a compound flag
+  # (e.g. `-sve production`) as it won't be picked up.  The example given would
+  # have to be provided as `-sv -e production`.
+  #
+  # For more detail, see: https://github.com/postrank-labs/goliath/issues/18
+  class EnvironmentParser
+
+    # Work out the current runtime environemnt.
+    #
+    # The sources of environment, in increasing precedence, are:
+    #
+    #   1. Default (see Goliath::DEFAULT_ENV)
+    #   2. RACK_ENV
+    #   3. -e/--environment command line options
+    #   4. Hard-coded call to Goliath#env=
+    #
+    # @param argv [Array] The command line arguments
+    # @return [Symbol] The current environemnt
+    def self.parse(argv = [])
+      env = ENV["RACK_ENV"] || Goliath::DEFAULT_ENV
+      if (i = argv.index('-e')) || (i = argv.index('--environment'))
+        env = argv[i + 1]
+      end
+      env.to_sym
+    end
+  end
+
+  # Set the environment immediately before we do anything else.
+  Goliath.env = Goliath::EnvironmentParser.parse(ARGV)
+
   # The Goliath::Runner is responsible for parsing any provided options, setting up the
   # rack application, creating a logger, and then executing the Goliath::Server with the loaded information.
   class Runner
@@ -63,7 +101,9 @@ module Goliath
     def initialize(argv, api)
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
-      Goliath.env = options.delete(:env)
+
+      # We've already dealt with the environemnt, so just discard it.
+      options.delete(:env)
 
       @api = api
       @address = options.delete(:address)
@@ -90,7 +130,7 @@ module Goliath
         :daemonize => false,
         :verbose => false,
         :log_stdout => false,
-        :env => :development,
+        :env => Goliath::DEFAULT_ENV
       }
 
       @options_parser ||= OptionParser.new do |opts|
@@ -99,7 +139,10 @@ module Goliath
         opts.separator ""
         opts.separator "Server options:"
 
-        opts.on('-e', '--environment NAME', "Set the execution environment (prod, dev or test) (default: #{@options[:env]})") { |val| @options[:env] = val }
+        # The environment isn't set as part of this option parsing routine, but
+        # we'll leave the flag here so a call to --help shows it correctly.
+        opts.on('-e', '--environment NAME', "Set the execution environment (default: #{@options[:env]})") { |val| @options[:env] = val }
+
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
         opts.on('-S', '--socket FILE', "Bind to unix domain socket") { |v| @options[:address] = v; @options[:port] = nil }
