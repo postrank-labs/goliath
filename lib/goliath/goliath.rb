@@ -31,7 +31,7 @@ module Goliath
   #
   # @return [String] the current environment
   def env
-    @env or fail "environment has not been set"
+    @env
   end
 
   # Sets the current goliath environment

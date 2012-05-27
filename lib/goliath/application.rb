@@ -2,19 +2,6 @@ require 'goliath/goliath'
 require 'goliath/runner'
 require 'goliath/rack'
 
-# Pre-load the goliath environment so it's available as we try to parse the class.
-# This means we can use Goliath.env?(:development) or Goliath.env?(:produdction) in the use statements.
-#
-# Note, as implmented, you have to have -e as it's own flag, you can't do -sve dev
-# as it won't pickup the e flag.
-env = ENV['RACK_ENV']
-env ||= begin
-      if ((i = ARGV.index('-e')) || (i = ARGV.index('--environment')))
-        ARGV[i + 1]
-      end
-    end
-Goliath.env = env if env
-
 module Goliath
   # The main execution class for Goliath. This will execute in the at_exit
   # handler to run the server.

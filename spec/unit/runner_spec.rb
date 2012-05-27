@@ -10,13 +10,6 @@ describe Goliath::Runner do
     @r.stub!(:setup_logger).and_return(@log_mock)
   end
 
-  after(:each) do
-    # Runner default env is development.
-    # We do need to revert to test
-    Goliath.env = :test
-  end
-
-  
   describe 'server execution' do
     describe 'daemonization' do
       it 'daemonizes if specified' do
@@ -138,5 +131,26 @@ describe Goliath::Runner do
 
       @r.send(:run_server)
     end
+  end
+end
+
+describe Goliath::EnvironmentParser do
+  before(:each) do
+    ENV['RACK_ENV'] = nil
+  end
+
+  it 'returns the default environment if no other options are set' do
+    Goliath::EnvironmentParser.parse.should == Goliath::DEFAULT_ENV
+  end
+
+  it 'gives precendence to RACK_ENV over the default' do
+    ENV['RACK_ENV'] = 'rack_env'
+    Goliath::EnvironmentParser.parse.should == :rack_env
+  end
+
+  it 'gives precendence to command-line flag over RACK_ENV' do
+    ENV['RACK_ENV'] = 'rack_env'
+    args = %w{ -e flag_env }
+    Goliath::EnvironmentParser.parse(args).should == :flag_env
   end
 end
