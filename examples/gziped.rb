@@ -15,7 +15,7 @@ $:<< '../lib' << 'lib'
 require 'rack/deflater'
 require 'rack/rewrite'
 require 'goliath'
-require 'yajl'
+require 'yajl' if RUBY_PLATFORM != 'java'
 
 class Gziped < Goliath::API
   # if client requested, compress the response

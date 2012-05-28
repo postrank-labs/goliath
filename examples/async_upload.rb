@@ -2,7 +2,7 @@
 $:<< '../lib' << 'lib'
 
 require 'goliath'
-require 'yajl'
+require 'yajl' if RUBY_PLATFORM != 'java'
 
 class AsyncUpload < Goliath::API
   use Goliath::Rack::Params             # parse & merge query and body parameters

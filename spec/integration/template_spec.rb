@@ -27,7 +27,7 @@ describe Template do
   it 'renders a markdown template with default haml layout' do
     with_api(Template, api_options) do
       get_request(:path => '/joke') do |c|
-        c.response.should =~ %r{<code>"Arr, I dunno matey -- but it's drivin' me nuts!"\s*</code>}m
+        c.response.should =~ %r{<code>Arr, I dunno matey -- but it is driving me nuts!\s*</code>}m
       end
     end
   end

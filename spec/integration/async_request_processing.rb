@@ -12,7 +12,7 @@ describe 'Async Request processing' do
       err = Proc.new { fail "API request failed" }
 
       post_request(request_data, err) do |c|
-        resp = Yajl::Parser.parse(c.response)
+        resp = MultiJson.load(c.response)
         resp['body'].should match('some=data')
         resp['head'].should include('X-Upload')
       end

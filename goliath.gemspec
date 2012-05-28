@@ -40,16 +40,20 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
 
-  s.add_development_dependency 'guard',       '~> 0.8.8'
+  s.add_development_dependency 'guard', '~> 0.8.8'
   s.add_development_dependency 'guard-rspec', '~> 0.5.9'
 
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'
     s.add_development_dependency 'bluecloth'
+    s.add_development_dependency 'bson_ext'
+  else
+    s.add_development_dependency 'json-jruby'
+    s.add_development_dependency 'maruku'
   end
 
   if RUBY_PLATFORM.include?('darwin')
-    s.add_development_dependency 'growl',       '~> 1.0.3'
+    s.add_development_dependency 'growl', '~> 1.0.3'
     s.add_development_dependency 'rb-fsevent'
   end
 

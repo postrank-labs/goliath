@@ -6,7 +6,7 @@ require 'goliath/plugins/latency'
 
 # Goliath uses multi-json, so pick your favorite JSON serializer
 # require 'json'
-require 'yajl'
+require 'yajl' if RUBY_PLATFORM != 'java'
 
 class Echo < Goliath::API
   use Goliath::Rack::Tracer             # log trace statistics

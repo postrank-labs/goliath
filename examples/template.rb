@@ -11,10 +11,15 @@ $:<< '../lib' << 'lib'
 # your template's extension must match the engine (foo.markdown, not foo.md)
 
 require 'tilt'
-# use bluecloth as default markdown renderer
-require 'bluecloth'
-Tilt.register 'markdown', Tilt::BlueClothTemplate
-require 'yajl/json_gem'
+
+if RUBY_PLATFORM != 'java'
+  require 'yajl/json_gem'
+  require 'bluecloth' # use bluecloth as default markdown renderer
+  Tilt.register 'markdown', Tilt::BlueClothTemplate
+else
+  require 'maruku'
+  Tilt.register 'markdown', Tilt::MarukuTemplate
+end
 
 require 'goliath'
 require 'goliath/rack/templates'

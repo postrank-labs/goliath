@@ -3,11 +3,11 @@
 Pirate walks into a bar with a steering wheel half-in, half-out of his pants.
 
 
-Bartender says 
+Bartender says
 
-    "Hey Pirate, What's With The Steering Wheel?"
+    Hey Pirate, What's With The Steering Wheel?
 
 
-Pirate says 
+Pirate says
 
-    "Arr, I dunno matey -- but it's drivin' me nuts!"
+    Arr, I dunno matey -- but it is driving me nuts!

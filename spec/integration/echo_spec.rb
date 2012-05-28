@@ -1,7 +1,7 @@
 require 'spec_helper'
 require File.join(File.dirname(__FILE__), '../../', 'examples/echo')
 require 'multipart_body'
-require 'yajl'
+require 'yajl' if RUBY_PLATFORM != 'java'
 
 describe Echo do
   let(:err) { Proc.new { fail "API request failed" } }
@@ -9,7 +9,7 @@ describe Echo do
   it 'returns the echo param' do
     with_api(Echo) do
       get_request({:query => {:echo => 'test'}}, err) do |c|
-        b = Yajl::Parser.parse(c.response)
+        b = MultiJson.load(c.response)
         b['response'].should == 'test'
       end
     end
@@ -18,7 +18,7 @@ describe Echo do
   it 'returns error without echo' do
     with_api(Echo) do
       get_request({}, err) do |c|
-        b = Yajl::Parser.parse(c.response)
+        b = MultiJson.load(c.response)
         b['error'].should_not be_nil
         b['error'].should == 'echo identifier missing'
       end
@@ -28,7 +28,7 @@ describe Echo do
   it 'echos POST data' do
     with_api(Echo) do
       post_request({:body => {'echo' => 'test'}}, err) do |c|
-        b = Yajl::Parser.parse(c.response)
+        b = MultiJson.load(c.response)
         b['response'].should == 'test'
       end
     end
@@ -41,7 +41,7 @@ describe Echo do
 
       post_request({:body => body.to_s,
                     :head => head}, err) do |c|
-        b = Yajl::Parser.parse(c.response)
+        b = MultiJson.load(c.response)
         b['response'].should == 'test'
       end
     end
@@ -49,12 +49,12 @@ describe Echo do
 
   it 'echos application/json POST body data' do
     with_api(Echo) do
-      body = Yajl::Encoder.encode({'echo' => 'My Echo'})
+      body = MultiJson.dump({'echo' => 'My Echo'})
       head = {'content-type' => 'application/json'}
 
       post_request({:body => body.to_s,
                     :head => head}, err) do |c|
-        b = Yajl::Parser.parse(c.response)
+        b = MultiJson.load(c.response)
         b['response'].should == 'My Echo'
       end
     end

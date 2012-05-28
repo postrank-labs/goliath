@@ -10,8 +10,8 @@
 # insert into users (name, email) values ('dan', 'dj2@everyburning.com'), ('Ilya', 'ilya@igvita.com');
 
 # To start server
-# ruby ./srv.rb 
-# 
+# ruby ./srv.rb
+#
 # Example output:
 # curl http://localhost:9000/?id=1
 #=> "{\"user\":{\"email\":\"dj2@everyburning.com\",\"id\":1,\"name\":\"dan\"}}"
@@ -22,7 +22,8 @@ $: << "../../lib" << "./lib"
 
 require 'goliath'
 require 'em-synchrony/activerecord'
-require 'yajl'
+
+require 'yajl' if RUBY_PLATFORM != 'java'
 
 class User < ActiveRecord::Base
 end

@@ -17,7 +17,7 @@ module Goliath
   #     it 'returns the echo param' do
   #       with_api(Echo) do
   #         get_request({:query => {:echo => 'test'}}, err) do |c|
-  #           b = Yajl::Parser.parse(c.response)
+  #           b = MultiJson.load(c.response)
   #           b['response'].should == 'test'
   #         end
   #       end

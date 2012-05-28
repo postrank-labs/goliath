@@ -3,7 +3,7 @@ $: << File.dirname(__FILE__)+'/../lib'
 
 require 'goliath'
 require 'em-synchrony/em-http'
-require 'yajl/json_gem'
+require 'yajl/json_gem' if RUBY_PLATFORM != 'java'
 
 #
 # Here's a way to make an asynchronous request in the middleware, and only
@@ -45,7 +45,7 @@ BASE_URL     = 'http://localhost:9002/'
 class RemoteRequestBarrier
   include Goliath::Rack::BarrierAroundware
   attr_accessor :sleep_1
-  
+
   def pre_process
     # Request with delay_1 and drop_1 -- note: 'aget', because we want execution to continue
     req = EM::HttpRequest.new(BASE_URL).aget(:query => { :delay => env.params['delay_1'], :drop => env.params['drop_1'] })

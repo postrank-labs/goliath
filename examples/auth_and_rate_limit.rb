@@ -5,7 +5,7 @@ require 'em-mongo'
 require 'em-http'
 require 'em-synchrony/em-http'
 require 'em-synchrony/em-mongo'
-require 'yajl/json_gem'
+require 'yajl/json_gem' if RUBY_PLATFORM != 'java'
 
 require File.join(File.dirname(__FILE__), 'http_log') # Use the HttpLog as our actual endpoint, but include this in the middleware
 

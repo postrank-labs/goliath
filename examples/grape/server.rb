@@ -31,31 +31,31 @@ $: << "../../lib" << "./lib"
 
 require 'goliath'
 require 'em-synchrony/activerecord'
-require 'yajl'
+require 'yajl' if RUBY_PLATFORM != 'java'
 require 'grape'
 
 class User < ActiveRecord::Base
 end
 
 class MyAPI < Grape::API
-  
+
   version 'v1', :using => :path
   format :json
-  
+
   resource 'users' do
     get "/" do
       User.all
     end
-    
-    get "/:id" do 
+
+    get "/:id" do
       User.find(params['id'])
     end
-    
+
     post "/create" do
       User.create(params['user'])
     end
   end
-  
+
 end
 
 class APIServer < Goliath::API
