@@ -40,8 +40,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
 
-  s.add_development_dependency 'guard', '~> 0.8.8'
-  s.add_development_dependency 'guard-rspec', '~> 0.5.9'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
 
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'
