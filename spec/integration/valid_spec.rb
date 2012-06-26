@@ -71,3 +71,24 @@ describe ValidationErrorInEndpoint do
   end
 end
 
+
+class ValidationErrorInJson < Goliath::API
+  use Goliath::Rack::Render, 'json'     # auto-negotiate response format
+  def response(env)
+    raise Goliath::Validation::Error.new(420, 'You Must Chill')
+  end
+end
+
+describe ValidationErrorInEndpoint do
+  let(:err) { Proc.new { fail "API request failed" } }
+
+  it 'handles Goliath::Validation::Error with the correct format response' do
+    with_api(ValidationErrorInEndpoint) do
+      get_request({}, err) do |c|
+        c.response.should_not == '[:error, "You Must Chill"]' 
+        c.response.should == '{"error":"You Must Chill"}'
+        c.response_header.status.should == 420
+      end
+    end
+  end
+end
