@@ -1,14 +1,25 @@
 # HISTORY
 
-## v1.0.0 (May 2x, 2012)
+## v1.0.0 (July 2x, 2012)
 
-  - removed router DSL for 1.0 release
-  - removed restriction on environments
-  - refactored validation handler logic
-  - refactored params coercion logic
-  - users can customize log formats
+  - Improved WebSocket handling
+  - New Coerce middleware to simplify query & post body processing
+  - Improved exception logging: full logging in dev, limited in prod mode
+  - Exception messages are now returned on 500's (instead of fixed message)
+  - Can specify custom logger for spec output
+  - Signal handling fixes for Windows
+  - HeartBeat middleware accepts :no_log => true
+  - Can specify own log_block to customize logging output
+  - Added support for PATCH and OPTIONS http methods
+  - Load plugins in test server by default
+  - Allow arbitrary runtime environments
+  - New Goliath.env? method to detect current environment
   - cleanup of spec helpers
-  - many small bugfixes
+  - many small bugfixes...
+
+  - All query params are now strings, symbol access is removed
+  - Validation middleware no longer defaults to "id" for key - specify own
+  - **Router is removed in 1.0** - discussion on [Google group](https://groups.google.com/d/topic/goliath-io/SZxl78BNhUM/discussion)
 
 ## v0.9.3 (Oct 16, 2011)
 
