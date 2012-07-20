@@ -36,6 +36,8 @@ module Goliath
       env[STREAM_START] = proc { }
 
       conn = Class.new do
+        attr_writer :max_frame_size
+
         def initialize(env, parent, stream_send, connection_close)
           @env = env
           @parent = parent
@@ -61,6 +63,10 @@ module Goliath
 
         def send_data(data)
           @stream_send.call(data)
+        end
+
+        def max_frame_size
+          @max_frame_size || EM::WebSocket.max_frame_size
         end
       end.new(env, self, old_stream_send, old_stream_close)
 
