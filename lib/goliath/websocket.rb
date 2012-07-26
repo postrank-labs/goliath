@@ -32,10 +32,7 @@ module Goliath
       old_stream_send = env[STREAM_SEND]
       old_stream_close = env[STREAM_CLOSE]
       env[STREAM_SEND]  = proc do |data|
-        if data.respond_to?(:force_encoding)
-          data.force_encoding("BINARY")
-        end
-        env.handler.send_text_frame(data)
+        env.handler.send_text_frame(data.to_s.force_encoding("BINARY"))
       end
       env[STREAM_CLOSE] = proc { |code, body| env.handler.close_websocket(code, body) }
       env[STREAM_START] = proc { }
