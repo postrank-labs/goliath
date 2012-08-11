@@ -1,6 +1,6 @@
 # HISTORY
 
-## v1.0.0 (July 2x, 2012)
+## v1.0.0 (August 11, 2012)
 
   - Improved WebSocket handling
   - New Coerce middleware to simplify query & post body processing
