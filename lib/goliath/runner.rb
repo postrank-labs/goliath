@@ -19,7 +19,7 @@ module Goliath
   # For more detail, see: https://github.com/postrank-labs/goliath/issues/18
   class EnvironmentParser
 
-    # Work out the current runtime environemnt.
+    # Work out the current runtime environment.
     #
     # The sources of environment, in increasing precedence, are:
     #
@@ -29,7 +29,7 @@ module Goliath
     #   4. Hard-coded call to Goliath#env=
     #
     # @param argv [Array] The command line arguments
-    # @return [Symbol] The current environemnt
+    # @return [Symbol] The current environment
     def self.parse(argv = [])
       env = ENV["RACK_ENV"] || Goliath::DEFAULT_ENV
       if (i = argv.index('-e')) || (i = argv.index('--environment'))
@@ -102,7 +102,7 @@ module Goliath
       api.options_parser(options_parser, options) if api
       options_parser.parse!(argv)
 
-      # We've already dealt with the environemnt, so just discard it.
+      # We've already dealt with the environment, so just discard it.
       options.delete(:env)
 
       @api = api
