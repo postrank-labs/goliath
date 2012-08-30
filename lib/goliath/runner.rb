@@ -2,6 +2,7 @@ require 'goliath/goliath'
 require 'goliath/server'
 require 'optparse'
 require 'log4r'
+require 'irb'
 
 module Goliath
 
@@ -117,6 +118,7 @@ module Goliath
       @verbose = options.delete(:verbose)
 
       @server_options = options
+      run_console if options[:console]
     end
 
     # Create the options parser
@@ -169,6 +171,8 @@ module Goliath
 
         opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
         opts.on('-h', '--help', 'Display help message') { show_options(opts) }
+        # Let the options complete parsing and the api get set before loading the console
+        opts.on('-C', '--console', 'Start a console') { @options[:console] = true }
       end
     end
 
@@ -178,6 +182,20 @@ module Goliath
     # @return [Nil]
     def load_plugins(plugins)
       @plugins = plugins
+    end
+
+    # Runs a console in a running reactor
+    #
+    # @return [exit] This will exit the server after the REPL is terminated
+    def run_console
+      server = setup_server
+      EM.synchrony do
+        server.load_config
+        Object.send(:define_method, :server) { server }
+        IRB.start
+        EM.stop
+      end
+      Kernel.exit
     end
 
     # Create environment to run the server.
@@ -241,6 +259,20 @@ module Goliath
        log
      end
 
+     # Sets up the Goliath server
+     #
+     # @param log [Logger] The logger to configure the server to log to
+     # @return [Server] an instance of a Goliath server
+     def setup_server(log = setup_logger)
+       server = Goliath::Server.new(@address, @port)
+       server.logger = log
+       server.app = @app
+       server.api = @api
+       server.plugins = @plugins || []
+       server.options = @server_options
+       server
+     end
+
      # Setup file logging
      #
      # @param log [Logger] The logger to add file logging too
@@ -271,12 +303,7 @@ module Goliath
 
        log.info("Starting server on #{@address}:#{@port} in #{Goliath.env} mode. Watch out for stones.")
 
-       server = Goliath::Server.new(@address, @port)
-       server.logger = log
-       server.app = @app
-       server.api = @api
-       server.plugins = @plugins || []
-       server.options = @server_options
+       server = setup_server(log)
        server.start
      end
 

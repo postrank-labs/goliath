@@ -25,6 +25,15 @@ describe Goliath::Runner do
       end
     end
 
+    describe 'console' do
+      it "starts a irb session" do
+        Object.should_receive(:send).with(:define_method, :server)
+        IRB.should_receive(:start)
+        Kernel.should_receive(:exit)
+        @r.run_console
+      end
+    end
+
     describe 'logging' do
       before(:each) do
         @r = Goliath::Runner.new([], nil)
