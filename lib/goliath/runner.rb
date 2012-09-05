@@ -169,10 +169,9 @@ module Goliath
         opts.separator ""
         opts.separator "Common options:"
 
+        opts.on('-C', '--console', 'Start a console') { @options[:console] = true }
         opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
         opts.on('-h', '--help', 'Display help message') { show_options(opts) }
-        # Let the options complete parsing and the api get set before loading the console
-        opts.on('-C', '--console', 'Start a console') { @options[:console] = true }
       end
     end
 
