@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'goliath/runner'
+require 'irb'
 
 describe Goliath::Runner do
   before(:each) do

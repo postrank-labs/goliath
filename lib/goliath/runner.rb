@@ -2,7 +2,6 @@ require 'goliath/goliath'
 require 'goliath/server'
 require 'optparse'
 require 'log4r'
-require 'irb'
 
 module Goliath
 
@@ -186,6 +185,7 @@ module Goliath
     #
     # @return [exit] This will exit the server after the REPL is terminated
     def run_console
+      require 'irb'
       server = setup_server
       EM.synchrony do
         server.load_config
