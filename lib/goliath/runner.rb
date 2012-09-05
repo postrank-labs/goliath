@@ -190,7 +190,7 @@ module Goliath
       server = setup_server
       EM.synchrony do
         server.load_config
-        Object.send(:define_method, :server) { server }
+        Object.send(:define_method, :goliath_server) { server }
         IRB.start
         EM.stop
       end
