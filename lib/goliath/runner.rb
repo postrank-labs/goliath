@@ -118,7 +118,6 @@ module Goliath
       @verbose = options.delete(:verbose)
 
       @server_options = options
-      run_console if options[:console]
     end
 
     # Create the options parser
@@ -194,7 +193,6 @@ module Goliath
         IRB.start
         EM.stop
       end
-      Kernel.exit
     end
 
     # Create environment to run the server.
@@ -202,6 +200,11 @@ module Goliath
     #
     # @return [Nil]
     def run
+      if options[:console]
+        run_console
+        return
+      end
+
       unless Goliath.env?(:test)
         $LOADED_FEATURES.unshift(File.basename($0))
         Dir.chdir(File.expand_path(File.dirname($0)))
