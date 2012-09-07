@@ -1,5 +1,6 @@
 require 'goliath/goliath'
 require 'goliath/server'
+require 'goliath/console'
 require 'optparse'
 require 'log4r'
 
@@ -167,6 +168,7 @@ module Goliath
         opts.separator ""
         opts.separator "Common options:"
 
+        opts.on('-C', '--console', 'Start a console') { @options[:console] = true }
         opts.on('-v', '--verbose', "Enable verbose logging (default: #{@options[:verbose]})") { |v| @options[:verbose] = v }
         opts.on('-h', '--help', 'Display help message') { show_options(opts) }
       end
@@ -185,6 +187,11 @@ module Goliath
     #
     # @return [Nil]
     def run
+      if options[:console]
+        Goliath::Console.run!(setup_server)
+        return
+      end
+
       unless Goliath.env?(:test)
         $LOADED_FEATURES.unshift(File.basename($0))
         Dir.chdir(File.expand_path(File.dirname($0)))
@@ -241,6 +248,20 @@ module Goliath
        log
      end
 
+     # Sets up the Goliath server
+     #
+     # @param log [Logger] The logger to configure the server to log to
+     # @return [Server] an instance of a Goliath server
+     def setup_server(log = setup_logger)
+       server = Goliath::Server.new(@address, @port)
+       server.logger = log
+       server.app = @app
+       server.api = @api
+       server.plugins = @plugins || []
+       server.options = @server_options
+       server
+     end
+
      # Setup file logging
      #
      # @param log [Logger] The logger to add file logging too
@@ -271,12 +292,7 @@ module Goliath
 
        log.info("Starting server on #{@address}:#{@port} in #{Goliath.env} mode. Watch out for stones.")
 
-       server = Goliath::Server.new(@address, @port)
-       server.logger = log
-       server.app = @app
-       server.api = @api
-       server.plugins = @plugins || []
-       server.options = @server_options
+       server = setup_server(log)
        server.start
      end
 
