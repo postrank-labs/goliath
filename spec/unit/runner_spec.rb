@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'goliath/runner'
-require 'irb'
 
 describe Goliath::Runner do
   before(:each) do
@@ -23,14 +22,6 @@ describe Goliath::Runner do
         Process.should_not_receive(:fork)
         @r.should_receive(:run_server)
         @r.run
-      end
-    end
-
-    describe 'console' do
-      it "starts a irb session" do
-        Object.should_receive(:send).with(:define_method, :goliath_server)
-        IRB.should_receive(:start)
-        @r.run_console
       end
     end
 

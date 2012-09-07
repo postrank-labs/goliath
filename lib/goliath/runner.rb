@@ -1,5 +1,6 @@
 require 'goliath/goliath'
 require 'goliath/server'
+require 'goliath/console'
 require 'optparse'
 require 'log4r'
 
@@ -181,27 +182,13 @@ module Goliath
       @plugins = plugins
     end
 
-    # Runs a console in a running reactor
-    #
-    # @return [exit] This will exit the server after the REPL is terminated
-    def run_console
-      require 'irb'
-      server = setup_server
-      EM.synchrony do
-        server.load_config
-        Object.send(:define_method, :goliath_server) { server }
-        IRB.start
-        EM.stop
-      end
-    end
-
     # Create environment to run the server.
     # If daemonize is set this will fork off a child and kill the runner.
     #
     # @return [Nil]
     def run
       if options[:console]
-        run_console
+        Goliath::Console.run!(setup_server)
         return
       end
 
