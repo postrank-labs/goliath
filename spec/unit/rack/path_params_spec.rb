@@ -24,7 +24,7 @@ describe Goliath::Rack::PathParams do
       body.should == app_body
     end
 
-    context 'a request that does not end in a slash' do
+    context 'a request that matches the url pattern' do
       before do
         @env = { 'REQUEST_PATH' => '/records/sparks/angst_in_my_pants' }
       end
@@ -36,27 +36,13 @@ describe Goliath::Rack::PathParams do
       end
     end
 
-    context 'a request that ends in a slash' do
+    context 'a request that does not match the url pattern' do
       before do
-        @env = { 'REQUEST_PATH' => '/records/kraftwerk/trans_europe_express/?remix' }
+        @env = { 'REQUEST_PATH' => '/animals/cat/noah' }
       end
 
-      it 'parses the params from the path' do
-        @path_params.call(@env)
-        @env['params']['artist'].should == 'kraftwerk'
-        @env['params']['title'].should == 'trans_europe_express'
-      end
-    end
-
-    context 'a request that ends with query params' do
-      before do
-        @env = { 'REQUEST_PATH' => '/records/can/tago_mago?genre=krautrock' }
-      end
-
-      it 'parses the params from the path' do
-        @path_params.call(@env)
-        @env['params']['artist'].should == 'can'
-        @env['params']['title'].should == 'tago_mago'
+      it 'raises a BadRequestError' do
+        expect{ @path_params.retrieve_params(@env) }.to raise_error(Goliath::Validation::BadRequestError)
       end
     end
 

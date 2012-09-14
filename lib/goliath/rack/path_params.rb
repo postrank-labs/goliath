@@ -31,11 +31,11 @@ module Goliath
         end
 
         def request_path(env)
-          env['REQUEST_PATH']
+          env[Goliath::Request::REQUEST_PATH]
         end
 
         def regexp
-          @regexp ||= %r{^#{@url_pattern.gsub(PARAM, CAPTURE_GROUP)}}
+          @regexp ||= %r{^#{@url_pattern.gsub(PARAM, CAPTURE_GROUP)}\/?$}
         end
 
       end
