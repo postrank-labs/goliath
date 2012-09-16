@@ -40,8 +40,7 @@ class Template < Goliath::API
 
   def response(env)
     case env['PATH_INFO']
-    # TODO(dj2): change /root -> / when rack > 1.4.0 is released
-    when '/root'         then [200, {}, haml(:root)]
+    when '/'         then [200, {}, haml(:root)]
     when '/haml_str' then [200, {}, haml("%h1 Header")]
     when '/debug'    then [200, {}, haml(:debug)]
     when '/oops'     then [200, {}, haml(:no_such_template)] # will 500
