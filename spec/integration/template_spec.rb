@@ -10,7 +10,7 @@ describe Template do
 
   it 'renders haml template with default haml layout' do
     with_api(Template, api_options) do
-      get_request(:path => '/root') do |c|
+      get_request(:path => '/') do |c|
         c.response.should =~ %r{<li><a href="/joke">Tell me a joke</a></li>}
       end
     end
