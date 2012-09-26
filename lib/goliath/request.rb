@@ -69,7 +69,7 @@ module Goliath
     # This method is invoked only once per request.
     #
     # @param h [Hash] Request headers
-    # @param parser [Http::Parser] The parsed used to parse the request
+    # @param parser [Http::Parser] The parser used to parse the request
     # @return [Nil]
     def parse_header(h, parser)
       h.each do |k, v|
