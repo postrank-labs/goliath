@@ -174,7 +174,7 @@ module Goliath
     # Sending of the data is deferred until the request
     # is marked as ready to push data by the connection.
     # Hence, two pipelined requests can come in via same
-    # connection, first can take take 1s to render, while
+    # connection, first can take 1s to render, while
     # second may take 0.5. Because HTTP spec does not
     # allow for interleaved data exchange, we block the
     # second request until the first one is done and the
