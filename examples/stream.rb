@@ -2,9 +2,9 @@
 $:<< '../lib' << 'lib'
 
 #
-# A simple HTTP streaming API which returns a 200 response for any GET request
-# and then emits numbers 1 through 10 in 1 second intervals, and then closes the
-# connection.
+# A simple HTTP streaming API which returns a 202 (Accepted) response for any
+# GET request and then emits numbers 1 through 10 in 1 second intervals, and
+# then closes the connection.
 #
 # A good use case for this pattern would be to provide a stream of updates or a
 # 'firehose' like API to stream data back to the clients. Simply hook up to your
