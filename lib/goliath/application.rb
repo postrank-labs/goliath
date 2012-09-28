@@ -7,7 +7,7 @@ module Goliath
   # handler to run the server.
   #
   # @private
-  class Application
+  module Application
     # Most of this stuff is straight out of sinatra.
 
     # Set of caller regex's to be skipped when looking for our API file
@@ -22,15 +22,17 @@ module Goliath
     # @todo add rubinius (and hopefully other VM impls) ignore patterns ...
     CALLERS_TO_IGNORE.concat(RUBY_IGNORE_CALLERS) if defined?(RUBY_IGNORE_CALLERS)
 
+    module_function
+
     # Like Kernel#caller but excluding certain magic entries and without
     # line / method information; the resulting array contains filenames only.
-    def self.caller_files
+    def caller_files
       caller_locations.map { |file, line| file }
     end
 
     # Like caller_files, but containing Arrays rather than strings with the
     # first element being the file, and the second being the line.
-    def self.caller_locations
+    def caller_locations
       caller(1).
         map    { |line| line.split(/:(?=\d|in )/)[0,2] }.
         reject { |file, line| CALLERS_TO_IGNORE.any? { |pattern| file =~ pattern } }
@@ -39,7 +41,7 @@ module Goliath
     # Find the app_file that was used to execute the application
     #
     # @return [String] The app file
-    def self.app_file
+    def app_file
       c = caller_files.first
       c = $0 if !c || c.empty?
       c
@@ -48,7 +50,7 @@ module Goliath
     # Returns the userland class which inherits the Goliath API
     #
     # @return [String] The app class
-    def self.app_class
+    def app_class
       @app_class
     end
 
@@ -56,7 +58,7 @@ module Goliath
     #
     # @param app_class [String|Symbol|Constant] The new app class
     # @return [String] app_class The new app class
-    def self.app_class=(app_class)
+    def app_class=(app_class)
       @app_class = app_class.to_s
     end
 
@@ -68,7 +70,7 @@ module Goliath
     #
     # @param args [Array] Any arguments to append to the path
     # @return [String] path for the given arguments
-    def self.app_path(*args)
+    def app_path(*args)
       @app_path ||= File.expand_path(File.dirname(app_file))
       File.join(@app_path, *args)
     end
@@ -77,7 +79,7 @@ module Goliath
     #
     # @param args [Array] Any arguments to append to the path
     # @return [String] path for the given arguments
-    def self.root_path(*args)
+    def root_path(*args)
       return app_path(args) if Goliath.env?(:test)
 
       @root_path ||= File.expand_path("./")
@@ -87,7 +89,7 @@ module Goliath
     # Execute the application
     #
     # @return [Nil]
-    def self.run!
+    def run!
       unless @app_class
         file = File.basename(app_file, '.rb')
         @app_class = camel_case(file)
@@ -115,7 +117,7 @@ module Goliath
     #
     # @param str [String] The string to convert
     # @return [String] The camel cased string
-    def self.camel_case(str)
+    def camel_case(str)
       return str if str !~ /_/ && str =~ /[A-Z]+.*/
 
       str.split('_').map { |e| e.capitalize }.join
