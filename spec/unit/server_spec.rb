@@ -103,6 +103,18 @@ describe Goliath::Server do
     end
   end
 
+  describe 'stop' do
+    it 'logs when receives TERM signal' do
+      EM.run do
+        logger = mock('logger')
+        logger.should_receive(:info).with('Stopping server...')
+        @s.logger = logger
+        @s.start
+        @s.stop
+      end
+    end
+  end
+
   context 'config parsing' do
     context 'environment' do
       after(:all) do
