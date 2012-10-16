@@ -71,8 +71,8 @@ module Goliath
     def start(&blk)
       EM.epoll
       EM.synchrony do
-        trap("INT")  { EM.stop }
-        trap("TERM") { EM.stop }
+        trap("INT")  { stop }
+        trap("TERM") { stop }
 
         if RUBY_PLATFORM !~ /mswin|mingw/
           trap("HUP")  { load_config(options[:config]) }
@@ -103,6 +103,12 @@ module Goliath
 
         blk.call(self) if blk
       end
+    end
+
+    # Stops the server running.
+    def stop
+      logger.info('Stopping server...')
+      EM.stop
     end
 
     # Loads a configuration file
