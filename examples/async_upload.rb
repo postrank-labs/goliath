@@ -5,7 +5,6 @@ require 'goliath'
 require 'yajl' if RUBY_PLATFORM != 'java'
 
 class AsyncUpload < Goliath::API
-  use Goliath::Rack::Params             # parse & merge query and body parameters
   use Goliath::Rack::DefaultMimeType    # cleanup accepted media types
   use Goliath::Rack::Render, 'json'     # auto-negotiate response format
 
