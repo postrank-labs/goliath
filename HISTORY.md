@@ -1,5 +1,10 @@
 # HISTORY
 
+# v1.0.1 (November 8, 2012)
+
+  - integrated console (CLI flag)
+  - log shutdown sequence
+
 ## v1.0.0 (August 11, 2012)
 
   - Improved WebSocket handling
