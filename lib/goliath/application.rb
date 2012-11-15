@@ -24,6 +24,15 @@ module Goliath
 
     module_function
 
+    # Control wheter or not the application will be run using an at_exit block.
+    class << self
+      attr_accessor :run_app_on_exit
+      alias_method :run_app_on_exit?, :run_app_on_exit
+    end
+
+    # By default, we do run the application using the at_exit block.
+    self.run_app_on_exit = true
+
     # Like Kernel#caller but excluding certain magic entries and without
     # line / method information; the resulting array contains filenames only.
     def caller_files
@@ -125,7 +134,11 @@ module Goliath
   end
 
   at_exit do
-    if $!.nil? && $0 == Goliath::Application.app_file
+    # Only run the application if ...
+    #  - we want it to run
+    #  - there has been no exception raised
+    #  - the file that has been run, is the goliath application file
+    if Goliath::Application.run_app_on_exit? && $!.nil? && $0 == Goliath::Application.app_file
       Application.run!
     end
   end
