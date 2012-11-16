@@ -24,7 +24,7 @@ module Goliath
 
     module_function
 
-    # Control wheter or not the application will be run using an at_exit block.
+    # Control whether or not the application will be run using an at_exit block.
     class << self
       attr_accessor :run_app_on_exit
       alias_method :run_app_on_exit?, :run_app_on_exit
