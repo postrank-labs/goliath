@@ -142,6 +142,16 @@ Berry\r
         ret['foo'].should == 'bar'
       end
 
+      it "parses json that does not evaluate to a hash" do
+        @env['CONTENT_TYPE'] = 'application/json'
+        @env['rack.input'] = StringIO.new
+        @env['rack.input'] << %|["foo","bar"]|
+        @env['rack.input'].rewind
+
+        ret = @params.retrieve_params(@env)
+        ret['_json'].should == ['foo', 'bar']
+      end
+
       it "handles empty input gracefully on JSON" do
         @env['CONTENT_TYPE'] = 'application/json'
         @env['rack.input'] = StringIO.new
