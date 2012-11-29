@@ -126,7 +126,7 @@ module Goliath
 
     # Retrieves the configuration directory for the server
     #
-    # @return [String] THe full path to the config directory
+    # @return [String] The full path to the config directory
     def config_dir
       dir = options[:config] ? File.dirname(options[:config]) : './config'
       File.expand_path(dir)
