@@ -31,7 +31,12 @@ module Goliath
                   when URL_ENCODED then
                     ::Rack::Utils.parse_nested_query(body)
                   when JSON_ENCODED then
-                    MultiJson.load(body)
+                    json = MultiJson.load(body)
+                    if json.is_a?(Hash)
+                      json
+                    else
+                      {'_json' => json}
+                    end
                   else
                     {}
                   end
