@@ -108,6 +108,16 @@ describe Goliath::Runner do
       end
     end
 
+    it 'sets up the api if that implements the #setup method' do
+      server_mock = mock("Server").as_null_object
+      server_mock.api.should_receive(:setup)
+
+      Goliath::Server.stub!(:new).and_return(server_mock)
+
+      @r.stub!(:load_config).and_return({})
+      @r.send(:run_server)
+    end
+
     it 'runs the server' do
       server_mock = mock("Server").as_null_object
       server_mock.should_receive(:start)
