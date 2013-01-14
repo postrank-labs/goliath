@@ -60,7 +60,7 @@ module Goliath
         end
 
         def close_connection
-          @connection_close.call
+          @env[STREAM_CLOSE].call
         end
 
         def close_connection_after_writing
