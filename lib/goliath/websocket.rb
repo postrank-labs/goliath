@@ -59,6 +59,10 @@ module Goliath
           @parent.on_message(@env, msg)
         end
 
+        def close_connection
+          @env[STREAM_CLOSE].call
+        end
+
         def close_connection_after_writing
           @connection_close.call
         end
