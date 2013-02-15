@@ -86,6 +86,9 @@ module Goliath
     # @return [Array] The list of plugins to be executed by the server
     attr_accessor :plugins
 
+    # Allow to inject a custom logger
+    attr_accessor :logger
+
     # Any additional server options
     # @return [Hash] Any options to be passed to the server
     attr_accessor :app_options
@@ -238,6 +241,7 @@ module Goliath
     # Sets up the logging for the runner
     # @return [Logger] The logger object
      def setup_logger
+       return logger if logger
        log = Log4r::Logger.new('goliath')
 
        log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
