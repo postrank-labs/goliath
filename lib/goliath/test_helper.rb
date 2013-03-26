@@ -178,11 +178,11 @@ module Goliath
     end
 
     def create_test_request(request_data)
+      domain = request_data.delete(:domain) || "localhost:#{@test_server_port}"
       path = request_data.delete(:path) || ''
-      subdomain = request_data.delete(:subdomain) || ''
       opts = request_data.delete(:connection_options) || {}
 
-      EM::HttpRequest.new("http://#{subdomain}localhost:#{@test_server_port}#{path}", opts)
+      EM::HttpRequest.new("http://#{domain}#{path}", opts)
     end
 
     private
