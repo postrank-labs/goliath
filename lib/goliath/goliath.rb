@@ -25,7 +25,13 @@ module Goliath
 
     alias :prod? :production?
     alias :dev? :development?
+
+    # Controls whether or not the application will be run using an at_exit block.
+    attr_accessor :run_app_on_exit
+    alias_method :run_app_on_exit?, :run_app_on_exit
   end
+  # By default, we do run the application using the at_exit block.
+  self.run_app_on_exit = true
 
   # Retrieves the current goliath environment
   #
