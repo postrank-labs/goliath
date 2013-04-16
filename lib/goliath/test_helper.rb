@@ -6,7 +6,7 @@ require 'goliath/server'
 require 'goliath/rack'
 require 'rack'
 
-Goliath::Application.run_app_on_exit = false
+Goliath.run_app_on_exit = false
 
 module Goliath
   # Methods to help with testing Goliath APIs
