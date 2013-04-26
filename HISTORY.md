@@ -1,5 +1,11 @@
 # HISTORY
 
+# v1.0.2 (April 25th 2013)
+  - Added a handle to disable server startup on exit
+  - Added support for JSON post bodies that are not a hash
+  - Added a setup hook for API's
+  - See full list @ https://github.com/postrank-labs/goliath/compare/v1.0.1...v1.0.2
+
 # v1.0.1 (November 8, 2012)
 
   - integrated console (CLI flag)
