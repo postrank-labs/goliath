@@ -27,6 +27,8 @@ module Goliath
   #   end
   #
   module TestHelper
+    DEFAULT_ERROR = Proc.new { fail "API request failed" }
+
     def self.included(mod)
       Goliath.env = :test
     end
@@ -114,7 +116,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the HEAD request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def head_request(request_data = {}, errback = nil, &blk)
+    def head_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).head(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -124,7 +126,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the GET request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def get_request(request_data = {}, errback = nil, &blk)
+    def get_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -134,7 +136,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the POST request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def post_request(request_data = {}, errback = nil, &blk)
+    def post_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).post(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -144,7 +146,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the PUT request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def put_request(request_data = {}, errback = nil, &blk)
+    def put_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -154,7 +156,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the PUT request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def patch_request(request_data = {}, errback = nil, &blk)
+    def patch_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).patch(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -164,7 +166,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the DELETE request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def delete_request(request_data = {}, errback = nil, &blk)
+    def delete_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).delete(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -174,7 +176,7 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the OPTIONS request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def options_request(request_data = {}, errback = nil, &blk)
+    def options_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
       req = create_test_request(request_data).options(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
