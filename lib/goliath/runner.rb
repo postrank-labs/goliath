@@ -86,6 +86,9 @@ module Goliath
     # @return [Array] The list of plugins to be executed by the server
     attr_accessor :plugins
 
+    # Allow to inject a custom logger
+    attr_accessor :logger
+
     # Any additional server options
     # @return [Hash] Any options to be passed to the server
     attr_accessor :app_options
@@ -238,6 +241,10 @@ module Goliath
     # Sets up the logging for the runner
     # @return [Logger] The logger object
      def setup_logger
+       if logger
+         warn_on_custom_logger
+         return logger
+       end
        log = Log4r::Logger.new('goliath')
 
        log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
@@ -311,6 +318,12 @@ module Goliath
      # @return [Nil]
      def remove_pid
        File.delete(@pid_file)
+     end
+
+     def warn_on_custom_logger
+       warn "log_file option will not take effect with a custom logger" if @log_file
+       warn "log_stdout option will not take effect with a custom logger" if @log_stdout
+       warn "verbose option will not take effect with a custom logger" if @verbose
      end
   end
 end
