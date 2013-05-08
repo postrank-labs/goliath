@@ -95,6 +95,17 @@ describe Goliath::Runner do
             log = @r.send(:setup_logger)
           end
         end
+
+        describe "custom logger" do
+
+          it "doesn't configure Log4r" do
+            CustomLogger = Struct.new(:info, :debug, :error, :fatal)
+            Log4r::Logger.should_not_receive(:new)
+            @r.logger = CustomLogger.new
+            log = @r.send(:setup_logger)
+          end
+
+        end
       end
 
       it 'creates the log dir if neeed' do
