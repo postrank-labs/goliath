@@ -159,7 +159,13 @@ module Goliath
       @plugins.each do |(name, args)|
         logger.info("Loading #{name.to_s}")
 
-        plugin = name.new(port, config, status, logger)
+        if name.instance_method(:initialize).arity != 5 then
+          logger.info("Arity != 5 is deprecated for plugin initialization.")
+          plugin = name.new(port, config, status, logger)
+        else
+          plugin = name.new(address, port, config, status, logger)
+        end
+
         plugin.run(*args)
       end
     end
