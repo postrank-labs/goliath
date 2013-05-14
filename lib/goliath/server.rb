@@ -160,9 +160,9 @@ module Goliath
         logger.info("Loading #{name.to_s}")
 
         if name.instance_method(:initialize).arity != 5 then
-          logger.warn("Plugins now take 5 parameters (address, port, config, status, logger).
-              You appear to be using the old style 4 parameter method (port, config, status, logger).
-              Please update you're plugins as the 4 parameter method is deprecated.");
+          logger.warn("Plugins now take 5 parameters (address, port, config, status, logger)." +
+              "You appear to be using the old style 4 parameter method (port, config, status, logger)." +
+              "Please update your plugins as the 4 parameter method is deprecated.");
           plugin = name.new(port, config, status, logger)
         else
           plugin = name.new(address, port, config, status, logger)
