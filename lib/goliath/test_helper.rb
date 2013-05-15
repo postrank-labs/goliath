@@ -136,6 +136,8 @@ module Goliath
     # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
+      @log_block_checks = 0
+      @log_block_complete = false
       req = create_test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, options, &blk)
     end
