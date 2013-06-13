@@ -52,10 +52,6 @@ module Goliath
       s.port = port
       s.plugins = api.plugins
       @test_server_port = s.port if blk
-
-      # allows us to ensure the log block completes after issuing a test request
-      wrap_log_block
-
       s.start(&blk)
       s
     end
@@ -109,11 +105,8 @@ module Goliath
     # @return [Nil]
     # @api private
     def hookup_request_callbacks(req, errback, options = {}, &blk)
-      # How many times we are willing to check if the log block completed
-      @max_log_block_checks = options[:max_log_block_checks] || 50
-
       req.callback &blk
-      req.callback { stop_after_log_block_completes }
+      req.callback { @request_complete = true }
 
       req.errback &errback if errback
       req.errback { stop }
@@ -136,8 +129,6 @@ module Goliath
     # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
-      @log_block_checks = 0
-      @log_block_complete = false
       req = create_test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, options, &blk)
     end
@@ -198,6 +189,11 @@ module Goliath
     end
 
     def create_test_request(request_data)
+      # allows us to ensure the log block completes after issuing a test request
+      wrap_log_block_for_testing
+
+      @request_complete = false
+
       domain = request_data.delete(:domain) || "localhost:#{@test_server_port}"
       path = request_data.delete(:path) || ''
       opts = request_data.delete(:connection_options) || {}
@@ -215,34 +211,25 @@ module Goliath
       end.new
     end
 
-    # Wraps the Goliath::Request.log_block so it sets @log_block_complete to
-    # true when the log block completes. Used to prevent the server from
-    # shutting down before the log block finishes executing.
-    def wrap_log_block
+    # Wraps the Goliath::Request.log_block so it stops the eventmachine after
+    # both the request and log block complete. Used to prevent the server from
+    # shutting down before the request finishes executing.
+    def wrap_log_block_for_testing
       original_log_block = Goliath::Request.log_block
 
       Goliath::Request.log_block = proc do |env, response, elapsed_ms|
         begin
+          # TODO(kjb) Make this time user-alterable
+          EM.add_timer(1) { raise 'The log block took longer than 1 second!'}
           original_log_block.call(env, response, elapsed_ms)
         ensure
-          @log_block_complete = true
+          EM.next_tick { stop_after_request_completes }
         end
       end
     end
 
-    def stop_after_log_block_completes
-      @log_block_checks ||= 0
-      @log_block_checks += 1
-
-      if log_block_complete? || @log_block_checks > @max_log_block_checks
-        stop
-      else
-        EM.next_tick { stop_after_log_block_completes }
-      end
-    end
-
-    def log_block_complete?
-      return @log_block_complete == true
+    def stop_after_request_completes
+      @request_complete ? stop : EM.next_tick { stop_after_request_completes }
     end
   end
 end
