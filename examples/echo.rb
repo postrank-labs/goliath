@@ -18,7 +18,7 @@ class Echo < Goliath::API
   # If you are using Golaith version <=0.9.1 you need to Goliath::Rack::ValidationError
   # to prevent the request from remaining open after an error occurs
   #use Goliath::Rack::ValidationError
-  use Goliath::Rack::Validation::RequestMethod, %w(GET POST)           # allow GET and POST requests only
+  use Goliath::Rack::Validation::RequestMethod, %w(GET POST PATCH) # allow GET, POST and PATCH requests only
   use Goliath::Rack::Validation::RequiredParam, {:key => 'echo'}  # must provide ?echo= query or body param
 
   plugin Goliath::Plugin::Latency       # output reactor latency every second
