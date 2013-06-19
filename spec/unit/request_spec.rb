@@ -55,6 +55,7 @@ describe Goliath::Request do
   describe 'parse_headers' do
     it 'sets content_type correctly' do
       parser = mock('parser').as_null_object
+      parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Content-Type' => 'text/plain'}, parser)
       @r.env['CONTENT_TYPE'].should == 'text/plain'
@@ -62,6 +63,7 @@ describe Goliath::Request do
 
     it 'sets content_length correctly' do
       parser = mock('parser').as_null_object
+      parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Content-Length' => 42}, parser)
       @r.env['CONTENT_LENGTH'].should == 42
@@ -69,6 +71,7 @@ describe Goliath::Request do
 
     it 'sets server_name and server_port correctly' do
       parser = mock('parser').as_null_object
+      parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Host' => 'myhost.com:3000'}, parser)
       @r.env['SERVER_NAME'].should == 'myhost.com'
