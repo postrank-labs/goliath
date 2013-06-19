@@ -59,4 +59,13 @@ describe Echo do
       end
     end
   end
+
+  it 'echos PATCH data' do
+    with_api(Echo) do
+      patch_request({:body => {'echo' => 'test'}}, err) do |c|
+        b = MultiJson.load(c.response)
+        b['response'].should == 'test'
+      end
+    end
+  end
 end
