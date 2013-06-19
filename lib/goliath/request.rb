@@ -87,12 +87,7 @@ module Goliath
         @env[SERVER_PORT] = port if port
       end
 
-      # Sometime it's not HTTP::Parser but RSpec::Mocks::Mock
-      if parser.is_a?(HTTP::Parser)
-        uri = URI(parser.request_url)
-      else
-        uri = URI('')
-      end
+      uri = URI(parser.request_url)
 
       @env[REQUEST_METHOD]  = parser.http_method
       @env[REQUEST_URI]     = parser.request_url
