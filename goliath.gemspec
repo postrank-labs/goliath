@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.4'
   s.add_dependency 'em-synchrony', '>= 1.0.0'
-  s.add_dependency 'em-websocket', "0.3.8"
+  s.add_dependency 'em-websocket'
   s.add_dependency 'http_parser.rb', '0.6.0.beta.2'
   s.add_dependency 'log4r'
 
