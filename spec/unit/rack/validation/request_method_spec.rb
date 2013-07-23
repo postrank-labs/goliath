@@ -6,8 +6,8 @@ describe Goliath::Rack::Validation::RequestMethod do
     @app_headers = {'Content-Type' => 'asdf'}
     @app_body = {'a' => 'b'}
 
-    @app.stub!(:call).and_return([200, @app_headers, @app_body])
     @app = double('app').as_null_object
+    @app.stub(:call).and_return([200, @app_headers, @app_body])
   end
 
   it 'accepts an app' do
@@ -44,7 +44,7 @@ describe Goliath::Rack::Validation::RequestMethod do
     rm = Goliath::Rack::Validation::RequestMethod.new('my app', ['GET', 'DELETE', 'HEAD'])
     rm.methods.should == ['GET', 'DELETE', 'HEAD']
   end
-  
+
   it 'accepts string method on initialize' do
     rm = Goliath::Rack::Validation::RequestMethod.new('my app', 'GET')
     rm.methods.should == ['GET']

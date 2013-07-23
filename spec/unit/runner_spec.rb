@@ -4,10 +4,10 @@ require 'goliath/runner'
 describe Goliath::Runner do
   before(:each) do
     @r = Goliath::Runner.new([], nil)
-    @r.stub!(:store_pid)
+    @r.stub(:store_pid)
 
-    @r.stub!(:setup_logger).and_return(@log_mock)
     @log_mock = double('logger').as_null_object
+    @r.stub(:setup_logger).and_return(@log_mock)
   end
 
   describe 'server execution' do
@@ -35,10 +35,10 @@ describe Goliath::Runner do
         # We do need to revert to test
         Goliath.env = :test
       end
-      
+
       describe 'without setting up file logger' do
         before(:each) do
-          @r.stub!(:setup_file_logger)
+          @r.stub(:setup_file_logger)
         end
 
         it 'configures the logger' do
@@ -55,7 +55,7 @@ describe Goliath::Runner do
 
         describe 'log level' do
           before(:each) do
-            FileUtils.stub!(:mkdir_p)
+            FileUtils.stub(:mkdir_p)
           end
 
           it 'sets the default log level' do
@@ -109,7 +109,7 @@ describe Goliath::Runner do
       end
 
       it 'creates the log dir if neeed' do
-        Log4r::FileOutputter.stub!(:new)
+        Log4r::FileOutputter.stub(:new)
         log_mock = double('log').as_null_object
 
         FileUtils.should_receive(:mkdir_p).with('/my/log/dir')
@@ -123,9 +123,9 @@ describe Goliath::Runner do
       server_mock = double("Server").as_null_object
       server_mock.api.should_receive(:setup)
 
-      Goliath::Server.stub!(:new).and_return(server_mock)
+      Goliath::Server.stub(:new).and_return(server_mock)
 
-      @r.stub!(:load_config).and_return({})
+      @r.stub(:load_config).and_return({})
       @r.send(:run_server)
     end
 
@@ -135,13 +135,13 @@ describe Goliath::Runner do
 
       Goliath::Server.should_receive(:new).and_return(server_mock)
 
-      @r.stub!(:load_config).and_return({})
+      @r.stub(:load_config).and_return({})
       @r.send(:run_server)
     end
 
     it 'configures the server' do
       server_mock = Goliath::Server.new
-      server_mock.stub!(:start)
+      server_mock.stub(:start)
 
       @r.app = 'my_app'
 
