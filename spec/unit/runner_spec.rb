@@ -6,8 +6,8 @@ describe Goliath::Runner do
     @r = Goliath::Runner.new([], nil)
     @r.stub!(:store_pid)
 
-    @log_mock = mock('logger').as_null_object
     @r.stub!(:setup_logger).and_return(@log_mock)
+    @log_mock = double('logger').as_null_object
   end
 
   describe 'server execution' do
@@ -110,7 +110,7 @@ describe Goliath::Runner do
 
       it 'creates the log dir if neeed' do
         Log4r::FileOutputter.stub!(:new)
-        log_mock = mock('log').as_null_object
+        log_mock = double('log').as_null_object
 
         FileUtils.should_receive(:mkdir_p).with('/my/log/dir')
 
@@ -120,7 +120,7 @@ describe Goliath::Runner do
     end
 
     it 'sets up the api if that implements the #setup method' do
-      server_mock = mock("Server").as_null_object
+      server_mock = double("Server").as_null_object
       server_mock.api.should_receive(:setup)
 
       Goliath::Server.stub!(:new).and_return(server_mock)
@@ -130,7 +130,7 @@ describe Goliath::Runner do
     end
 
     it 'runs the server' do
-      server_mock = mock("Server").as_null_object
+      server_mock = double("Server").as_null_object
       server_mock.should_receive(:start)
 
       Goliath::Server.should_receive(:new).and_return(server_mock)

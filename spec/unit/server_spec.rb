@@ -24,19 +24,19 @@ describe Goliath::Server do
     end
 
     it 'accepts a logger' do
-      logger = mock('logger')
+      logger = double('logger')
       @s.logger = logger
       @s.logger.should == logger
     end
 
     it 'accepts an app' do
-      app = mock('app')
+      app = double('app')
       @s.app = app
       @s.app.should == app
     end
 
     it 'accepts config' do
-      config = mock('config')
+      config = double('config')
       @s.config = config
       @s.config.should == config
     end
@@ -59,9 +59,9 @@ describe Goliath::Server do
     end
 
     it 'provides the app to each connection' do
-      app = mock('application')
+      app = double('application')
 
-      conn = mock("connection").as_null_object
+      conn = double("connection").as_null_object
       conn.should_receive(:app=).with(app)
 
       EM.should_receive(:start_server).and_yield(conn)
@@ -71,9 +71,9 @@ describe Goliath::Server do
     end
 
     it 'provides the logger to each connection' do
-      logger = mock('logger')
+      logger = double('logger')
 
-      conn = mock("connection").as_null_object
+      conn = double("connection").as_null_object
       conn.should_receive(:logger=).with(logger)
 
       EM.should_receive(:start_server).and_yield(conn)
@@ -83,9 +83,9 @@ describe Goliath::Server do
     end
 
     it 'provides the status object to each connection' do
-      status = mock('status')
+      status = double('status')
 
-      conn = mock("connection").as_null_object
+      conn = double("connection").as_null_object
       conn.should_receive(:status=).with(status)
 
       EM.should_receive(:start_server).and_yield(conn)
@@ -95,7 +95,7 @@ describe Goliath::Server do
     end
 
     it 'loads the config for each connection' do
-      conn = mock("connection").as_null_object
+      conn = double("connection").as_null_object
       EM.should_receive(:start_server).and_yield(conn)
 
       @s.should_receive(:load_config)
@@ -106,7 +106,7 @@ describe Goliath::Server do
   describe 'stop' do
     it 'logs when receives TERM signal' do
       EM.run do
-        logger = mock('logger')
+        logger = double('logger')
         logger.should_receive(:info).with('Stopping server...')
         @s.logger = logger
         @s.start

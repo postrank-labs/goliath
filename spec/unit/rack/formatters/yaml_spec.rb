@@ -8,7 +8,7 @@ describe Goliath::Rack::Formatters::YAML do
 
   describe 'with a formatter' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @ym = Goliath::Rack::Formatters::YAML.new(@app)
     end
 
@@ -21,7 +21,7 @@ describe Goliath::Rack::Formatters::YAML do
     end
 
     it 'calls the app with the provided environment' do
-      env_mock = mock('env').as_null_object
+      env_mock = double('env').as_null_object
       @app.should_receive(:call).with(env_mock).and_return([200, {}, {"a" => 1}])
       @ym.call(env_mock)
     end

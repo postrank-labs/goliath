@@ -33,7 +33,7 @@ describe HttpLog do
   let(:api_options) { { :config => config_file } }
 
   def mock_mongo(api)
-    api.config['mongo'] = mock('mongo').as_null_object
+    api.config['mongo'] = double('mongo').as_null_object
   end
 
   it 'responds to requests' do

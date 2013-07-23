@@ -7,25 +7,25 @@ describe Goliath::Connection do
 
   describe 'configuration' do
     it 'accepts an app' do
-      app = mock('app')
+      app = double('app')
       @c.app = app
       @c.app.should == app
     end
 
     it 'accepts a logger' do
-      logger = mock('logger')
+      logger = double('logger')
       @c.logger = logger
       @c.logger.should == logger
     end
 
     it 'accepts a status object' do
-      status = mock('status')
+      status = double('status')
       @c.status = status
       @c.status.should == status
     end
 
     it 'accepts config' do
-      config = mock('config')
+      config = double('config')
       @c.config = config
       @c.config.should == config
     end
@@ -40,10 +40,10 @@ describe Goliath::Connection do
 
   describe 'receive_data' do
     it 'passes data to the http parser' do
-      request_mock = mock("parser").as_null_object
+      request_mock = double("parser").as_null_object
       request_mock.should_receive(:<<)
 
-      current_mock = mock("current").as_null_object
+      current_mock = double("current").as_null_object
 
       @c.instance_variable_set("@parser", request_mock)
       @c.instance_variable_set("@current", current_mock)
@@ -51,7 +51,7 @@ describe Goliath::Connection do
     end
 
     it "closes the connection when a parse error is received" do
-      current_mock = mock("current").as_null_object
+      current_mock = double("current").as_null_object
       current_mock.should_receive(:close)
 
       @c.instance_variable_set("@current", current_mock)

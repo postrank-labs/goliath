@@ -8,7 +8,7 @@ describe Goliath::Rack::Params do
 
   describe 'with middleware' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {}
       @env['CONTENT_TYPE'] = 'application/x-www-form-urlencoded; charset=utf-8'
       @params = Goliath::Rack::Params.new(@app)

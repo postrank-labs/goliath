@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Goliath::Request do
   before(:each) do
-    app = mock('app').as_null_object
+    app = double('app').as_null_object
     env = Goliath::Env.new
 
     @r = Goliath::Request.new(app, nil, env)
@@ -28,8 +28,8 @@ describe Goliath::Request do
 
   describe 'process' do
     it 'executes the application' do
-      app_mock = mock('app').as_null_object
-      env_mock = mock('app').as_null_object
+      app_mock = double('app').as_null_object
+      env_mock = double('app').as_null_object
       request = Goliath::Request.new(app_mock, nil, env_mock)
 
       app_mock.should_receive(:call).with(request.env)
@@ -54,7 +54,7 @@ describe Goliath::Request do
 
   describe 'parse_headers' do
     it 'sets content_type correctly' do
-      parser = mock('parser').as_null_object
+      parser = double('parser').as_null_object
       parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Content-Type' => 'text/plain'}, parser)
@@ -62,7 +62,7 @@ describe Goliath::Request do
     end
 
     it 'sets content_length correctly' do
-      parser = mock('parser').as_null_object
+      parser = double('parser').as_null_object
       parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Content-Length' => 42}, parser)
@@ -70,7 +70,7 @@ describe Goliath::Request do
     end
 
     it 'sets server_name and server_port correctly' do
-      parser = mock('parser').as_null_object
+      parser = double('parser').as_null_object
       parser.stub(:request_url).and_return('')
 
       @r.parse_header({'Host' => 'myhost.com:3000'}, parser)

@@ -9,7 +9,7 @@ describe Goliath::Rack::Render do
     env
   end
 
-  let(:app) { mock('app').as_null_object }
+  let(:app) { double('app').as_null_object }
   let(:render) { Goliath::Rack::Render.new(app) }
 
   it 'accepts an app' do
