@@ -87,20 +87,20 @@ module Goliath
         @env[SERVER_PORT] = port if port
       end
 
-      uri = URI(parser.request_url)
-
-      @env[REQUEST_METHOD]  = parser.http_method
-      @env[REQUEST_URI]     = parser.request_url
-      @env[QUERY_STRING]    = uri.query
-      @env[HTTP_VERSION]    = parser.http_version.join('.')
-      @env[SCRIPT_NAME]     = uri.path
-      @env[REQUEST_PATH]    = uri.path
-      @env[PATH_INFO]       = uri.path
-      @env[FRAGMENT]        = uri.fragment
-
-      yield if block_given?
-
       begin
+        uri = URI(parser.request_url)
+
+        @env[REQUEST_METHOD]  = parser.http_method
+        @env[REQUEST_URI]     = parser.request_url
+        @env[QUERY_STRING]    = uri.query
+        @env[HTTP_VERSION]    = parser.http_version.join('.')
+        @env[SCRIPT_NAME]     = uri.path
+        @env[REQUEST_PATH]    = uri.path
+        @env[PATH_INFO]       = uri.path
+        @env[FRAGMENT]        = uri.fragment
+
+        yield if block_given?
+
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
       rescue Exception => e
         server_exception(e)

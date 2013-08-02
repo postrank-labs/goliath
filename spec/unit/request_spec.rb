@@ -61,6 +61,15 @@ describe Goliath::Request do
       @r.env['CONTENT_TYPE'].should == 'text/plain'
     end
 
+    it 'handles bad request urls' do
+      parser = mock('parser').as_null_object
+      parser.stub(:request_url).and_return('/bad?param}')
+
+      @r.stub(:server_exception)
+      @r.should_receive(:server_exception)
+      @r.parse_header({}, parser)
+    end
+
     it 'sets content_length correctly' do
       parser = mock('parser').as_null_object
       parser.stub(:request_url).and_return('')
