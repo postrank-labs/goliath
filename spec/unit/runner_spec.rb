@@ -35,7 +35,7 @@ describe Goliath::Runner do
         # We do need to revert to test
         Goliath.env = :test
       end
-      
+
       describe 'without setting up file logger' do
         before(:each) do
           @r.stub(:setup_file_logger)
