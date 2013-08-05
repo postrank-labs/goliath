@@ -71,8 +71,8 @@ module Goliath
           @optional = opts.delete(:optional) || false
           @key = opts.delete(:key)
           raise Exception.new("key option required") unless @key
-          
-          @type = opts.delete(:type) || @key
+
+          @type = opts.delete(:type) || @type
           @message = opts.delete(:message) || 'identifier missing'
           @default = opts.delete(:default)
 
