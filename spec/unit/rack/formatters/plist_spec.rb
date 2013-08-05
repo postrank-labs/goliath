@@ -22,7 +22,7 @@ describe Goliath::Rack::Formatters::PLIST do
 
   describe 'with a formatter' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @m = Goliath::Rack::Formatters::PLIST.new(@app)
     end
 

@@ -8,7 +8,7 @@ describe Goliath::Rack::Formatters::JSON do
 
   describe 'with a formatter' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @js = Goliath::Rack::Formatters::JSON.new(@app)
     end
 
@@ -21,7 +21,7 @@ describe Goliath::Rack::Formatters::JSON do
     end
 
     it 'calls the app with the provided environment' do
-      env_mock = mock('env').as_null_object
+      env_mock = double('env').as_null_object
       @app.should_receive(:call).with(env_mock).and_return([200, {}, {"a" => 1}])
       @js.call(env_mock)
     end

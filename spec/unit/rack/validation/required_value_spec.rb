@@ -19,7 +19,7 @@ describe Goliath::Rack::Validation::RequiredValue do
 
   describe 'with middleware' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {'params' => {}}
       @rv = Goliath::Rack::Validation::RequiredValue.new(@app, {:values => ['Monkey', 'frog'], :key => 'mk'})
     end
