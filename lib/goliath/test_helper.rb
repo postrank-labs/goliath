@@ -211,15 +211,15 @@ module Goliath
     # shutting down before the request finishes executing.
     def wrap_log_block_for_testing(request_data)
       @request_complete = false
-      @log_block_wait_time = options.delete(:log_block_wait_time) || 1
+      log_block_wait_time = request_data.delete(:log_block_wait_time) || 1
 
       original_log_block = Goliath::Request.log_block
 
       Goliath::Request.log_block = proc do |env, response, elapsed_ms|
         begin
-          EM.add_timer(@log_block_wait_time) do
+          EM.add_timer(log_block_wait_time) do
             raise 'The log block took longer than' +
-              "#{@log_block_wait_time} second(s)!"
+              "#{log_block_wait_time} second(s)!"
           end
 
           original_log_block.call(env, response, elapsed_ms)
