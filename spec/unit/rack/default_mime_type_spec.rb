@@ -3,11 +3,11 @@ require 'goliath/env'
 require 'goliath/rack/default_mime_type'
 
 describe Goliath::Rack::DefaultMimeType do
-  let(:app) { mock('app').as_null_object }
+  let(:app) { double('app').as_null_object }
   let(:dmt) { Goliath::Rack::DefaultMimeType.new(app) }
   let(:env) do
     env = Goliath::Env.new
-    env['status'] = mock('status').as_null_object
+    env['status'] = double('status').as_null_object
     env
   end
 

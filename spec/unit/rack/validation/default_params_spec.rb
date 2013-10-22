@@ -17,7 +17,7 @@ describe Goliath::Rack::Validation::DefaultParams do
 
   describe 'with middleware' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {'params' => {}}
       @rf = Goliath::Rack::Validation::DefaultParams.new(@app, {:key => 'fl', :defaults => ['title', 'link']})
     end

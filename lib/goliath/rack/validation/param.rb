@@ -49,7 +49,7 @@ module Goliath
         include Goliath::Rack::Validator
         include Coerce
         include Required
-        UKNOWN_OPTIONS = "Uknown options: %s"
+        UNKNOWN_OPTIONS = "Unknown options: %s"
 
         attr_reader :key, :type, :optional, :message, :default
 
@@ -71,7 +71,7 @@ module Goliath
           @optional = opts.delete(:optional) || false
           @key = opts.delete(:key)
           raise Exception.new("key option required") unless @key
-          
+
           @type = opts.delete(:type) || @key
           @message = opts.delete(:message) || 'identifier missing'
           @default = opts.delete(:default)
@@ -79,7 +79,7 @@ module Goliath
           coerce_setup!(opts)
           required_setup!(opts)
 
-          raise Exception.new(UKNOWN_OPTIONS % opts.inspect) unless opts.empty?
+          raise Exception.new(UNKNOWN_OPTIONS % opts.inspect) unless opts.empty?
         end
 
         def call(env)

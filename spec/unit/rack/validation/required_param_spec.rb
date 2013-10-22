@@ -24,7 +24,7 @@ describe Goliath::Rack::Validation::RequiredParam do
 
   describe 'with middleware' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {'params' => {}}
       @rp = Goliath::Rack::Validation::RequiredParam.new(@app, {:type => 'Monkey', :key => 'mk', :message => 'is required'})
     end
@@ -106,7 +106,7 @@ describe Goliath::Rack::Validation::RequiredParam do
   
   describe 'Nested keys tests' do
     before do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {'params' => {}}
       @rp = Goliath::Rack::Validation::RequiredParam.new(@app,
           :type => 'Monkey',
@@ -140,7 +140,7 @@ describe Goliath::Rack::Validation::RequiredParam do
   
   describe 'Nested keys tests (with string)' do
     before do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = {'params' => {}}
       @rp = Goliath::Rack::Validation::RequiredParam.new(@app,
           :type => 'Monkey',

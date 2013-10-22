@@ -4,6 +4,7 @@ require 'goliath/response'
 require 'goliath/validation'
 require 'async_rack'
 require 'stringio'
+require 'uri'
 
 module Goliath
   # Goliath::Request is responsible for processing a request and returning
@@ -86,18 +87,20 @@ module Goliath
         @env[SERVER_PORT] = port if port
       end
 
-      @env[REQUEST_METHOD]  = parser.http_method
-      @env[REQUEST_URI]     = parser.request_url
-      @env[QUERY_STRING]    = parser.query_string
-      @env[HTTP_VERSION]    = parser.http_version.join('.')
-      @env[SCRIPT_NAME]     = parser.request_path
-      @env[REQUEST_PATH]    = parser.request_path
-      @env[PATH_INFO]       = parser.request_path
-      @env[FRAGMENT]        = parser.fragment
-
-      yield if block_given?
-
       begin
+        uri = URI(parser.request_url)
+
+        @env[REQUEST_METHOD]  = parser.http_method
+        @env[REQUEST_URI]     = parser.request_url
+        @env[QUERY_STRING]    = uri.query
+        @env[HTTP_VERSION]    = parser.http_version.join('.')
+        @env[SCRIPT_NAME]     = uri.path
+        @env[REQUEST_PATH]    = uri.path
+        @env[PATH_INFO]       = uri.path
+        @env[FRAGMENT]        = uri.fragment
+
+        yield if block_given?
+
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
       rescue Exception => e
         server_exception(e)

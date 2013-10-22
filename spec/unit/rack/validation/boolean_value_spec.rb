@@ -3,7 +3,7 @@ require 'goliath/rack/validation/boolean_value'
 
 describe Goliath::Rack::Validation::BooleanValue do
   before(:each) do
-    @app = mock('app').as_null_object
+    @app = double('app').as_null_object
     @env = {'params' => {}}
   end
 

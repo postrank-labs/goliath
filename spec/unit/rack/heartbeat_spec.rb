@@ -9,9 +9,9 @@ describe Goliath::Rack::Heartbeat do
 
   describe 'with the middleware' do
     before(:each) do
-      @app = mock('app').as_null_object
+      @app = double('app').as_null_object
       @env = Goliath::Env.new
-      @env['status'] = mock('status').as_null_object
+      @env['status'] = double('status').as_null_object
       @hb = Goliath::Rack::Heartbeat.new(@app)
     end
 
