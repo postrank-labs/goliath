@@ -117,7 +117,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def head_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).head(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -128,7 +127,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def get_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).get(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -139,7 +137,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def post_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).post(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -150,7 +147,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def put_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).put(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -161,7 +157,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def patch_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).patch(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -172,7 +167,6 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def delete_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).delete(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
@@ -183,12 +177,13 @@ module Goliath
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
     def options_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
-      wrap_log_block_for_testing(request_data)
       req = create_test_request(request_data).options(request_data)
       hookup_request_callbacks(req, errback, &blk)
     end
 
     def create_test_request(request_data)
+      wrap_log_block_for_testing(request_data)
+
       domain = request_data.delete(:domain) || "localhost:#{@test_server_port}"
       path = request_data.delete(:path) || ''
       opts = request_data.delete(:connection_options) || {}
@@ -206,7 +201,7 @@ module Goliath
       end.new
     end
 
-    # Wraps the Goliath::Request.log_block so it stops the eventmachine after
+    # Wraps the Goliath::Request.log_block so it stops EventMachine after
     # both the request and log block complete. Used to prevent the server from
     # shutting down before the request finishes executing.
     def wrap_log_block_for_testing(request_data)
