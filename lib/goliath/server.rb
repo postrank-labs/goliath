@@ -107,6 +107,9 @@ module Goliath
 
     # Stops the server running.
     def stop
+      if @api.respond_to?(:on_exit)
+        @api.on_exit
+      end
       logger.info('Stopping server...')
       EM.stop
     end
