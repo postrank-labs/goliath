@@ -14,6 +14,13 @@ describe Goliath::Rack::Params do
       @params = Goliath::Rack::Params.new(@app)
     end
 
+    it 'handles invalid query strings' do
+      @env['QUERY_STRING'] = 'bad=%3N'
+      expect {
+        @params.retrieve_params(@env)
+      }.to raise_error(Goliath::Validation::BadRequestError)
+    end
+
     it 'parses the query string' do
       @env['QUERY_STRING'] = 'foo=bar&baz=bonkey'
 
