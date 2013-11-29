@@ -115,7 +115,7 @@ module Goliath
 
     # Convenience method for logging exceptions
     #
-    # @return [Logger] The logger object
+    # @param e [Exception] The exception to log
     def log_exception(e)
       logthis = "Exception:\n#{e.backtrace[0].gsub(/(.*?:.*?):(.*)/,'\1 \2')}: #{e.message} (#{e.class})\n"
       e.backtrace[1..-1].each do |bt|
