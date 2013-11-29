@@ -175,11 +175,7 @@ module Goliath
         env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
 
       rescue Exception => e
-        logthis = "#{e.backtrace[0]}: #{e.message} (#{e.class})\n"
-        e.backtrace[1..-1].each do |bt|
-          logthis += "    from #{bt}\n"
-        end
-        env.logger.error(logthis)
+        env.log_exception(e)
         env[RACK_EXCEPTION] = e
 
         message = Goliath.env?(:production) ? 'An error happened' : e.message
