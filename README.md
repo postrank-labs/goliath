@@ -1,6 +1,6 @@
 # Goliath
 
-[<img src="https://secure.travis-ci.org/postrank-labs/goliath.png?travis"/>](http://travis-ci.org/postrank-labs/goliath) [<img src="https://gemnasium.com/postrank-labs/goliath.png?travis"/>](https://gemnasium.com/postrank-labs/goliath)
+[<img src="https://secure.travis-ci.org/postrank-labs/goliath.png?travis"/>](http://travis-ci.org/postrank-labs/goliath) [<img src="https://gemnasium.com/postrank-labs/goliath.png?travis"/>](https://gemnasium.com/postrank-labs/goliath) <a href="https://codeclimate.com/github/postrank-labs/goliath"><img src="https://codeclimate.com/github/postrank-labs/goliath.png" /></a>
 
 Goliath is an open source version of the non-blocking (asynchronous) Ruby web server framework. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
 
