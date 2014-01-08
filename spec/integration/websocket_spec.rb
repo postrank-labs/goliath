@@ -35,7 +35,7 @@ describe "WebSocket" do
     with_api(WebSocketEndPoint, {:verbose => true, :log_stdout => true}) do |server|
       ws_client_connect('/ws') do |client|
         client.send "hello"
-        client.receive.should == "hello"
+        client.receive.data.should == "hello"
       end
     end
   end
