@@ -102,7 +102,7 @@ module Goliath
         yield if block_given?
 
         @env[ASYNC_HEADERS].call(@env, h) if @env[ASYNC_HEADERS]
-      rescue Exception => e
+      rescue StandardError, Exception => e
         server_exception(e)
       end
     end
