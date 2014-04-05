@@ -12,6 +12,7 @@ describe Goliath::Console do
       Object.should_receive(:send).with(:define_method, :goliath_server)
       IRB.should_receive(:start)
       @server.should_receive(:load_config)
+      @server.should_receive(:load_plugins)
       Goliath::Console.run!(@server)
     end
   end

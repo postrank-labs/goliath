@@ -11,6 +11,7 @@ module Goliath
       require 'irb'
       EM.synchrony do
         server.load_config
+        server.load_plugins
         Object.send(:define_method, :goliath_server) { server }
         IRB.start
         EM.stop
