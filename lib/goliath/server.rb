@@ -107,7 +107,10 @@ module Goliath
 
     # Stops the server running.
     def stop
-      EM.stop
+      EM.add_timer(0) do
+        logger.info('Stopping server...')
+        EM.stop
+      end
     end
 
     # Loads a configuration file
