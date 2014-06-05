@@ -22,7 +22,7 @@ module Goliath
 
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
-        env = Thread.current[GOLIATH_ENV] = Goliath::Env.new
+        env = Goliath::Env.new
         env[SERVER_PORT] = port.to_s
         env[RACK_LOGGER] = logger
         env[OPTIONS]     = options

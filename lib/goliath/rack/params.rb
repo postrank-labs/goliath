@@ -17,16 +17,15 @@ module Goliath
       module Parser
         def retrieve_params(env)
           params = env['params'] || {}
-          params.merge!(::Rack::Utils.parse_nested_query(env['QUERY_STRING']))
+          begin
+            params.merge!(::Rack::Utils.parse_nested_query(env['QUERY_STRING']))
+            if env['rack.input']
+              post_params = ::Rack::Utils::Multipart.parse_multipart(env)
+              unless post_params
+                body = env['rack.input'].read
+                env['rack.input'].rewind
 
-          if env['rack.input']
-            post_params = ::Rack::Utils::Multipart.parse_multipart(env)
-            unless post_params
-              body = env['rack.input'].read
-              env['rack.input'].rewind
-
-              unless body.empty?
-                begin
+                unless body.empty?
                   post_params = case(env['CONTENT_TYPE'])
                   when URL_ENCODED then
                     ::Rack::Utils.parse_nested_query(body)
@@ -40,14 +39,14 @@ module Goliath
                   else
                     {}
                   end
-                rescue StandardError => e
-                  raise Goliath::Validation::BadRequestError, "Invalid parameters: #{e.class.to_s}"
+                else
+                  post_params = {}
                 end
-              else
-                post_params = {}
               end
+              params.merge!(post_params)
             end
-            params.merge!(post_params)
+          rescue StandardError => e
+            raise Goliath::Validation::BadRequestError, "Invalid parameters: #{e.class.to_s}"
           end
           params
         end

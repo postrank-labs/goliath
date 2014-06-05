@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.4'
   s.add_dependency 'em-synchrony', '>= 1.0.0'
   s.add_dependency 'em-websocket', "0.3.8"
-  s.add_dependency 'http_parser.rb', '0.6.0.beta.2'
+  s.add_dependency 'http_parser.rb', '0.6.0'
   s.add_dependency 'log4r'
 
   s.add_dependency 'rack', '>=1.2.2'
@@ -40,8 +40,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
 
-  s.add_development_dependency 'guard'
-  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'guard', '~> 1.8.3'
+  s.add_development_dependency 'guard-rspec', '~> 3.1.0'
+  s.add_development_dependency 'listen', '~> 1.3.1'
 
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'

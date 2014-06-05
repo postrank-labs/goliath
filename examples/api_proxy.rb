@@ -2,6 +2,8 @@
 
 # Rewrites and proxies requests to a third-party API, with HTTP basic authentication.
 
+$:<< '../lib' << 'lib'
+
 require 'goliath'
 require 'em-synchrony/em-http'
 

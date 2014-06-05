@@ -94,7 +94,7 @@ module Goliath
         @env[REQUEST_URI]     = parser.request_url
         @env[QUERY_STRING]    = uri.query
         @env[HTTP_VERSION]    = parser.http_version.join('.')
-        @env[SCRIPT_NAME]     = uri.path
+        @env[SCRIPT_NAME]     = ""
         @env[REQUEST_PATH]    = uri.path
         @env[PATH_INFO]       = uri.path
         @env[FRAGMENT]        = uri.fragment
