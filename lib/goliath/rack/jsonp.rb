@@ -17,7 +17,11 @@ module Goliath
         else
           response = body
         end
-
+        
+        callback_length = env.params['callback'].size
+        fixed_content_length = headers['Content-Length'].to_i + callback_length + 2
+        headers['Content-Length'] = fixed_content_length.to_s
+        
         headers[Goliath::Constants::CONTENT_TYPE] = 'application/javascript'
         [status, headers, ["#{env.params['callback']}(#{response})"]]
       end
