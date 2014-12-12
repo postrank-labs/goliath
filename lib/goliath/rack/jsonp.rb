@@ -18,10 +18,15 @@ module Goliath
           response = body
         end
 
+        response = "#{env.params['callback']}(#{response})"
+
         headers[Goliath::Constants::CONTENT_TYPE] = 'application/javascript'
-        [status, headers, ["#{env.params['callback']}(#{response})"]]
+        if headers['Content-Length']
+          headers['Content-Length'] = response.bytesize.to_s
+        end
+
+        [status, headers, [response]]
       end
     end
   end
 end
-
