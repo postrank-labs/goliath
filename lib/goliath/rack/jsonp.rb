@@ -11,17 +11,20 @@ module Goliath
       def post_process(env, status, headers, body)
         return [status, headers, body] unless env.params['callback']
 
-        response = ""
+        response = ''
         if body.respond_to?(:each)
           body.each { |s| response << s }
         else
           response = body
         end
 
+        response = "#{env.params['callback']}(#{response})"
+
         headers[Goliath::Constants::CONTENT_TYPE] = 'application/javascript'
-        [status, headers, ["#{env.params['callback']}(#{response})"]]
+        headers['Content-Length'] &&= response.bytesize.to_s
+
+        [status, headers, [response]]
       end
     end
   end
 end
-
