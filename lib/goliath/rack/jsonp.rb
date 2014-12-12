@@ -11,7 +11,7 @@ module Goliath
       def post_process(env, status, headers, body)
         return [status, headers, body] unless env.params['callback']
 
-        response = ''
+        response = ""
         if body.respond_to?(:each)
           body.each { |s| response << s }
         else
