@@ -1,4 +1,5 @@
 require 'em-synchrony'
+require 'einhorn'
 require 'goliath/connection'
 require 'goliath/goliath'
 
