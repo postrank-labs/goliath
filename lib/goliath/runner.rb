@@ -150,6 +150,7 @@ module Goliath
         opts.on('-a', '--address HOST', "Bind to HOST address (default: #{@options[:address]})") { |addr| @options[:address] = addr }
         opts.on('-p', '--port PORT', "Use PORT (default: #{@options[:port]})") { |port| @options[:port] = port.to_i }
         opts.on('-S', '--socket FILE', "Bind to unix domain socket") { |v| @options[:address] = v; @options[:port] = nil }
+        opts.on('-E', '--einhorn', "Use Einhorn socket manager") { |v| @options[:einhorn] = true }
 
         opts.separator ""
         opts.separator "Daemon options:"

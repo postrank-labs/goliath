@@ -1,4 +1,5 @@
 require 'em-synchrony'
+require 'einhorn'
 require 'goliath/connection'
 require 'goliath/goliath'
 
@@ -83,7 +84,7 @@ module Goliath
 
         EM.set_effective_user(options[:user]) if options[:user]
 
-        config[Goliath::Constants::GOLIATH_SIGNATURE] = EM.start_server(address, port, Goliath::Connection) do |conn|
+        config[Goliath::Constants::GOLIATH_SIGNATURE] = start_server(options) do |conn|
           if options[:ssl]
             conn.start_tls(
               :private_key_file => options[:ssl_key],
@@ -102,6 +103,17 @@ module Goliath
         end
 
         blk.call(self) if blk
+      end
+    end
+
+    def start_server(options, &blk)
+      if options[:einhorn]
+        fd_num = Einhorn::Worker.socket!
+        socket = Socket.for_fd(fd_num)
+
+        EM.attach_server(socket, Goliath::Connection, &blk)
+      else
+        EM.start_server(address, port, Goliath::Connection, &blk)
       end
     end
 

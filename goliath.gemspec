@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'em-websocket', "0.3.8"
   s.add_dependency 'http_parser.rb', '0.6.0'
   s.add_dependency 'log4r'
+  s.add_dependency 'einhorn'
 
   s.add_dependency 'rack', '>=1.2.2'
   s.add_dependency 'rack-contrib'
