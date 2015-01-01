@@ -107,15 +107,11 @@ module Goliath
 
     def start_server(options, &blk)
       if options[:einhorn]
-        puts "Using Einhorn socket manager"
-
         fd_num = Einhorn::Worker.socket!
         socket = Socket.for_fd(fd_num)
 
         EM.attach_server(socket, Goliath::Connection, &blk)
       else
-        puts "Manualy connect to socket"
-
         EM.start_server(address, port, Goliath::Connection, &blk)
       end
     end
