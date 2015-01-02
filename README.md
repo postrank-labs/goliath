@@ -64,6 +64,8 @@ Goliath has been used in production environments for 2+ years, across many diffe
 * [Middleware](https://github.com/postrank-labs/goliath/wiki/Middleware)
 * [Configuration](https://github.com/postrank-labs/goliath/wiki/Configuration)
 * [Plugins](https://github.com/postrank-labs/goliath/wiki/Plugins)
+* [Zero Downtime Restart](https://github.com/postrank-labs/goliath/wiki/Zero-downtime-restart)
+
 
 ### Hands-on applications:
 
