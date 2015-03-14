@@ -5,7 +5,7 @@ module Goliath
     class SSEHelper
       attr_reader :connection
       def initialize(url)
-        @message_queue = []
+        @message_queue = EM::Queue.new
         @named_queues = {}
         @connection = EM::EventSource.new(url)
       end
@@ -23,15 +23,16 @@ module Goliath
         end
       end
 
-      def received
-        @message_queue.to_a
+      def receive
+        pop_queue(@message_queue)
       end
 
-      def received_on(name)
+      def receive_on(name)
         queue = @named_queues.fetch(name) do
           raise ArgumentError, "You have to call listen_to('#{name}') first"
         end
-        queue.to_a
+
+        pop_queue(queue)
       end
 
       def with_async_http
@@ -53,6 +54,14 @@ module Goliath
           yield if block_given?
         end
       end
+
+      protected
+
+      def pop_queue(queue)
+        fiber = Fiber.current
+        queue.pop { |m| fiber.resume(m) }
+        Fiber.yield
+      end
     end
 
     def sse_client_connect(path,&blk)
@@ -60,7 +69,8 @@ module Goliath
       client = SSEHelper.new(url)
       client.with_async_http { client.connection.start }
       client.listen
-      blk.call(client) if blk
+      Fiber.new { blk.call(client) }.resume if blk
+      stop
     end
   end
 end

@@ -29,14 +29,9 @@ describe 'EventStream' do
       with_api(EventStreamEndpoint, {:verbose => true, :log_stdout => true}) do |server|
         sse_client_connect('/stream') do |client|
           client.listen_to('custom_event')
-          EM.add_timer(0.1) do
-            EventStreamEndpoint.events.push(name: 'custom_event', data: 'content')
-          end
-          EM.add_timer(0.2) do
-            client.received_on('custom_event').should == ['content']
-            client.received.should == []
-            stop
-          end
+          EventStreamEndpoint.events.push(name: 'custom_event', data: 'content')
+          client.receive_on('custom_event').should == ['content']
+          client.receive.should == []
         end
       end
     end
@@ -46,13 +41,8 @@ describe 'EventStream' do
     it 'should accept stream' do
       with_api(EventStreamEndpoint, {:verbose => true, :log_stdout => true}) do |server|
         sse_client_connect('/stream') do |client|
-          EM.add_timer(0.1) do
-            EventStreamEndpoint.events.push(data: 'content')
-          end
-          EM.add_timer(0.2) do
-            client.received.should == ['content']
-            stop
-          end
+          EventStreamEndpoint.events.push(data: 'content')
+          client.receive.should == ['content']
         end
       end
     end
