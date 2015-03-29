@@ -46,6 +46,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec', '~> 3.1.0'
   s.add_development_dependency 'listen', '~> 1.3.1'
 
+  if RUBY_VERSION >= '2.2'
+    s.add_development_dependency 'test-unit', '~> 3.0'
+  end
+
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'
     s.add_development_dependency 'bluecloth'
