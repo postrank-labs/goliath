@@ -3,7 +3,7 @@ require 'goliath/rack/params'
 
 describe Goliath::Rack::Params do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Params.new('my app') }.should_not raise_error
+    expect { Goliath::Rack::Params.new('my app') }.not_to raise_error
   end
 
   describe 'with middleware' do
@@ -25,15 +25,15 @@ describe Goliath::Rack::Params do
       @env['QUERY_STRING'] = 'foo=bar&baz=bonkey'
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].should == 'bar'
-      ret['baz'].should == 'bonkey'
+      expect(ret['foo']).to eq('bar')
+      expect(ret['baz']).to eq('bonkey')
     end
 
     it 'parses the nested query string' do
       @env['QUERY_STRING'] = 'foo[bar]=baz'
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].should == {'bar' => 'baz'}
+      expect(ret['foo']).to eq({'bar' => 'baz'})
     end
 
     it 'parses the post body' do
@@ -42,18 +42,18 @@ describe Goliath::Rack::Params do
       @env['rack.input'].rewind
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].should == 'bar'
-      ret['baz'].should == 'bonkey'
-      ret['zonk'].should == {'donk' => 'monk'}
+      expect(ret['foo']).to eq('bar')
+      expect(ret['baz']).to eq('bonkey')
+      expect(ret['zonk']).to eq({'donk' => 'monk'})
     end
 
     it 'parses arrays of data' do
       @env['QUERY_STRING'] = 'foo[]=bar&foo[]=baz&foo[]=foos'
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].is_a?(Array).should be_true
-      ret['foo'].length.should == 3
-      ret['foo'].should == %w(bar baz foos)
+      expect(ret['foo'].is_a?(Array)).to be_truthy
+      expect(ret['foo'].length).to eq(3)
+      expect(ret['foo']).to eq(%w(bar baz foos))
     end
 
     it 'parses multipart data' do
@@ -73,8 +73,8 @@ Berry\r
       @env[Goliath::Constants::CONTENT_LENGTH] = @env['rack.input'].length
 
       ret = @params.retrieve_params(@env)
-      ret['submit-name'].should == 'Larry'
-      ret['submit-name-with-content'].should == 'Berry'
+      expect(ret['submit-name']).to eq('Larry')
+      expect(ret['submit-name-with-content']).to eq('Berry')
     end
 
     it 'combines query string and post body params' do
@@ -85,14 +85,14 @@ Berry\r
       @env['rack.input'].rewind
 
       ret = @params.retrieve_params(@env)
-      ret['baz'].should == 'bar'
-      ret['foos'].should == 'bonkey'
+      expect(ret['baz']).to eq('bar')
+      expect(ret['foos']).to eq('bonkey')
     end
 
     it 'handles empty query and post body' do
       ret = @params.retrieve_params(@env)
-      ret.is_a?(Hash).should be_true
-      ret.should be_empty
+      expect(ret.is_a?(Hash)).to be_truthy
+      expect(ret).to be_empty
     end
 
     it 'prefers post body over query string' do
@@ -103,15 +103,15 @@ Berry\r
       @env['rack.input'].rewind
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].should == 'bar2'
-      ret['baz'].should == 'bonkey'
+      expect(ret['foo']).to eq('bar2')
+      expect(ret['baz']).to eq('bonkey')
     end
 
     it 'sets the params into the environment' do
-      @app.should_receive(:call).with do |app_env|
-        app_env.has_key?('params').should be_true
-        app_env['params']['a'].should == 'b'
-      end
+      expect(@app).to receive(:call).with(@env) { |app_env|
+        expect(app_env.has_key?('params')).to be_truthy
+        expect(app_env['params']['a']).to eq('b')
+      }
 
       @env['QUERY_STRING'] = "a=b"
       @params.call(@env)
@@ -120,12 +120,12 @@ Berry\r
     it 'returns status, headers and body from the app' do
       app_headers = {'Content-Type' => 'hash'}
       app_body = {:a => 1, :b => 2}
-      @app.should_receive(:call).and_return([200, app_headers, app_body])
+      expect(@app).to receive(:call).and_return([200, app_headers, app_body])
 
       status, headers, body = @params.call(@env)
-      status.should == 200
-      headers.should == app_headers
-      body.should == app_body
+      expect(status).to eq(200)
+      expect(headers).to eq(app_headers)
+      expect(body).to eq(app_body)
     end
 
     context 'content type' do
@@ -136,7 +136,7 @@ Berry\r
         @env['rack.input'].rewind
 
         ret = @params.retrieve_params(@env)
-        ret['foos'].should == 'bonkey'
+        expect(ret['foos']).to eq('bonkey')
       end
 
       it "parses json" do
@@ -146,7 +146,7 @@ Berry\r
         @env['rack.input'].rewind
 
         ret = @params.retrieve_params(@env)
-        ret['foo'].should == 'bar'
+        expect(ret['foo']).to eq('bar')
       end
 
       it "parses json that does not evaluate to a hash" do
@@ -156,7 +156,7 @@ Berry\r
         @env['rack.input'].rewind
 
         ret = @params.retrieve_params(@env)
-        ret['_json'].should == ['foo', 'bar']
+        expect(ret['_json']).to eq(['foo', 'bar'])
       end
 
       it "handles empty input gracefully on JSON" do
@@ -164,7 +164,7 @@ Berry\r
         @env['rack.input'] = StringIO.new
 
         ret = @params.retrieve_params(@env)
-        ret.should be_empty
+        expect(ret).to be_empty
       end
 
       it "raises a BadRequestError on invalid JSON" do
@@ -173,7 +173,7 @@ Berry\r
         @env['rack.input'] << %|{"foo":"bar" BORKEN}|
         @env['rack.input'].rewind
 
-        lambda{ @params.retrieve_params(@env) }.should raise_error(Goliath::Validation::BadRequestError)
+        expect{ @params.retrieve_params(@env) }.to raise_error(Goliath::Validation::BadRequestError)
       end
 
       it "doesn't parse unknown content types" do
@@ -183,7 +183,7 @@ Berry\r
         @env['rack.input'].rewind
 
         ret = @params.retrieve_params(@env)
-        ret.should == {}
+        expect(ret).to eq({})
       end
     end
   end

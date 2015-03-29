@@ -8,50 +8,50 @@ describe Goliath::Server do
 
   describe 'defaults' do
     it 'to any interface' do
-      @s.address.should == '0.0.0.0'
+      expect(@s.address).to eq('0.0.0.0')
     end
 
     it 'to port 9000' do
-      @s.port.should == 9000
+      expect(@s.port).to eq(9000)
     end
   end
 
   describe 'configuration' do
     it 'accepts an address and port' do
       @s = Goliath::Server.new('10.2.1.1', 2020)
-      @s.address.should == '10.2.1.1'
-      @s.port.should == 2020
+      expect(@s.address).to eq('10.2.1.1')
+      expect(@s.port).to eq(2020)
     end
 
     it 'accepts a logger' do
       logger = double('logger')
       @s.logger = logger
-      @s.logger.should == logger
+      expect(@s.logger).to eq(logger)
     end
 
     it 'accepts an app' do
       app = double('app')
       @s.app = app
-      @s.app.should == app
+      expect(@s.app).to eq(app)
     end
 
     it 'accepts config' do
       config = double('config')
       @s.config = config
-      @s.config.should == config
+      expect(@s.config).to eq(config)
     end
   end
 
   describe 'startup' do
     before(:each) do
-      EM.should_receive(:synchrony).and_yield
+      expect(EM).to receive(:synchrony).and_yield
     end
 
     it 'starts' do
       addr = '10.2.1.1'
       port = 10000
 
-      EM.should_receive(:start_server).with(addr, port, anything)
+      expect(EM).to receive(:start_server).with(addr, port, anything)
 
       @s.address = addr
       @s.port = port
@@ -62,9 +62,9 @@ describe Goliath::Server do
       app = double('application')
 
       conn = double("connection").as_null_object
-      conn.should_receive(:app=).with(app)
+      expect(conn).to receive(:app=).with(app)
 
-      EM.should_receive(:start_server).and_yield(conn)
+      expect(EM).to receive(:start_server).and_yield(conn)
 
       @s.app = app
       @s.start
@@ -74,9 +74,9 @@ describe Goliath::Server do
       logger = double('logger')
 
       conn = double("connection").as_null_object
-      conn.should_receive(:logger=).with(logger)
+      expect(conn).to receive(:logger=).with(logger)
 
-      EM.should_receive(:start_server).and_yield(conn)
+      expect(EM).to receive(:start_server).and_yield(conn)
 
       @s.logger = logger
       @s.start
@@ -86,9 +86,9 @@ describe Goliath::Server do
       status = double('status')
 
       conn = double("connection").as_null_object
-      conn.should_receive(:status=).with(status)
+      expect(conn).to receive(:status=).with(status)
 
-      EM.should_receive(:start_server).and_yield(conn)
+      expect(EM).to receive(:start_server).and_yield(conn)
 
       @s.status = status
       @s.start
@@ -96,9 +96,9 @@ describe Goliath::Server do
 
     it 'loads the config for each connection' do
       conn = double("connection").as_null_object
-      EM.should_receive(:start_server).and_yield(conn)
+      expect(EM).to receive(:start_server).and_yield(conn)
 
-      @s.should_receive(:load_config)
+      expect(@s).to receive(:load_config)
       @s.start
     end
   end
@@ -113,28 +113,28 @@ describe Goliath::Server do
         Goliath.env = :development
         block_run = false
         @s.environment('development') { block_run = true }
-        block_run.should be_true
+        expect(block_run).to be_truthy
       end
 
       it 'does not execute the block if the environment does not match' do
         Goliath.env = :development
         block_run = false
         @s.environment('test') { block_run = true }
-        block_run.should be_false
+        expect(block_run).to be_falsey
       end
 
       it 'accepts an array of environments' do
         Goliath.env = :development
         block_run = false
         @s.environment(['development', 'test']) { block_run = true }
-        block_run.should be_true
+        expect(block_run).to be_truthy
       end
 
       it 'does not run the block if the environment is not in the array' do
         Goliath.env = :production
         block_run = false
         @s.environment(['development', 'test']) { block_run = true }
-        block_run.should be_false
+        expect(block_run).to be_falsey
       end
     end
   end

@@ -38,7 +38,7 @@ describe ValidSingleParam do
   it 'returns OK with param' do
     with_api(ValidSingleParam) do
       get_request({:query => {:test => 'test'}}, err) do |c|
-        c.response.should == 'OK'
+        expect(c.response).to eq('OK')
       end
     end
   end
@@ -46,7 +46,7 @@ describe ValidSingleParam do
   it 'returns error without param' do
     with_api(ValidSingleParam) do
       get_request({}, err) do |c|
-        c.response.should == '[:error, "test identifier missing"]'
+        expect(c.response).to eq('[:error, "test identifier missing"]')
       end
     end
   end
@@ -64,8 +64,8 @@ describe ValidationErrorInEndpoint do
   it 'handles Goliath::Validation::Error correctly' do
     with_api(ValidationErrorInEndpoint) do
       get_request({}, err) do |c|
-        c.response.should == '[:error, "You Must Chill"]'
-        c.response_header.status.should == 420
+        expect(c.response).to eq('[:error, "You Must Chill"]')
+        expect(c.response_header.status).to eq(420)
       end
     end
   end

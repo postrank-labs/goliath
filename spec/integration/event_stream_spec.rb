@@ -30,8 +30,8 @@ describe 'EventStream' do
         sse_client_connect('/stream') do |client|
           client.listen_to('custom_event')
           EventStreamEndpoint.events.push(name: 'custom_event', data: 'content')
-          client.receive_on('custom_event').should == ['content']
-          client.receive.should == []
+          expect(client.receive_on('custom_event')).to eq(['content'])
+          expect(client.receive).to eq([])
         end
       end
     end
@@ -42,7 +42,7 @@ describe 'EventStream' do
       with_api(EventStreamEndpoint, {:verbose => true, :log_stdout => true}) do |server|
         sse_client_connect('/stream') do |client|
           EventStreamEndpoint.events.push(data: 'content')
-          client.receive.should == ['content']
+          expect(client.receive).to eq(['content'])
         end
       end
     end

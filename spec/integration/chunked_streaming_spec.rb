@@ -27,7 +27,7 @@ describe "ChunkedStreaming" do
   it "should stream content" do
     with_api(ChunkedStreaming, {:verbose => true, :log_stdout => true}) do |server|
       streaming_client_connect('/streaming') do |client|
-        client.receive.should == "chunked"
+        expect(client.receive).to eq("chunked")
       end
     end
   end

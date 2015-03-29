@@ -7,7 +7,7 @@ describe Goliath::API do
 
   describe "middlewares" do
     it "doesn't change after multi calls" do
-      2.times { DummyApi.should have(2).middlewares }
+      2.times { expect(DummyApi.middlewares.size).to eq(2) }
     end
   end
 end

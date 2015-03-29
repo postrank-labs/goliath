@@ -4,7 +4,7 @@ require 'nokogiri'
 
 describe Goliath::Rack::Formatters::XML do
   it 'accepts an app' do
-    lambda { Goliath::Rack::Formatters::XML.new('my app') }.should_not raise_error
+    expect { Goliath::Rack::Formatters::XML.new('my app') }.not_to raise_error
   end
 
   describe 'with a formatter' do
@@ -14,52 +14,52 @@ describe Goliath::Rack::Formatters::XML do
     end
 
     it 'checks content type for application/xml' do
-      @xml.xml_response?({'Content-Type' => 'application/xml'}).should be_true
+      expect(@xml.xml_response?({'Content-Type' => 'application/xml'})).to be_truthy
     end
 
     it 'returns false for non-applicaton/xml types' do
-      @xml.xml_response?({'Content-Type' => 'application/json'}).should be_false
+      expect(@xml.xml_response?({'Content-Type' => 'application/json'})).to be_falsey
     end
 
     it 'calls the app with the provided environment' do
       env_mock = double('env').as_null_object
-      @app.should_receive(:call).with(env_mock).and_return([200, {}, {"a" => 1}])
+      expect(@app).to receive(:call).with(env_mock).and_return([200, {}, {"a" => 1}])
       @xml.call(env_mock)
     end
 
     it 'formats the body into xml if content-type is xml' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
 
       status, header, body = @xml.call({})
-      lambda { Nokogiri.parse(body.first).search('a').inner_text.should == '1' }.should_not raise_error
+      expect { expect(Nokogiri.parse(body.first).search('a').inner_text).to eq('1') }.not_to raise_error
     end
 
     it 'generates arrays correctly' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, [1, 2]])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, [1, 2]])
 
       status, header, body = @xml.call({})
-      lambda {
+      expect {
         doc = Nokogiri.parse(body.first)
-        doc.search('item').first.inner_text.should == '1'
-        doc.search('item').last.inner_text.should == '2'
-      }.should_not raise_error
+        expect(doc.search('item').first.inner_text).to eq('1')
+        expect(doc.search('item').last.inner_text).to eq('2')
+      }.not_to raise_error
     end
 
     it "doesn't format to xml if the type is not application/xml" do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
 
-      @xml.should_not_receive(:to_xml)
+      expect(@xml).not_to receive(:to_xml)
       status, header, body = @xml.call({})
-      body[:a].should == 1
+      expect(body[:a]).to eq(1)
     end
 
     it 'returns the status and headers' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
 
-      @xml.should_not_receive(:to_xml)
+      expect(@xml).not_to receive(:to_xml)
       status, header, body = @xml.call({})
-      status.should == 200
-      header.should == {'Content-Type' => 'application/json'}
+      expect(status).to eq(200)
+      expect(header).to eq({'Content-Type' => 'application/json'})
     end
   end
 end

@@ -12,8 +12,8 @@ describe 'Empty body API' do
   it 'serves a 201 with no body' do
     with_api(Empty) do
       get_request({}, err) do |c|
-        c.response_header.status.should == 201
-        c.response_header['CONTENT_LENGTH'].should == '0'
+        expect(c.response_header.status).to eq(201)
+        expect(c.response_header['CONTENT_LENGTH']).to eq('0')
       end
     end
   end
