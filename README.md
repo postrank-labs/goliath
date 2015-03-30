@@ -4,18 +4,19 @@
 
 Goliath is an open source version of the non-blocking (asynchronous) Ruby web server framework. It is a lightweight framework designed to meet the following goals: bare metal performance, Rack API and middleware support, simple configuration, fully asynchronous processing, and readable and maintainable code (read: no callbacks).
 
-The framework is powered by an EventMachine reactor, a high-performance HTTP parser and Ruby 1.9+ runtime. The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution, which leads to more maintainable and readable code.
+The framework is powered by an EventMachine reactor, a high-performance HTTP parser and Ruby 2.0+ runtime. The one major advantage Goliath has over other asynchronous frameworks is the fact that by leveraging Ruby fibers introduced in Ruby 1.9+, it can untangle the complicated callback-based code into a format we are all familiar and comfortable with: linear execution, which leads to more maintainable and readable code.
 
 Each HTTP request within Goliath is executed within its own Ruby fiber and all asynchronous I/O operations can transparently suspend and later resume the processing without requiring the developer to write any additional code. Both request processing and response processing can be done in fully asynchronous fashion: streaming uploads, firehose API's, request/response, websockets, and so on.
 
+
 ## Installation & Prerequisites
 
-* Install Ruby 1.9 (via RVM or natively)
+* Install Ruby 2.2 (via RVM or natively)
 
 ```bash
 $> gem install rvm
-$> rvm install 1.9.3
-$> rvm use 1.9.3
+$> rvm install 2.2
+$> rvm use 2.2
 ```
 
 * Install Goliath:
