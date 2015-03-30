@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary = 'Async framework for writing API servers'
   s.description = s.summary
 
-  s.required_ruby_version = '>=1.9.2'
+  s.required_ruby_version = '~> 2.0'
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.4'
   s.add_dependency 'em-synchrony', '>= 1.0.0'
@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
 
   s.add_development_dependency 'rake', '>=0.8.7'
-  s.add_development_dependency 'rspec', '>2.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'em-http-request', '>=1.0.0'
   s.add_development_dependency 'em-mongo', '~> 0.4.0'
@@ -42,9 +42,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
 
-  s.add_development_dependency 'guard', '~> 1.8.3'
-  s.add_development_dependency 'guard-rspec', '~> 3.1.0'
-  s.add_development_dependency 'listen', '~> 1.3.1'
+  s.add_development_dependency 'guard-rspec', '~> 4.5'
+
+  if RUBY_VERSION >= '2.2'
+    s.add_development_dependency 'test-unit', '~> 3.0'
+  end
 
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'

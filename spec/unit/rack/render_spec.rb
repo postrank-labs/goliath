@@ -13,31 +13,31 @@ describe Goliath::Rack::Render do
   let(:render) { Goliath::Rack::Render.new(app) }
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Render.new('my app') }.should_not raise_error
+    expect { Goliath::Rack::Render.new('my app') }.not_to raise_error
   end
 
   it 'returns the status, body and app headers' do
     app_body = {'c' => 'd'}
 
-    app.should_receive(:call).and_return([200, {'a' => 'b'}, app_body])
+    expect(app).to receive(:call).and_return([200, {'a' => 'b'}, app_body])
     status, headers, body = render.call(env)
 
-    status.should == 200
-    headers['a'].should == 'b'
-    body.should == app_body
+    expect(status).to eq(200)
+    expect(headers['a']).to eq('b')
+    expect(body).to eq(app_body)
   end
 
   describe 'Vary' do
     it 'adds Accept to provided Vary header' do
-      app.should_receive(:call).and_return([200, {'Vary' => 'Cookie'}, {}])
+      expect(app).to receive(:call).and_return([200, {'Vary' => 'Cookie'}, {}])
       status, headers, body = render.call(env)
-      headers['Vary'].should == 'Cookie,Accept'
+      expect(headers['Vary']).to eq('Cookie,Accept')
     end
 
     it 'sets Accept if there is no Vary header' do
-      app.should_receive(:call).and_return([200, {}, {}])
+      expect(app).to receive(:call).and_return([200, {}, {}])
       status, headers, body = render.call(env)
-      headers['Vary'].should == 'Accept'
+      expect(headers['Vary']).to eq('Accept')
     end
   end
 
@@ -51,7 +51,7 @@ describe Goliath::Rack::Render do
 
   describe 'Content-Type' do
     before(:each) do
-      app.should_receive(:call).and_return([200, {}, {}])
+      expect(app).to receive(:call).and_return([200, {}, {}])
     end
 
     describe 'from header' do
@@ -59,7 +59,7 @@ describe Goliath::Rack::Render do
         it "handles content type for #{type}" do
           env['HTTP_ACCEPT'] = type
           status, headers, body = render.call(env)
-          headers['Content-Type'].should =~ /^#{Regexp.escape(type)}/
+          expect(headers['Content-Type']).to match(/^#{Regexp.escape(type)}/)
         end
       end
     end
@@ -69,7 +69,7 @@ describe Goliath::Rack::Render do
         it "converts #{format} to #{content_type}" do
           env['params']['format'] = format
           status, headers, body = render.call(env)
-          headers['Content-Type'].should =~ /^#{Regexp.escape(content_type)}/
+          expect(headers['Content-Type']).to match(/^#{Regexp.escape(content_type)}/)
         end
       end
     end
@@ -78,14 +78,14 @@ describe Goliath::Rack::Render do
       env['HTTP_ACCEPT'] = 'application/xml'
       env['params']['format'] = 'json'
       status, headers, body = render.call(env)
-      headers['Content-Type'].should =~ %r{^application/json}
+      expect(headers['Content-Type']).to match(%r{^application/json})
     end
 
     describe 'charset' do
       it 'is set if not present' do
         env['params']['format'] = 'json'
         status, headers, body = render.call(env)
-        headers['Content-Type'].should =~ /; charset=utf-8$/
+        expect(headers['Content-Type']).to match(/; charset=utf-8$/)
       end
     end
   end

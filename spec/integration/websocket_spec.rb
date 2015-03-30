@@ -26,7 +26,7 @@ describe "WebSocket" do
 
   it "should accept connection" do
     with_api(WebSocketEndPoint, {:verbose => true, :log_stdout => true}) do |server|
-      WebSocketEndPoint.any_instance.should_receive(:on_open)
+      expect_any_instance_of(WebSocketEndPoint).to receive(:on_open)
       ws_client_connect('/ws')
     end
   end
@@ -35,7 +35,7 @@ describe "WebSocket" do
     with_api(WebSocketEndPoint, {:verbose => true, :log_stdout => true}) do |server|
       ws_client_connect('/ws') do |client|
         client.send "hello"
-        client.receive.data.should == "hello"
+        expect(client.receive.data).to eq("hello")
       end
     end
   end

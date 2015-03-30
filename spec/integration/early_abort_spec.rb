@@ -11,7 +11,7 @@ describe EarlyAbort do
   it "should return OK" do
     with_api(EarlyAbort) do
       get_request({}, err) do |c|
-        c.response.should == "OK"
+        expect(c.response).to eq("OK")
       end
     end
   end
@@ -24,8 +24,8 @@ describe EarlyAbort do
       }
 
       post_request(request_data, err) do |c|
-        c.response.should == "{\"error\":\"Can't handle requests with X-Crash: true.\"}"
-        File.exist?("/tmp/goliath-test-error.log").should be_false
+        expect(c.response).to eq("{\"error\":\"Can't handle requests with X-Crash: true.\"}")
+        expect(File.exist?("/tmp/goliath-test-error.log")).to be_falsey
       end
     end
   end
@@ -35,8 +35,8 @@ describe EarlyAbort do
       request_data = { :body => "a" * 20 }
 
       post_request(request_data, err) do |c|
-        c.response.should =~ /Payload size can't exceed 10 bytes/
-        File.exist?("/tmp/goliath-test-error.log").should be_false
+        expect(c.response).to match(/Payload size can't exceed 10 bytes/)
+        expect(File.exist?("/tmp/goliath-test-error.log")).to be_falsey
       end
     end
   end

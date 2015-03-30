@@ -30,7 +30,7 @@ describe 'JSONP' do
     it 'does not alter the content type' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response_header['CONTENT_TYPE'].should =~ %r{^application/json}
+          expect(c.response_header['CONTENT_TYPE']).to match(%r{^application/json})
         end
       end
     end
@@ -38,7 +38,7 @@ describe 'JSONP' do
     it 'does not alter the content length' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response_header['CONTENT_LENGTH'].to_i.should == 2
+          expect(c.response_header['CONTENT_LENGTH'].to_i).to eq(2)
         end
       end
     end
@@ -46,7 +46,7 @@ describe 'JSONP' do
     it 'does not wrap the response with anything' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response.should == 'OK'
+          expect(c.response).to eq('OK')
         end
       end
     end
@@ -58,7 +58,7 @@ describe 'JSONP' do
     it 'adjusts the content type' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response_header['CONTENT_TYPE'].should =~ %r{^application/javascript}
+          expect(c.response_header['CONTENT_TYPE']).to match(%r{^application/javascript})
         end
       end
     end
@@ -66,7 +66,7 @@ describe 'JSONP' do
     it 'adjusts the content length' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response_header['CONTENT_LENGTH'].to_i.should == 8
+          expect(c.response_header['CONTENT_LENGTH'].to_i).to eq(8)
         end
       end
     end
@@ -74,7 +74,7 @@ describe 'JSONP' do
     it 'wraps response with callback' do
       with_api(JSON_API) do
         get_request({ query: query }, err) do |c|
-          c.response.should =~ /^test\(.*\)$/
+          expect(c.response).to match(/^test\(.*\)$/)
         end
       end
     end

@@ -3,19 +3,19 @@ require 'goliath/validation/standard_http_errors'
 
 describe Goliath::Validation::Error do
   it 'defines exceptions for each standard error response' do
-    lambda { Goliath::Validation::BadRequestError.new }.should_not raise_error
-    Goliath::Validation::BadRequestError.should < Goliath::Validation::Error
+    expect { Goliath::Validation::BadRequestError.new }.not_to raise_error
+    expect(Goliath::Validation::BadRequestError).to be < Goliath::Validation::Error
   end
 
   it 'defines InternalServerError not InternalServerErrorError' do
-    lambda { Goliath::Validation::InternalServerError.new }.should_not raise_error
-    Goliath::Validation::InternalServerError.should < Goliath::Validation::Error
+    expect { Goliath::Validation::InternalServerError.new }.not_to raise_error
+    expect(Goliath::Validation::InternalServerError).to be < Goliath::Validation::Error
   end
 
   it 'sets a default status code and message' do
     nfe = Goliath::Validation::NotFoundError.new
-    nfe.status_code.should == '404'
-    nfe.message.should == 'Not Found'
+    expect(nfe.status_code).to eq('404')
+    expect(nfe.message).to eq('Not Found')
   end
 end
 
