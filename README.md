@@ -69,10 +69,9 @@ Goliath has been used in production environments for 2+ years, across many diffe
 
 ### Hands-on applications:
 
-If you are you new to EventMachine, or want a detailed walk-through of building a Goliath powered API? You're in luck, we have two super-awesome Peepcode screencasts which will teach you all you need to know:
+If you are you new to EventMachine, or want a detailed walk-through of building a Goliath powered API? You're in luck, a super-awesome Pluralsight screencast which will teach you all you need to know:
 
-* [Meet EventMachine: Part 1](http://peepcode.com/products/eventmachine) - introduction to EM, Fibers, etc.
-* [Meet EventMachine: Part 2](http://peepcode.com/products/eventmachine-ii) - building an API with Goliath
+* [Meet EventMachine](http://www.pluralsight.com/courses/meet-eventmachine) - introduction to EM, Fibers, building an API with Goliath
 
 Additionally, you can also watch this presentation from GoGaRuCo 2011, which describes the design and motivation behind Goliath:
 
