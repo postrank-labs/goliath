@@ -27,6 +27,7 @@ class HttpLog < Goliath::API
 
     params = {:head => env['client-headers'], :query => env.params}
 
+    forwarder = 'http://localhost' # actual destination host here
     req = EM::HttpRequest.new("#{forwarder}#{env[Goliath::Request::REQUEST_PATH]}")
     resp = case(env[Goliath::Request::REQUEST_METHOD])
       when 'GET'  then req.get(params)
@@ -37,21 +38,13 @@ class HttpLog < Goliath::API
 
     process_time = Time.now.to_f - start_time
 
-    response_headers = {}
-    resp.response_header.each_pair do |k, v|
-      response_headers[to_http_header(k)] = v
-    end
+    response_headers = resp.response_header.raw
 
     record(process_time, resp, env['client-headers'], response_headers)
 
     [resp.response_header.status, response_headers, resp.response]
   end
 
-  # Need to convert from the CONTENT_TYPE we'll get back from the server
-  # to the normal Content-Type header
-  def to_http_header(k)
-    k.downcase.split('_').collect { |e| e.capitalize }.join('-')
-  end
 
   # Write the request information into mongo
   def record(process_time, resp, client_headers, response_headers)
