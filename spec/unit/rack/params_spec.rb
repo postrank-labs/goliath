@@ -21,6 +21,13 @@ describe Goliath::Rack::Params do
       }.to raise_error(Goliath::Validation::BadRequestError)
     end
 
+    it 'handles ambiguous query strings' do
+      @env['QUERY_STRING'] = 'ambiguous[]=&ambiguous[4]='
+      expect {
+        @params.retrieve_params(@env)
+      }.to raise_error(Goliath::Validation::Error)
+    end
+
     it 'parses the query string' do
       @env['QUERY_STRING'] = 'foo=bar&baz=bonkey'
 
@@ -126,6 +133,37 @@ Berry\r
       status.should == 200
       headers.should == app_headers
       body.should == app_body
+    end
+
+    it 'returns a validation error if one is raised while parsing' do
+      expect(@app).to_not receive(:call)
+      params_exception = Goliath::Validation::Error.new(423, 'invalid')
+      expect(@params).to receive(:retrieve_params).and_raise(params_exception)
+      status, headers, body = @params.call(@env)
+      expect(status).to eq 423
+      expect(headers).to eq({})
+      expect(body).to eq(error: 'invalid')
+    end
+
+    it 'returns a 500 error if an unexpected error is raised while parsing' do
+      expect(@app).to_not receive(:call)
+
+      params_exception = Exception.new('uh oh')
+      expect(@params).to receive(:retrieve_params).and_raise(params_exception)
+
+      logger = double('logger').as_null_object
+      expect(@env).to receive(:logger).twice.and_return(logger)
+
+      status, headers, body = @params.call(@env)
+      expect(status).to eq 500
+      expect(headers).to eq({})
+      expect(body).to eq(error: 'uh oh')
+    end
+
+    it 'does not swallow exceptions from the app' do
+      app_exception = Class.new(Exception)
+      expect(@app).to receive(:call).and_raise(app_exception)
+      expect { @params.call(@env) }.to raise_error(app_exception)
     end
 
     context 'content type' do
