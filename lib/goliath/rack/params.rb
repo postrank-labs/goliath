@@ -60,10 +60,11 @@ module Goliath
       end
 
       def call(env)
-        Goliath::Rack::Validator.safely(env) do
+        error_response = Goliath::Rack::Validator.safely(env) do
           env['params'] = retrieve_params(env)
-          @app.call(env)
+          nil
         end
+        error_response || @app.call(env)
       end
     end
   end
