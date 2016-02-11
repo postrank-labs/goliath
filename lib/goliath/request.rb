@@ -92,7 +92,7 @@ module Goliath
 
         @env[REQUEST_METHOD]  = parser.http_method
         @env[REQUEST_URI]     = parser.request_url
-        @env[QUERY_STRING]    = uri.query
+        @env[QUERY_STRING]    = uri.query || ''.freeze
         @env[HTTP_VERSION]    = parser.http_version.join('.')
         @env[SCRIPT_NAME]     = ""
         @env[REQUEST_PATH]    = uri.path
