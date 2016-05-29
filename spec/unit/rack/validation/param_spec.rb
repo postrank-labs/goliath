@@ -21,7 +21,7 @@ describe Goliath::Rack::Validation::Param do
 
   it "uses a default value if optional is not supplied" do
     cv = Goliath::Rack::Validation::Param.new(@app, :key => 'key')
-    cv.optional.should be_false
+    cv.optional.should be false
   end
 
   it "should have default and message be optional" do
@@ -127,52 +127,52 @@ describe Goliath::Rack::Validation::Param do
 
       context 'key_valid?' do
         it 'raises exception if the key is not provided' do
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it 'raises exception if the key is blank' do
           @env['params']['mk'] = ''
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it 'raises exception if the key is nil' do
           @env['params']['mk'] = nil
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it 'handles an empty array' do
           @env['params']['mk'] = []
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it 'handles an array of nils' do
           @env['params']['mk'] = [nil, nil, nil]
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it 'handles an array of blanks' do
           @env['params']['mk'] = ['', '', '']
-          @rp.key_valid?(@env['params']).should be_false
+          @rp.key_valid?(@env['params']).should be false
         end
 
         it "doesn't raise if the key provided" do
           @env['params']['mk'] = 'my value'
-          @rp.key_valid?(@env['params']).should be_true
+          @rp.key_valid?(@env['params']).should be true
         end
 
         it "doesn't raise if the array contains valid data" do
           @env['params']['mk'] = [1, 2, 3, 4]
-          @rp.key_valid?(@env['params']).should be_true
+          @rp.key_valid?(@env['params']).should be true
         end
 
         it "doesn't raise if the key provided is multiline and has blanks" do
           @env['params']['mk'] = "my\n  \nvalue"
-          @rp.key_valid?(@env['params']).should be_true
+          @rp.key_valid?(@env['params']).should be true
         end
 
         it "doesn't raise if the key provided is an array and contains multiline with blanks" do
           @env['params']['mk'] = ["my\n  \nvalue", "my\n  \nother\n  \nvalue"]
-          @rp.key_valid?(@env['params']).should be_true
+          @rp.key_valid?(@env['params']).should be true
         end
       end
     end
@@ -194,7 +194,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be_false
+        @rp.key_valid?(@env['params']).should be false
       end
 
       it "return true if key is present" do
@@ -205,7 +205,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be_true
+        @rp.key_valid?(@env['params']).should be true
       end
     end
 
@@ -225,7 +225,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be_false
+        @rp.key_valid?(@env['params']).should be false
       end
 
       it "return true if key is present" do
@@ -236,7 +236,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be_true
+        @rp.key_valid?(@env['params']).should be true
       end
     end
 

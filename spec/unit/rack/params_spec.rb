@@ -58,7 +58,7 @@ describe Goliath::Rack::Params do
       @env['QUERY_STRING'] = 'foo[]=bar&foo[]=baz&foo[]=foos'
 
       ret = @params.retrieve_params(@env)
-      ret['foo'].is_a?(Array).should be_true
+      ret['foo'].is_a?(Array).should be true
       ret['foo'].length.should == 3
       ret['foo'].should == %w(bar baz foos)
     end
@@ -98,7 +98,7 @@ Berry\r
 
     it 'handles empty query and post body' do
       ret = @params.retrieve_params(@env)
-      ret.is_a?(Hash).should be_true
+      ret.is_a?(Hash).should be true
       ret.should be_empty
     end
 
@@ -116,7 +116,7 @@ Berry\r
 
     it 'sets the params into the environment' do
       @app.should_receive(:call).with do |app_env|
-        app_env.has_key?('params').should be_true
+        app_env.has_key?('params').should be true
         app_env['params']['a'].should == 'b'
       end
 

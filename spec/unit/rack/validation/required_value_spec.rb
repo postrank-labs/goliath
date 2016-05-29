@@ -44,52 +44,52 @@ describe Goliath::Rack::Validation::RequiredValue do
 
     context '#value_valid!' do
       it 'raises exception if the key is not provided' do
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'raises exception if the key is blank' do
         @env['params']['mk'] = ''
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'raises exception if the key is nil' do
         @env['params']['mk'] = nil
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'raises exception if the key is does not match' do
         @env['params']['mk'] = "blarg"
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'handles an empty array' do
         @env['params']['mk'] = []
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'handles an array of nils' do
         @env['params']['mk'] = [nil, nil, nil]
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it 'handles an array of blanks' do
         @env['params']['mk'] = ['', '', '']
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
 
       it "doesn't raise if the key is value" do
         @env['params']['mk'] = 'Monkey'
-        @rv.value_valid?(@env['params']).should be_true
+        @rv.value_valid?(@env['params']).should be true
       end
 
       it "doesn't raise if the array contains valid data" do
         @env['params']['mk'] = ['Monkey', 'frog']
-        @rv.value_valid?(@env['params']).should be_true
+        @rv.value_valid?(@env['params']).should be true
       end
 
       it 'raises if any of the array elements do not match' do
         @env['params']['mk'] = ["Monkey", "frog", "bat"]
-        @rv.value_valid?(@env['params']).should be_false
+        @rv.value_valid?(@env['params']).should be false
       end
     end
   end

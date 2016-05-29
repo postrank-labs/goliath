@@ -13,11 +13,11 @@ describe Goliath::Rack::Formatters::JSON do
     end
 
     it 'checks content type for application/json' do
-      @js.json_response?({'Content-Type' => 'application/json'}).should be_true
+      @js.json_response?({'Content-Type' => 'application/json'}).should be_truthy
     end
 
     it 'returns false for non-applicaton/json types' do
-      @js.json_response?({'Content-Type' => 'application/xml'}).should be_false
+      @js.json_response?({'Content-Type' => 'application/xml'}).should be_falsey
     end
 
     it 'calls the app with the provided environment' do

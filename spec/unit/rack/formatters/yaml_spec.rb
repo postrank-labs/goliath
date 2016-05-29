@@ -13,11 +13,11 @@ describe Goliath::Rack::Formatters::YAML do
     end
 
     it 'checks content type for text/yaml' do
-      @ym.yaml_response?({'Content-Type' => 'text/yaml'}).should be_true
+      @ym.yaml_response?({'Content-Type' => 'text/yaml'}).should be_truthy
     end
 
     it 'returns false for non-applicaton/yaml types' do
-      @ym.yaml_response?({'Content-Type' => 'application/xml'}).should be_false
+      @ym.yaml_response?({'Content-Type' => 'application/xml'}).should be_falsey
     end
 
     it 'calls the app with the provided environment' do

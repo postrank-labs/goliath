@@ -11,7 +11,7 @@ describe "with_api" do
     with_api(DummyServer, :log_file => "test.log") do |api|
       get_request({},err)
     end
-    File.exist?("test.log").should be_true
+    File.exist?("test.log").should be_truthy
     File.unlink("test.log")
   end
 

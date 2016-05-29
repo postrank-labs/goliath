@@ -19,11 +19,11 @@ describe Goliath::Headers do
 
   it 'returns true if a key has been set' do
     @h['my_header'] = 'my_value'
-    @h.has_key?('my_header').should be_true
+    @h.has_key?('my_header').should be true
   end
 
   it 'returns false if the key has not been set' do
-    @h.has_key?('my_header').should be_false
+    @h.has_key?('my_header').should be false
   end
 
   it 'ignores nil values' do

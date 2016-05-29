@@ -49,7 +49,7 @@ describe Goliath::Runner do
         [:debug, :warn, :info].each do |type|
           it "responds to #{type} messages" do
             log = @r.send(:setup_logger)
-            log.respond_to?(type).should be_true
+            log.respond_to?(type).should be true
           end
         end
 

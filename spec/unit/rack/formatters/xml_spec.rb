@@ -14,11 +14,11 @@ describe Goliath::Rack::Formatters::XML do
     end
 
     it 'checks content type for application/xml' do
-      @xml.xml_response?({'Content-Type' => 'application/xml'}).should be_true
+      @xml.xml_response?({'Content-Type' => 'application/xml'}).should be_truthy
     end
 
     it 'returns false for non-applicaton/xml types' do
-      @xml.xml_response?({'Content-Type' => 'application/json'}).should be_false
+      @xml.xml_response?({'Content-Type' => 'application/json'}).should be_falsey
     end
 
     it 'calls the app with the provided environment' do

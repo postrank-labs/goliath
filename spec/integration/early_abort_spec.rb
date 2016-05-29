@@ -25,7 +25,7 @@ describe EarlyAbort do
 
       post_request(request_data, err) do |c|
         c.response.should == "{\"error\":\"Can't handle requests with X-Crash: true.\"}"
-        File.exist?("/tmp/goliath-test-error.log").should be_false
+        File.exist?("/tmp/goliath-test-error.log").should be false
       end
     end
   end
@@ -36,7 +36,7 @@ describe EarlyAbort do
 
       post_request(request_data, err) do |c|
         c.response.should =~ /Payload size can't exceed 10 bytes/
-        File.exist?("/tmp/goliath-test-error.log").should be_false
+        File.exist?("/tmp/goliath-test-error.log").should be false
       end
     end
   end

@@ -41,14 +41,14 @@ describe Goliath::Request do
 
   describe 'finished?' do
     it "returns false if the request parsing has not yet finished" do
-      @r.finished?.should be_false
+      @r.finished?.should be false
     end
 
     it 'returns true if we have finished request parsing' do
       @r.should_receive(:post_process).and_return(nil)
       @r.process
 
-      @r.finished?.should be_true
+      @r.finished?.should be true
     end
   end
 
