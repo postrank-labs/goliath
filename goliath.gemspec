@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake', '>=0.8.7'
   s.add_development_dependency 'rspec', '>2.0'
+  s.add_development_dependency 'test-unit'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'em-http-request', '>=1.0.0'
   s.add_development_dependency 'em-mongo', '~> 0.4.0'
