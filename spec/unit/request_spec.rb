@@ -63,7 +63,7 @@ describe Goliath::Request do
 
     it 'handles bad request urls' do
       parser = double('parser').as_null_object
-      parser.stub(:request_url).and_return('/bad?param}')
+      parser.stub(:request_url).and_return('/bad?params##')
 
       @r.stub(:server_exception)
       @r.should_receive(:server_exception)
