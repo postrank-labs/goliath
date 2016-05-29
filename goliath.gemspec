@@ -12,12 +12,12 @@ Gem::Specification.new do |s|
   s.summary = 'Async framework for writing API servers'
   s.description = s.summary
 
-  s.required_ruby_version = '>=1.9.2'
+  s.required_ruby_version = '>=2.1.0'
 
   s.add_dependency 'eventmachine', '>= 1.0.0.beta.4'
   s.add_dependency 'em-synchrony', '>= 1.0.0'
-  s.add_dependency 'em-websocket', "0.3.8"
-  s.add_dependency 'http_parser.rb', '0.6.0'
+  s.add_dependency 'em-websocket', '0.3.8'
+  s.add_dependency 'http_parser.rb', '>= 0.6.0'
   s.add_dependency 'log4r'
   s.add_dependency 'einhorn'
 
