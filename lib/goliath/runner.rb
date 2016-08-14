@@ -298,8 +298,7 @@ module Goliath
      # @return [Nil]
      def run_server
        log = setup_logger
-
-       log.info("Starting server on #{@address}:#{@port} in #{Goliath.env} mode. Watch out for stones.")
+       log.info("Starting server on http#{ @server_options[:ssl] ? 's' : nil }://#{@address}:#{@port} in #{Goliath.env} mode. Watch out for stones.")
 
        server = setup_server(log)
        server.api.setup if server.api.respond_to?(:setup)
