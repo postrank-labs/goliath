@@ -39,7 +39,7 @@ module Goliath
         begin
           yield
         rescue Goliath::Validation::Error => e
-          validation_error(e.status_code, e.message, headers)
+          validation_error(e.status_code, e.message, e.headers.merge(headers))
         rescue Exception => e
           env.logger.error(e.message)
           env.logger.error(e.backtrace.join("\n"))

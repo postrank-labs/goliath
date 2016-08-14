@@ -172,7 +172,7 @@ module Goliath
 
       rescue Goliath::Validation::Error => e
         env[RACK_EXCEPTION] = e
-        env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message))
+        env[ASYNC_CALLBACK].call(validation_error(e.status_code, e.message, e.headers))
 
       rescue Exception => e
         logthis = "#{e.backtrace[0]}: #{e.message} (#{e.class})\n"
