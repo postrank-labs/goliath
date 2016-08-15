@@ -54,7 +54,7 @@ end
 
 class ValidationErrorInEndpoint < Goliath::API
   def response(env)
-    raise Goliath::Validation::Error.new(420, 'You Must Chill')
+    raise Goliath::Validation::Error.new(420, 'You Must Chill', {'Foo' => 'Bar'})
   end
 end
 
@@ -66,8 +66,28 @@ describe ValidationErrorInEndpoint do
       get_request({}, err) do |c|
         c.response.should == '[:error, "You Must Chill"]'
         c.response_header.status.should == 420
+        c.response_header["Foo"].should == 'Bar'
       end
     end
   end
 end
 
+class ValidationErrorWhileParsing < Goliath::API
+  def on_headers(env, headers)
+    raise Goliath::Validation::Error.new(420, 'You Must Chill', {'Foo' => 'Bar'})
+  end
+end
+
+describe ValidationErrorWhileParsing do
+  let(:err) { Proc.new { fail "API request failed" } }
+
+  it 'handles Goliath::Validation::Error correctly' do
+    with_api(ValidationErrorInEndpoint) do
+      get_request({}, err) do |c|
+        c.response.should == '[:error, "You Must Chill"]'
+        c.response_header.status.should == 420
+        c.response_header["Foo"].should == 'Bar'
+      end
+    end
+  end
+end
