@@ -5,6 +5,7 @@ module Goliath
   module Rack
     URL_ENCODED = %r{^application/x-www-form-urlencoded}
     JSON_ENCODED = %r{^application/json}
+    TEXT_ENCODED = %r{^text/plain}
 
     # A middle ware to parse params. This will parse both the
     # query string parameters and the body and place them into
@@ -29,6 +30,9 @@ module Goliath
                   post_params = case(env['CONTENT_TYPE'])
                   when URL_ENCODED then
                     ::Rack::Utils.parse_nested_query(body)
+                  when TEXT_ENCODED then
+                    # assume this comes from browser-like software like IE8 and IE9 and attempt to parse it as URL encoded
+                    ::Rack::Utils.parse_nested_query(body)
                   when JSON_ENCODED then
                     json = MultiJson.load(body)
                     if json.is_a?(Hash)
@@ -37,7 +41,10 @@ module Goliath
                       {'_json' => json}
                     end
                   else
-                    {}
+                    # assume this comes from browser-like software like IE8 and IE9 and attempt to parse it as URL encoded
+                    # This should really be handled as an option that is either set in config or passed as variable to server
+                    # not sure which...
+                    ::Rack::Utils.parse_nested_query(body)
                   end
                 else
                   post_params = {}
