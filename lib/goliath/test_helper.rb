@@ -52,6 +52,10 @@ module Goliath
       s.port = port
       s.plugins = api.plugins
       @test_server_port = s.port if blk
+
+      # allows us to ensure the log block completes after issuing a test request
+      wrap_log_block
+
       s.start(&blk)
       s
     end
@@ -100,12 +104,16 @@ module Goliath
     #
     # @param req [EM::HttpRequest] The HTTP request to augment
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback handler to attach
     # @return [Nil]
     # @api private
-    def hookup_request_callbacks(req, errback, &blk)
+    def hookup_request_callbacks(req, errback, options = {}, &blk)
+      # How many times we are willing to check if the log block completed
+      @max_log_block_checks = options[:max_log_block_checks] || 50
+
       req.callback &blk
-      req.callback { stop }
+      req.callback { stop_after_log_block_completes }
 
       req.errback &errback if errback
       req.errback { stop }
@@ -116,69 +124,75 @@ module Goliath
     # @param request_data [Hash] Any data to pass to the HEAD request.
     # @param errback [Proc] An error handler to attach
     # @param blk [Proc] The callback block to execute
-    def head_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def head_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).head(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make a GET request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the GET request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def get_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def get_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).get(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make a POST request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the POST request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def post_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def post_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).post(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make a PUT request the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the PUT request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def put_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def put_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).put(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make a PATCH request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the PUT request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def patch_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def patch_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).patch(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make a DELETE request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the DELETE request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def delete_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def delete_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).delete(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     # Make an OPTIONS request against the currently launched API.
     #
     # @param request_data [Hash] Any data to pass to the OPTIONS request.
     # @param errback [Proc] An error handler to attach
+    # @param options [Hash] The options hash used in setting up callbacks
     # @param blk [Proc] The callback block to execute
-    def options_request(request_data = {}, errback = DEFAULT_ERROR, &blk)
+    def options_request(request_data = {}, errback = DEFAULT_ERROR, options = {}, &blk)
       req = create_test_request(request_data).options(request_data)
-      hookup_request_callbacks(req, errback, &blk)
+      hookup_request_callbacks(req, errback, options, &blk)
     end
 
     def create_test_request(request_data)
@@ -197,6 +211,36 @@ module Goliath
           nil
         end
       end.new
+    end
+
+    # Wraps the Goliath::Request.log_block so it sets @log_block_complete to
+    # true when the log block completes. Used to prevent the server from
+    # shutting down before the log block finishes executing.
+    def wrap_log_block
+      original_log_block = Goliath::Request.log_block
+
+      Goliath::Request.log_block = proc do |env, response, elapsed_ms|
+        begin
+          original_log_block.call(env, response, elapsed_ms)
+        ensure
+          @log_block_complete = true
+        end
+      end
+    end
+
+    def stop_after_log_block_completes
+      @log_block_checks ||= 0
+      @log_block_checks += 1
+
+      if log_block_complete? || @log_block_checks > @max_log_block_checks
+        stop
+      else
+        EM.next_tick { stop_after_log_block_completes }
+      end
+    end
+
+    def log_block_complete?
+      return @log_block_complete == true
     end
   end
 end
