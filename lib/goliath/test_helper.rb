@@ -53,6 +53,7 @@ module Goliath
       s.plugins = api.plugins
       @test_server_port = s.port if blk
       s.start(&blk)
+
       s
     end
 
@@ -60,7 +61,8 @@ module Goliath
       return fake_logger if opts[:log_file].nil? && opts[:log_stdout].nil?
 
       log = Log4r::Logger.new('goliath')
-      log_format = Log4r::PatternFormatter.new(:pattern => "[#{Process.pid}:%l] %d :: %m")
+      log_pattern_string = "[#{Process.pid}:%l] %d :: %m"
+      log_format = Log4r::PatternFormatter.new(:pattern => log_pattern_string)
       log.level = opts[:verbose].nil? ? Log4r::INFO : Log4r::DEBUG
 
       if opts[:log_stdout]
@@ -69,10 +71,11 @@ module Goliath
         file = opts[:log_file]
         FileUtils.mkdir_p(File.dirname(file))
 
-       log.add(Log4r::FileOutputter.new('fileOutput', {:filename => file,
-                                                       :trunc => false,
-                                                       :formatter => log_format}))
+       log.add(Log4r::FileOutputter.new('fileOutput', :filename => file,
+                                                      :trunc => false,
+                                                      :formatter => log_format))
       end
+
       log
     end
 
@@ -191,12 +194,15 @@ module Goliath
 
     private
 
+    FAKE_LOGGER = Class.new do
+      def method_missing(name, *args, &blk)
+        nil
+      end
+    end
+    private_constant :FAKE_LOGGER
+
     def fake_logger
-      Class.new do
-        def method_missing(name, *args, &blk)
-          nil
-        end
-      end.new
+      FAKE_LOGGER.new
     end
   end
 end
