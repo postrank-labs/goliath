@@ -19,6 +19,7 @@ module Goliath
       @current = nil
       @requests = []
       @pending  = []
+      Thread.current[GOLIATH_ENV] = nil
 
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
