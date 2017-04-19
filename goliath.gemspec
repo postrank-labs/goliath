@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
 
   s.add_development_dependency 'rake', '>=0.8.7'
-  s.add_development_dependency 'rspec', '>2.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'test-unit'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'em-http-request', '>=1.0.0'
@@ -43,9 +43,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>=3.0.25'
   s.add_development_dependency 'yard'
 
-  s.add_development_dependency 'guard', '~> 1.8.3'
-  s.add_development_dependency 'guard-rspec', '~> 3.1.0'
-  s.add_development_dependency 'listen', '~> 1.3.1'
+  s.add_development_dependency 'guard', '~> 2.0'
+  s.add_development_dependency 'guard-rspec', '~> 4.0'
+  s.add_development_dependency 'listen', '~> 2.0'
 
   if RUBY_PLATFORM != 'java'
     s.add_development_dependency 'yajl-ruby'
