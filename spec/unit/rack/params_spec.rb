@@ -115,10 +115,7 @@ Berry\r
     end
 
     it 'sets the params into the environment' do
-      @app.should_receive(:call).with do |app_env|
-        app_env.has_key?('params').should be true
-        app_env['params']['a'].should == 'b'
-      end
+      @app.should receive(:call).with(hash_including("params"=>{"a"=>"b"}))
 
       @env['QUERY_STRING'] = "a=b"
       @params.call(@env)
