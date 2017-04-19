@@ -1,9 +1,10 @@
 language: ruby
 rvm:
-  - 2.1.9
   - 2.3.1
+  - 2.4.1
 #  - jruby-19mode
 script: bundle exec rake test
 notifications:
   email:
     - dj2+goliath.build@everburning.com
+    - igrigorik@gmail.com
