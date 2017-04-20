@@ -8,11 +8,11 @@ describe Goliath::Rack::Validation::DefaultParams do
   end
 
   it 'requires defaults to be set' do
-    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:key => 'test'}) }.should raise_error
+    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:key => 'test'}) }.should raise_error('Must provide defaults to DefaultParams')
   end
 
   it 'requires key to be set' do
-    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:defaults => 'test'}) }.should raise_error
+    lambda { Goliath::Rack::Validation::DefaultParams.new('my app', {:defaults => 'test'}) }.should raise_error('must provide key to DefaultParams')
   end
 
   describe 'with middleware' do

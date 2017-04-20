@@ -10,7 +10,7 @@ describe Goliath::Rack::Validation::Param do
   it "should not allow invalid options" do
     lambda {
       Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Class.new})
-    }.should raise_error
+    }.should raise_error(Exception)
   end
 
   it "raises if key is not supplied" do
@@ -40,7 +40,7 @@ describe Goliath::Rack::Validation::Param do
     lambda {
       cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag',
           :as => Goliath::Rack::Types::Boolean, :animal => :monkey})
-    }.should raise_error
+    }.should raise_error('Unknown options: {:animal=>:monkey}')
   end
 
   context "fetch_key" do
@@ -247,7 +247,7 @@ describe Goliath::Rack::Validation::Param do
     it "should only accept a class in the :as" do
       lambda {
         Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => "not a class"})
-      }.should raise_error
+      }.should raise_error('Params as must be a class')
     end
 
     context 'with middleware' do
