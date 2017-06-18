@@ -11,7 +11,7 @@ describe Template do
   it 'renders haml template with default haml layout' do
     with_api(Template, api_options) do
       get_request(:path => '/') do |c|
-        c.response.should =~ %r{<li><a href="/joke">Tell me a joke</a></li>}
+        expect(c.response).to match(%r{<li><a href="/joke">Tell me a joke</a></li>})
       end
     end
   end
@@ -19,7 +19,7 @@ describe Template do
   it 'renders haml template from string with default haml layout' do
     with_api(Template, api_options) do
       get_request(:path => '/haml_str') do |c|
-        c.response.should =~ %r{<h1>Header</h1>}
+        expect(c.response).to match(%r{<h1>Header</h1>})
       end
     end
   end
@@ -27,7 +27,7 @@ describe Template do
   it 'renders a markdown template with default haml layout' do
     with_api(Template, api_options) do
       get_request(:path => '/joke') do |c|
-        c.response.should =~ %r{<code>Arr, I dunno matey -- but it is driving me nuts!\s*</code>}m
+        expect(c.response).to match(%r{<code>Arr, I dunno matey -- but it is driving me nuts!\s*</code>}m)
       end
     end
   end
@@ -35,7 +35,7 @@ describe Template do
   it 'lets me specify an alternate layout engine' do
     with_api(Template, api_options) do
       get_request(:path => '/erb_me') do |c|
-        c.response.should =~ %r{I AM ERB</h1>}m
+        expect(c.response).to match(%r{I AM ERB</h1>}m)
       end
     end
   end
@@ -43,7 +43,7 @@ describe Template do
   it 'accepts local variables' do
     with_api(Template, api_options) do
       get_request(:path => '/erb_me') do |c|
-        c.response.should =~ %r{<title>HERE IS A JOKE</title>}m
+        expect(c.response).to match(%r{<title>HERE IS A JOKE</title>}m)
       end
     end
   end
@@ -52,8 +52,8 @@ describe Template do
     it 'raises an explanatory 500 error' do
       with_api(Template, api_options) do
         get_request(:path => '/oops') do |c|
-          c.response.should =~ %r{^\[:error, "Template no_such_template not found in .*examples/views for haml"\]$}
-          c.response_header.status.should == 500
+          expect(c.response).to match(%r{^\[:error, "Template no_such_template not found in .*examples/views for haml"\]$})
+          expect(c.response_header.status).to eq(500)
         end
       end
     end

@@ -13,8 +13,8 @@ describe 'Async Request processing' do
 
       post_request(request_data, err) do |c|
         resp = MultiJson.load(c.response)
-        resp['body'].should match('some=data')
-        resp['head'].should include('X-Upload')
+        expect(resp['body']).to match('some=data')
+        expect(resp['head']).to include('X-Upload')
       end
     end
   end

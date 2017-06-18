@@ -29,15 +29,15 @@ describe "Reloader" do
   end
 
   it 'adds reloader in dev mode' do
-    count(ReloaderDev).should == 1
+    expect(count(ReloaderDev)).to eq(1)
   end
 
   it "doesn't add if it's already there in dev mode" do
-    count(ReloaderAlreadyLoaded).should == 1
+    expect(count(ReloaderAlreadyLoaded)).to eq(1)
   end
 
   it "doesn't add in prod mode" do
     Goliath.env = :production
-    count(ReloaderProd).should == 0
+    expect(count(ReloaderProd)).to eq(0)
   end
 end

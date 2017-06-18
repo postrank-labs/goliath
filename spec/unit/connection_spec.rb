@@ -9,39 +9,39 @@ describe Goliath::Connection do
     it 'accepts an app' do
       app = double('app')
       @c.app = app
-      @c.app.should == app
+      expect(@c.app).to eq(app)
     end
 
     it 'accepts a logger' do
       logger = double('logger')
       @c.logger = logger
-      @c.logger.should == logger
+      expect(@c.logger).to eq(logger)
     end
 
     it 'accepts a status object' do
       status = double('status')
       @c.status = status
-      @c.status.should == status
+      expect(@c.status).to eq(status)
     end
 
     it 'accepts config' do
       config = double('config')
       @c.config = config
-      @c.config.should == config
+      expect(@c.config).to eq(config)
     end
   end
 
   describe 'post_init' do
     it 'sets up the parser' do
       @c.post_init
-      @c.instance_variable_get("@parser").should_not be_nil
+      expect(@c.instance_variable_get("@parser")).not_to be_nil
     end
   end
 
   describe 'receive_data' do
     it 'passes data to the http parser' do
       request_mock = double("parser").as_null_object
-      request_mock.should_receive(:<<)
+      expect(request_mock).to receive(:<<)
 
       current_mock = double("current").as_null_object
 
@@ -52,10 +52,10 @@ describe Goliath::Connection do
 
     it "closes the connection when a parse error is received" do
       current_mock = double("current").as_null_object
-      current_mock.should_receive(:close)
+      expect(current_mock).to receive(:close)
 
       @c.instance_variable_set("@current", current_mock)
-      lambda { @c.receive_data("bad data") }.should_not raise_error
+      expect { @c.receive_data("bad data") }.not_to raise_error
     end
   end
 

@@ -24,15 +24,15 @@ describe 'HTTP Pipelining support' do
       r1.errback { fail }
       r1.callback do |c|
         res << c.response
-        c.response.should match('0.3')
+        expect(c.response).to match('0.3')
       end
 
       r2.errback { fail }
       r2.callback do |c|
         res << c.response
 
-        res.should == ['0.3', '0.2']
-        (Time.now.to_f - start).should be_within(0.1).of(0.3)
+        expect(res).to eq(['0.3', '0.2'])
+        expect(Time.now.to_f - start).to be_within(0.1).of(0.3)
 
         stop
       end

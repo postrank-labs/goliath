@@ -7,11 +7,11 @@ describe Goliath::Rack::Validation::RequestMethod do
     @app_body = {'a' => 'b'}
 
     @app = double('app').as_null_object
-    @app.stub(:call).and_return([200, @app_headers, @app_body])
+    allow(@app).to receive(:call).and_return([200, @app_headers, @app_body])
   end
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Validation::RequestMethod.new('my app') }.should_not raise_error
+    expect { Goliath::Rack::Validation::RequestMethod.new('my app') }.not_to raise_error
   end
 
   describe 'with defaults' do
@@ -22,31 +22,31 @@ describe Goliath::Rack::Validation::RequestMethod do
 
     it 'raises error if method is invalid' do
       @env['REQUEST_METHOD'] = 'fubar'
-      @rm.call(@env).should == [405, {'Allow' => 'GET, POST'}, {:error => "Invalid request method"}]
+      expect(@rm.call(@env)).to eq([405, {'Allow' => 'GET, POST'}, {:error => "Invalid request method"}])
     end
 
     it 'allows valid methods through' do
       @env['REQUEST_METHOD'] = 'GET'
-      @rm.call(@env).should == [200, @app_headers, @app_body]
+      expect(@rm.call(@env)).to eq([200, @app_headers, @app_body])
     end
 
     it 'returns app status, headers and body' do
       @env['REQUEST_METHOD'] = 'POST'
 
       status, headers, body = @rm.call(@env)
-      status.should == 200
-      headers.should == @app_headers
-      body.should == @app_body
+      expect(status).to eq(200)
+      expect(headers).to eq(@app_headers)
+      expect(body).to eq(@app_body)
     end
   end
 
   it 'accepts methods on initialize' do
     rm = Goliath::Rack::Validation::RequestMethod.new('my app', ['GET', 'DELETE', 'HEAD'])
-    rm.methods.should == ['GET', 'DELETE', 'HEAD']
+    expect(rm.methods).to eq(['GET', 'DELETE', 'HEAD'])
   end
 
   it 'accepts string method on initialize' do
     rm = Goliath::Rack::Validation::RequestMethod.new('my app', 'GET')
-    rm.methods.should == ['GET']
+    expect(rm.methods).to eq(['GET'])
   end
 end

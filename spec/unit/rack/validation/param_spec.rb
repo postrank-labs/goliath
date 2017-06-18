@@ -8,39 +8,39 @@ describe Goliath::Rack::Validation::Param do
   end
 
   it "should not allow invalid options" do
-    lambda {
+    expect {
       Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => Class.new})
-    }.should raise_error(Exception)
+    }.to raise_error(Exception)
   end
 
   it "raises if key is not supplied" do
-    lambda {
+    expect {
       Goliath::Rack::Validation::Param.new(@app)
-    }.should raise_error(Exception)
+    }.to raise_error(Exception)
   end
 
   it "uses a default value if optional is not supplied" do
     cv = Goliath::Rack::Validation::Param.new(@app, :key => 'key')
-    cv.optional.should be false
+    expect(cv.optional).to be false
   end
 
   it "should have default and message be optional" do
     cv = nil
-    lambda {
+    expect {
       cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag',
           :as => Goliath::Rack::Types::Boolean})
-    }.should_not raise_error
+    }.not_to raise_error
 
-    cv.default.should be_nil
-    cv.message.should_not be_nil
+    expect(cv.default).to be_nil
+    expect(cv.message).not_to be_nil
   end
 
   it "should fail if given an invalid option" do
     cv = nil
-    lambda {
+    expect {
       cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'flag',
           :as => Goliath::Rack::Types::Boolean, :animal => :monkey})
-    }.should raise_error('Unknown options: {:animal=>:monkey}')
+    }.to raise_error('Unknown options: {:animal=>:monkey}')
   end
 
   context "fetch_key" do
@@ -57,7 +57,7 @@ describe Goliath::Rack::Validation::Param do
           }
         }
       }
-      @cv.fetch_key(params).should == "mike"
+      expect(@cv.fetch_key(params)).to eq("mike")
     end
 
     it "should return nil given an incorrect params" do
@@ -68,7 +68,7 @@ describe Goliath::Rack::Validation::Param do
           }
         }
       }
-      @cv.fetch_key(params).should be_nil
+      expect(@cv.fetch_key(params)).to be_nil
     end
 
     it "should set value if given" do
@@ -79,8 +79,8 @@ describe Goliath::Rack::Validation::Param do
           }
         }
       }
-      @cv.fetch_key(params, "tim").should == "tim"
-      params['data']['credentials']['login'].should == "tim"
+      expect(@cv.fetch_key(params, "tim")).to eq("tim")
+      expect(params['data']['credentials']['login']).to eq("tim")
     end
   end
 
@@ -88,9 +88,9 @@ describe Goliath::Rack::Validation::Param do
 
     it 'defaults type and message' do
       @rp = Goliath::Rack::Validation::Param.new('app', :key => 'key')
-      @rp.type.should_not be_nil
-      @rp.type.should_not =~ /^\s*$/
-      @rp.message.should == 'identifier missing'
+      expect(@rp.type).not_to be_nil
+      expect(@rp.type).not_to match(/^\s*$/)
+      expect(@rp.message).to eq('identifier missing')
     end
 
 
@@ -103,76 +103,76 @@ describe Goliath::Rack::Validation::Param do
       end
 
       it 'stores type and key options' do
-        @rp.type.should == 'Monkey'
-        @rp.key.should == 'mk'
+        expect(@rp.type).to eq('Monkey')
+        expect(@rp.key).to eq('mk')
       end
 
       it 'calls validation_error with a custom message' do
-        @rp.should_receive(:validation_error).with(anything, 'Monkey is required')
+        expect(@rp).to receive(:validation_error).with(anything, 'Monkey is required')
         @rp.call(@env)
       end
 
       it 'returns the app status, headers and body' do
         app_headers = {'Content-Type' => 'app'}
         app_body = {'b' => 'c'}
-        @app.should_receive(:call).and_return([201, app_headers, app_body])
+        expect(@app).to receive(:call).and_return([201, app_headers, app_body])
 
         @env['params']['mk'] = 'monkey'
 
         status, headers, body = @rp.call(@env)
-        status.should == 201
-        headers.should == app_headers
-        body.should == app_body
+        expect(status).to eq(201)
+        expect(headers).to eq(app_headers)
+        expect(body).to eq(app_body)
       end
 
       context 'key_valid?' do
         it 'raises exception if the key is not provided' do
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it 'raises exception if the key is blank' do
           @env['params']['mk'] = ''
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it 'raises exception if the key is nil' do
           @env['params']['mk'] = nil
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it 'handles an empty array' do
           @env['params']['mk'] = []
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it 'handles an array of nils' do
           @env['params']['mk'] = [nil, nil, nil]
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it 'handles an array of blanks' do
           @env['params']['mk'] = ['', '', '']
-          @rp.key_valid?(@env['params']).should be false
+          expect(@rp.key_valid?(@env['params'])).to be false
         end
 
         it "doesn't raise if the key provided" do
           @env['params']['mk'] = 'my value'
-          @rp.key_valid?(@env['params']).should be true
+          expect(@rp.key_valid?(@env['params'])).to be true
         end
 
         it "doesn't raise if the array contains valid data" do
           @env['params']['mk'] = [1, 2, 3, 4]
-          @rp.key_valid?(@env['params']).should be true
+          expect(@rp.key_valid?(@env['params'])).to be true
         end
 
         it "doesn't raise if the key provided is multiline and has blanks" do
           @env['params']['mk'] = "my\n  \nvalue"
-          @rp.key_valid?(@env['params']).should be true
+          expect(@rp.key_valid?(@env['params'])).to be true
         end
 
         it "doesn't raise if the key provided is an array and contains multiline with blanks" do
           @env['params']['mk'] = ["my\n  \nvalue", "my\n  \nother\n  \nvalue"]
-          @rp.key_valid?(@env['params']).should be true
+          expect(@rp.key_valid?(@env['params'])).to be true
         end
       end
     end
@@ -194,7 +194,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be false
+        expect(@rp.key_valid?(@env['params'])).to be false
       end
 
       it "return true if key is present" do
@@ -205,7 +205,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be true
+        expect(@rp.key_valid?(@env['params'])).to be true
       end
     end
 
@@ -225,7 +225,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be false
+        expect(@rp.key_valid?(@env['params'])).to be false
       end
 
       it "return true if key is present" do
@@ -236,7 +236,7 @@ describe Goliath::Rack::Validation::Param do
         }
         }
 
-        @rp.key_valid?(@env['params']).should be true
+        expect(@rp.key_valid?(@env['params'])).to be true
       end
     end
 
@@ -245,9 +245,9 @@ describe Goliath::Rack::Validation::Param do
   context "Coerce" do
 
     it "should only accept a class in the :as" do
-      lambda {
+      expect {
         Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => "not a class"})
-      }.should raise_error('Params as must be a class')
+      }.to raise_error('Params as must be a class')
     end
 
     context 'with middleware' do
@@ -266,7 +266,7 @@ describe Goliath::Rack::Validation::Param do
             @env['params']['user'] = value.first
             cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => type})
             cv.call(@env)
-            @env['params']['user'].should == value[1]
+            expect(@env['params']['user']).to eq(value[1])
           end
         end
       end
@@ -282,9 +282,9 @@ describe Goliath::Rack::Validation::Param do
             @env['params']['user'] = value
             cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user', :as => type})
             result = cv.call(@env)
-            result.should be_an_instance_of(Array)
-            result.first.should == 400
-            result.last.should have_key(:error)
+            expect(result).to be_an_instance_of(Array)
+            expect(result.first).to eq(400)
+            expect(result.last).to have_key(:error)
           end
         end
       end
@@ -292,10 +292,10 @@ describe Goliath::Rack::Validation::Param do
       it "should not fail with a invalid input, given a default value" do
         cv = nil
         @env['params']['user'] = "boo"
-        lambda {
+        expect {
           cv = Goliath::Rack::Validation::Param.new(@app, {:key => 'user',
               :as => Goliath::Rack::Types::Boolean , :default => 'default'})
-        }.should_not raise_error
+        }.not_to raise_error
           @env['params']['user'] = 'default'
       end
 
@@ -305,10 +305,10 @@ describe Goliath::Rack::Validation::Param do
             :as => Goliath::Rack::Types::Integer, :message => "custom message"})
 
         result = cv.call(@env)
-        result.should be_an_instance_of(Array)
-        result.first.should == 400
-        result.last.should have_key(:error)
-        result.last[:error].should == "custom message"
+        expect(result).to be_an_instance_of(Array)
+        expect(result.first).to eq(400)
+        expect(result.last).to have_key(:error)
+        expect(result.last[:error]).to eq("custom message")
       end
     end
 
@@ -320,15 +320,15 @@ describe Goliath::Rack::Validation::Param do
           :as => Goliath::Rack::Types::Integer
       @env['params']['login'] = "3"
       cv.call(@env)
-      @env['params']['login'].should == 3
+      expect(@env['params']['login']).to eq(3)
 
       @env['params']['login'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login",
           :as => Goliath::Rack::Types::Integer
       result = cv.call(@env)
-      result.should be_an_instance_of(Array)
-      result.first.should == 400
-      result.last.should have_key(:error)
+      expect(result).to be_an_instance_of(Array)
+      expect(result.first).to eq(400)
+      expect(result.last).to have_key(:error)
     end
 
     it "should do required param + coerce (nested)" do
@@ -337,30 +337,30 @@ describe Goliath::Rack::Validation::Param do
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
-      @env['params']['login']['other'].should == 3
+      expect(@env['params']['login']['other']).to eq(3)
 
       @env['params']['login'] = {}
       @env['params']['login']['other'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other",
           :as => Goliath::Rack::Types::Integer
       result = cv.call(@env)
-      result.should be_an_instance_of(Array)
-      result.first.should == 400
-      result.last.should have_key(:error)
+      expect(result).to be_an_instance_of(Array)
+      expect(result.first).to eq(400)
+      expect(result.last).to have_key(:error)
     end
 
     it "should do required param + not coerce (not nested)" do
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login"
       @env['params']['login'] = "3"
       cv.call(@env)
-      @env['params']['login'].should == "3"
+      expect(@env['params']['login']).to eq("3")
 
       @env['params']['login'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login"
       result = cv.call(@env)
-      result.should be_an_instance_of(Array)
-      result.first.should == 400
-      result.last.should have_key(:error)
+      expect(result).to be_an_instance_of(Array)
+      expect(result.first).to eq(400)
+      expect(result.last).to have_key(:error)
     end
 
     it "should do required param + not coerce (nested)" do
@@ -368,15 +368,15 @@ describe Goliath::Rack::Validation::Param do
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
-      @env['params']['login']['other'].should == "3"
+      expect(@env['params']['login']['other']).to eq("3")
 
       @env['params']['login'] = {}
       @env['params']['login']['other'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other"
       result = cv.call(@env)
-      result.should be_an_instance_of(Array)
-      result.first.should == 400
-      result.last.should have_key(:error)
+      expect(result).to be_an_instance_of(Array)
+      expect(result.first).to eq(400)
+      expect(result.last).to have_key(:error)
     end
 
     it "should do optional param + coerce (not nested)" do
@@ -384,13 +384,13 @@ describe Goliath::Rack::Validation::Param do
           :as => Goliath::Rack::Types::Integer, :optional => true
       @env['params']['login'] = "3"
       cv.call(@env)
-      @env['params']['login'].should == 3
+      expect(@env['params']['login']).to eq(3)
 
       @env['params']['login'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login",
           :as => Goliath::Rack::Types::Integer, :optional => true
       result = cv.call(@env)
-      result.should_not be_an_instance_of(Array) #implying its OK
+      expect(result).not_to be_an_instance_of(Array) #implying its OK
     end
 
     it "should do optional param + coerce (nested)" do
@@ -399,14 +399,14 @@ describe Goliath::Rack::Validation::Param do
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
-      @env['params']['login']['other'].should == 3
+      expect(@env['params']['login']['other']).to eq(3)
 
       @env['params']['login'] = {}
       @env['params']['login']['other'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => ['login', 'other'],
           :as => Goliath::Rack::Types::Integer, :optional => true
       result = cv.call(@env)
-      result.should_not be_an_instance_of(Array) #implying its OK
+      expect(result).not_to be_an_instance_of(Array) #implying its OK
     end
 
     it "should do optional param and not coerce (not nested)" do
@@ -414,13 +414,13 @@ describe Goliath::Rack::Validation::Param do
           :optional => true
       @env['params']['login'] = "3"
       cv.call(@env)
-      @env['params']['login'].should == "3"
+      expect(@env['params']['login']).to eq("3")
 
       @env['params']['login'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login",
           :optional => true
       result = cv.call(@env)
-      result.should_not be_an_instance_of(Array) #implying its OK
+      expect(result).not_to be_an_instance_of(Array) #implying its OK
     end
 
     it "should do optional param and not coerce (nested)" do
@@ -429,14 +429,14 @@ describe Goliath::Rack::Validation::Param do
       @env['params']['login'] = {}
       @env['params']['login']['other'] = "3"
       cv.call(@env)
-      @env['params']['login']['other'].should == "3"
+      expect(@env['params']['login']['other']).to eq("3")
 
       @env['params']['login'] = {}
       @env['params']['login']['other'] = nil
       cv = Goliath::Rack::Validation::Param.new @app, :key => "login.other",
           :optional => true
       result = cv.call(@env)
-      result.should_not be_an_instance_of(Array) #implying its OK
+      expect(result).not_to be_an_instance_of(Array) #implying its OK
     end
   end
 end
