@@ -42,7 +42,7 @@ describe HttpLog do
       mock_mongo(api)
 
       get_request({}, err) do |c|
-        c.response_header.status.should == 200
+        expect(c.response_header.status).to eq(200)
       end
     end
   end
@@ -53,9 +53,9 @@ describe HttpLog do
       mock_mongo(api)
 
       get_request({}, err) do |c|
-        c.response_header.status.should == 200
-        c.response_header['SPECIAL'].should == 'Header'
-        c.response.should == 'Hello from Responder'
+        expect(c.response_header.status).to eq(200)
+        expect(c.response_header['SPECIAL']).to eq('Header')
+        expect(c.response).to eq('Hello from Responder')
       end
     end
   end
@@ -63,8 +63,8 @@ describe HttpLog do
   context 'HTTP header handling' do
     it 'transforms back properly' do
       hl = HttpLog.new
-      hl.to_http_header("SPECIAL").should == 'Special'
-      hl.to_http_header("CONTENT_TYPE").should == 'Content-Type'
+      expect(hl.to_http_header("SPECIAL")).to eq('Special')
+      expect(hl.to_http_header("CONTENT_TYPE")).to eq('Content-Type')
     end
   end
 
@@ -75,8 +75,8 @@ describe HttpLog do
         mock_mongo(api)
 
         get_request({:query => {:first => :foo, :second => :bar, :third => :baz}}, err) do |c|
-          c.response_header.status.should == 200
-          c.response_header["PARAMS"].should == "first: foo|second: bar|third: baz"
+          expect(c.response_header.status).to eq(200)
+          expect(c.response_header["PARAMS"]).to eq("first: foo|second: bar|third: baz")
         end
       end
     end
@@ -89,8 +89,8 @@ describe HttpLog do
         mock_mongo(api)
 
         get_request({:path => '/my/request/path'}, err) do |c|
-          c.response_header.status.should == 200
-          c.response_header['PATH'].should == '/my/request/path'
+          expect(c.response_header.status).to eq(200)
+          expect(c.response_header['PATH']).to eq('/my/request/path')
         end
       end
     end
@@ -103,8 +103,8 @@ describe HttpLog do
         mock_mongo(api)
 
         get_request({:head => {:first => :foo, :second => :bar}}, err) do |c|
-          c.response_header.status.should == 200
-          c.response_header["HEADERS"].should =~ /First: foo\|Second: bar/
+          expect(c.response_header.status).to eq(200)
+          expect(c.response_header["HEADERS"]).to match(/First: foo\|Second: bar/)
         end
       end
     end
@@ -117,8 +117,8 @@ describe HttpLog do
         mock_mongo(api)
 
         get_request({}, err) do |c|
-          c.response_header.status.should == 200
-          c.response_header["METHOD"].should == "GET"
+          expect(c.response_header.status).to eq(200)
+          expect(c.response_header["METHOD"]).to eq("GET")
         end
       end
     end
@@ -129,8 +129,8 @@ describe HttpLog do
         mock_mongo(api)
 
         post_request({}, err) do |c|
-          c.response_header.status.should == 200
-          c.response_header["METHOD"].should == "POST"
+          expect(c.response_header.status).to eq(200)
+          expect(c.response_header["METHOD"]).to eq("POST")
         end
       end
     end

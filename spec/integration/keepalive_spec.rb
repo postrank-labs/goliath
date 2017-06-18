@@ -10,13 +10,13 @@ describe 'HTTP Keep-Alive support' do
       r1.errback { fail }
       r1.callback do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'test'
+        expect(b['response']).to eq('test')
 
         r2 = conn.get(:query => {:echo => 'test2'})
         r2.errback { fail }
         r2.callback do |c|
           b = MultiJson.load(c.response)
-          b['response'].should == 'test2'
+          expect(b['response']).to eq('test2')
 
           stop
         end

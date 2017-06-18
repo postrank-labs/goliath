@@ -14,15 +14,15 @@ describe Goliath::Request do
       env['INIT'] = 'init'
 
       r = Goliath::Request.new(nil, nil, env)
-      r.env['INIT'].should == 'init'
+      expect(r.env['INIT']).to eq('init')
     end
 
     it 'initializes an async callback' do
-      @r.env['async.callback'].should_not be_nil
+      expect(@r.env['async.callback']).not_to be_nil
     end
 
     it 'initializes request' do
-      @r.instance_variable_get("@state").should == :processing
+      expect(@r.instance_variable_get("@state")).to eq(:processing)
     end
   end
 
@@ -32,8 +32,8 @@ describe Goliath::Request do
       env_mock = double('app').as_null_object
       request = Goliath::Request.new(app_mock, nil, env_mock)
 
-      app_mock.should_receive(:call).with(request.env)
-      request.should_receive(:post_process)
+      expect(app_mock).to receive(:call).with(request.env)
+      expect(request).to receive(:post_process)
 
       request.process
     end
@@ -41,50 +41,50 @@ describe Goliath::Request do
 
   describe 'finished?' do
     it "returns false if the request parsing has not yet finished" do
-      @r.finished?.should be false
+      expect(@r.finished?).to be false
     end
 
     it 'returns true if we have finished request parsing' do
-      @r.should_receive(:post_process).and_return(nil)
+      expect(@r).to receive(:post_process).and_return(nil)
       @r.process
 
-      @r.finished?.should be true
+      expect(@r.finished?).to be true
     end
   end
 
   describe 'parse_headers' do
     it 'sets content_type correctly' do
       parser = double('parser').as_null_object
-      parser.stub(:request_url).and_return('')
+      allow(parser).to receive(:request_url).and_return('')
 
       @r.parse_header({'Content-Type' => 'text/plain'}, parser)
-      @r.env['CONTENT_TYPE'].should == 'text/plain'
+      expect(@r.env['CONTENT_TYPE']).to eq('text/plain')
     end
 
     it 'handles bad request urls' do
       parser = double('parser').as_null_object
-      parser.stub(:request_url).and_return('/bad?params##')
+      allow(parser).to receive(:request_url).and_return('/bad?params##')
 
-      @r.stub(:server_exception)
-      @r.should_receive(:server_exception)
+      allow(@r).to receive(:server_exception)
+      expect(@r).to receive(:server_exception)
       @r.parse_header({}, parser)
     end
 
     it 'sets content_length correctly' do
       parser = double('parser').as_null_object
-      parser.stub(:request_url).and_return('')
+      allow(parser).to receive(:request_url).and_return('')
 
       @r.parse_header({'Content-Length' => 42}, parser)
-      @r.env['CONTENT_LENGTH'].should == 42
+      expect(@r.env['CONTENT_LENGTH']).to eq(42)
     end
 
     it 'sets server_name and server_port correctly' do
       parser = double('parser').as_null_object
-      parser.stub(:request_url).and_return('')
+      allow(parser).to receive(:request_url).and_return('')
 
       @r.parse_header({'Host' => 'myhost.com:3000'}, parser)
-      @r.env['SERVER_NAME'].should == 'myhost.com'
-      @r.env['SERVER_PORT'].should == '3000'
+      expect(@r.env['SERVER_NAME']).to eq('myhost.com')
+      expect(@r.env['SERVER_PORT']).to eq('3000')
     end
   end
 end

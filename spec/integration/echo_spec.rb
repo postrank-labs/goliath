@@ -10,7 +10,7 @@ describe Echo do
     with_api(Echo) do
       get_request({:query => {:echo => 'test'}}, err) do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'test'
+        expect(b['response']).to eq('test')
       end
     end
   end
@@ -19,8 +19,8 @@ describe Echo do
     with_api(Echo) do
       get_request({}, err) do |c|
         b = MultiJson.load(c.response)
-        b['error'].should_not be_nil
-        b['error'].should == 'echo identifier missing'
+        expect(b['error']).not_to be_nil
+        expect(b['error']).to eq('echo identifier missing')
       end
     end
   end
@@ -29,7 +29,7 @@ describe Echo do
     with_api(Echo) do
       post_request({:body => {'echo' => 'test'}}, err) do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'test'
+        expect(b['response']).to eq('test')
       end
     end
   end
@@ -42,7 +42,7 @@ describe Echo do
       post_request({:body => body.to_s,
                     :head => head}, err) do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'test'
+        expect(b['response']).to eq('test')
       end
     end
   end
@@ -55,7 +55,7 @@ describe Echo do
       post_request({:body => body.to_s,
                     :head => head}, err) do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'My Echo'
+        expect(b['response']).to eq('My Echo')
       end
     end
   end
@@ -64,7 +64,7 @@ describe Echo do
     with_api(Echo) do
       patch_request({:body => {'echo' => 'test'}}, err) do |c|
         b = MultiJson.load(c.response)
-        b['response'].should == 'test'
+        expect(b['response']).to eq('test')
       end
     end
   end

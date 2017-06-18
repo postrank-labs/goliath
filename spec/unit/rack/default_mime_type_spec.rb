@@ -14,21 +14,21 @@ describe Goliath::Rack::DefaultMimeType do
   context 'accept header cleanup' do
     it 'handles a nil header' do
       env['HTTP_ACCEPT'] = nil
-      lambda { dmt.call(env) }.should_not raise_error
+      expect { dmt.call(env) }.not_to raise_error
     end
 
     %w(gzip deflate compressed identity).each do |type|
       it "removes #{type} from the accept header" do
         env['HTTP_ACCEPT'] = "text/html, #{type}, text/javascript"
         dmt.call(env)
-        env['HTTP_ACCEPT'].should == 'text/html, text/javascript'
+        expect(env['HTTP_ACCEPT']).to eq('text/html, text/javascript')
       end
     end
 
     it 'sets to */* if all entries removed' do
       env['HTTP_ACCEPT'] = 'identity'
       dmt.call(env)
-      env['HTTP_ACCEPT'].should == '*/*'
+      expect(env['HTTP_ACCEPT']).to eq('*/*')
     end
   end
 end

@@ -17,7 +17,7 @@ describe Goliath::Rack::Formatters::PLIST do
   end
 
   it 'accepts an app' do
-    lambda { Goliath::Rack::Formatters::PLIST.new('my app') }.should_not raise_error
+    expect { Goliath::Rack::Formatters::PLIST.new('my app') }.not_to raise_error
   end
 
   describe 'with a formatter' do
@@ -27,23 +27,23 @@ describe Goliath::Rack::Formatters::PLIST do
     end
 
     it 'formats the body into plist if content-type is plist' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/x-plist'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/x-plist'}, {:a => 1, :b => 2}])
 
       status, header, body = @m.call({})
-      body.should == ["plist: {:a=>1, :b=>2}"]
+      expect(body).to eq(["plist: {:a=>1, :b=>2}"])
     end
 
     it "doesn't format to plist if the type is not plist" do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
       status, header, body = @m.call({})
-      status.should == 200
-      header.should == {'Content-Type' => 'application/xml'}
+      expect(status).to eq(200)
+      expect(header).to eq({'Content-Type' => 'application/xml'})
 
-      body[:a].should == 1
+      expect(body[:a]).to eq(1)
     end
 
     it 'returns the status and headers' do
-      @app.should_receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/xml'}, {:a => 1, :b => 2}])
 
       status, header, body = @m.call({})
     end
