@@ -19,7 +19,7 @@ module Goliath
         end
 
         def json_response?(headers)
-          headers['Content-Type'] =~ %r{^application/(json|javascript|vnd\.api\+json)}
+          headers['Content-Type'] =~ %r{^application/((vnd\.api\+)?json|javascript|javascript)}
         end
       end
     end
