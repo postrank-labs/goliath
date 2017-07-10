@@ -4,7 +4,7 @@ require 'rack/utils'
 module Goliath
   module Rack
     URL_ENCODED = %r{^application/x-www-form-urlencoded}
-    JSON_ENCODED = %r{^application/json}
+    JSON_ENCODED = %r{^application/((vnd\.api\+)?json|javascript)}
 
     # A middle ware to parse params. This will parse both the
     # query string parameters and the body and place them into
