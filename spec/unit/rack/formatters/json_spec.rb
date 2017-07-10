@@ -16,6 +16,14 @@ describe Goliath::Rack::Formatters::JSON do
       expect(@js.json_response?({'Content-Type' => 'application/json'})).to be_truthy
     end
 
+    it 'checks content type for application/vnd.api+json' do
+      expect(@js.json_response?({'Content-Type' => 'application/vnd.api+json'})).to be_truthy
+    end
+
+    it 'checks content type for application/javascript' do
+      expect(@js.json_response?({'Content-Type' => 'application/javascript'})).to be_truthy
+    end
+
     it 'returns false for non-applicaton/json types' do
       expect(@js.json_response?({'Content-Type' => 'application/xml'})).to be_falsey
     end
@@ -28,6 +36,20 @@ describe Goliath::Rack::Formatters::JSON do
 
     it 'formats the body into json if content-type is json' do
       expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/json'}, {:a => 1, :b => 2}])
+
+      status, header, body = @js.call({})
+      expect { expect(MultiJson.load(body.first)['a']).to eq(1) }.not_to raise_error
+    end
+
+    it 'formats the body into json if content-type is vnd.api+json' do
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/vnd.api+json'}, {:a => 1, :b => 2}])
+
+      status, header, body = @js.call({})
+      expect { expect(MultiJson.load(body.first)['a']).to eq(1) }.not_to raise_error
+    end
+
+    it 'formats the body into json if content-type is javascript' do
+      expect(@app).to receive(:call).and_return([200, {'Content-Type' => 'application/javascript'}, {:a => 1, :b => 2}])
 
       status, header, body = @js.call({})
       expect { expect(MultiJson.load(body.first)['a']).to eq(1) }.not_to raise_error
