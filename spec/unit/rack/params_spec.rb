@@ -174,41 +174,43 @@ Berry\r
         expect(ret['foos']).to eq('bonkey')
       end
 
-      it "parses json" do
-        @env['CONTENT_TYPE'] = 'application/json'
-        @env['rack.input'] = StringIO.new
-        @env['rack.input'] << %|{"foo":"bar"}|
-        @env['rack.input'].rewind
+      ['application/json', 'application/vnd.api+json', 'application/javascript'].each do |content_type|
+        it "parses #{content_type}" do
+          @env['CONTENT_TYPE'] = content_type
+          @env['rack.input'] = StringIO.new
+          @env['rack.input'] << %|{"foo":"bar"}|
+          @env['rack.input'].rewind
 
-        ret = @params.retrieve_params(@env)
-        expect(ret['foo']).to eq('bar')
-      end
+          ret = @params.retrieve_params(@env)
+          expect(ret['foo']).to eq('bar')
+        end
 
-      it "parses json that does not evaluate to a hash" do
-        @env['CONTENT_TYPE'] = 'application/json'
-        @env['rack.input'] = StringIO.new
-        @env['rack.input'] << %|["foo","bar"]|
-        @env['rack.input'].rewind
+        it "parses #{content_type} that does not evaluate to a hash" do
+          @env['CONTENT_TYPE'] = content_type
+          @env['rack.input'] = StringIO.new
+          @env['rack.input'] << %|["foo","bar"]|
+          @env['rack.input'].rewind
 
-        ret = @params.retrieve_params(@env)
-        expect(ret['_json']).to eq(['foo', 'bar'])
-      end
+          ret = @params.retrieve_params(@env)
+          expect(ret['_json']).to eq(['foo', 'bar'])
+        end
 
-      it "handles empty input gracefully on JSON" do
-        @env['CONTENT_TYPE'] = 'application/json'
-        @env['rack.input'] = StringIO.new
+        it "handles empty input gracefully on #{content_type} JSON" do
+          @env['CONTENT_TYPE'] = content_type
+          @env['rack.input'] = StringIO.new
 
-        ret = @params.retrieve_params(@env)
-        expect(ret).to be_empty
-      end
+          ret = @params.retrieve_params(@env)
+          expect(ret).to be_empty
+        end
 
-      it "raises a BadRequestError on invalid JSON" do
-        @env['CONTENT_TYPE'] = 'application/json'
-        @env['rack.input'] = StringIO.new
-        @env['rack.input'] << %|{"foo":"bar" BORKEN}|
-        @env['rack.input'].rewind
+        it "raises a BadRequestError on invalid #{content_type} JSON" do
+          @env['CONTENT_TYPE'] = content_type
+          @env['rack.input'] = StringIO.new
+          @env['rack.input'] << %|{"foo":"bar" BORKEN}|
+          @env['rack.input'].rewind
 
-        expect{ @params.retrieve_params(@env) }.to raise_error(Goliath::Validation::BadRequestError)
+          expect{ @params.retrieve_params(@env) }.to raise_error(Goliath::Validation::BadRequestError)
+        end
       end
 
       it "doesn't parse unknown content types" do
