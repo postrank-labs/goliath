@@ -105,7 +105,7 @@ module Goliath
     # @api private
     def hookup_request_callbacks(req, errback, &blk)
       req.callback &blk
-      req.callback { stop }
+      req.callback { @request_complete = true }
 
       req.errback &errback if errback
       req.errback { stop }
@@ -182,6 +182,8 @@ module Goliath
     end
 
     def create_test_request(request_data)
+      wrap_log_block_for_testing(request_data)
+
       domain = request_data.delete(:domain) || "localhost:#{@test_server_port}"
       path = request_data.delete(:path) || ''
       opts = request_data.delete(:connection_options) || {}
@@ -197,6 +199,33 @@ module Goliath
           nil
         end
       end.new
+    end
+
+    # Wraps the Goliath::Request.log_block so it stops EventMachine after
+    # both the request and log block complete. Used to prevent the server from
+    # shutting down before the request finishes executing.
+    def wrap_log_block_for_testing(request_data)
+      @request_complete = false
+      log_block_wait_time = request_data.delete(:log_block_wait_time) || 1
+
+      original_log_block = Goliath::Request.log_block
+
+      Goliath::Request.log_block = proc do |env, response, elapsed_ms|
+        begin
+          EM.add_timer(log_block_wait_time) do
+            raise 'The log block took longer than' +
+              "#{log_block_wait_time} second(s)!"
+          end
+
+          original_log_block.call(env, response, elapsed_ms)
+        ensure
+          EM.next_tick { stop_after_request_completes }
+        end
+      end
+    end
+
+    def stop_after_request_completes
+      @request_complete ? stop : EM.next_tick { stop_after_request_completes }
     end
   end
 end
