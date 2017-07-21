@@ -227,12 +227,12 @@ module Goliath
         # HTTP 1.1: all requests are persistent requests, client
         # must send a Connection:close header to indicate otherwise
       when '1.1' then
-        (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
+        @env[HTTP_PREFIX + CONNECTION].to_s.downcase != 'close'
 
         # HTTP 1.0: all requests are non keep-alive, client must
         # send a Connection: Keep-Alive to indicate otherwise
       when '1.0' then
-        (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
+        @env[HTTP_PREFIX + CONNECTION].to_s.downcase == 'keep-alive'
       end
     end
 
