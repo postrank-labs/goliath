@@ -63,6 +63,8 @@ module Goliath
         end
       end
 
+      @env[GOLIATH_REQUEST] = self
+
       @state = :processing
     end
 
