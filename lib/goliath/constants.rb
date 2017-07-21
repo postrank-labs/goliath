@@ -51,5 +51,6 @@ module Goliath
 
     GOLIATH_ENV       = 'goliath.env'
     GOLIATH_SIGNATURE = 'goliath.signature'
+    GOLIATH_REQUEST   = 'goliath.request'
   end
 end
