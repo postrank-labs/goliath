@@ -41,8 +41,7 @@ module Goliath
         rescue Goliath::Validation::Error => e
           validation_error(e.status_code, e.message, e.headers.merge(headers))
         rescue Exception => e
-          env.logger.error(e.message)
-          env.logger.error(e.backtrace.join("\n"))
+          env.log_exception(e)
           validation_error(500, e.message, headers)
         end
       end

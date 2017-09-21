@@ -81,7 +81,7 @@ module Goliath
         env['handler'] = EM::WebSocket::HandlerFactory.build_with_request(conn, request,
             upgrade_data, false, false)
       rescue Exception => e
-        env.logger.error("#{e.message}\n#{e.backtrace.join("\n")}")
+        env.log_exception(e)
         return [500, {}, {:error => "Upgrade failed"}]
       end
       env['handler'].run

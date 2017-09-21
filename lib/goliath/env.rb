@@ -113,6 +113,17 @@ module Goliath
       self[RACK_LOGGER]
     end
 
+    # Convenience method for logging exceptions
+    #
+    # @param e [Exception] The exception to log
+    def log_exception(e)
+      logthis = "Exception:\n#{e.backtrace[0].gsub(/(.*?:.*?):(.*)/,'\1 \2')}: #{e.message} (#{e.class})\n"
+      e.backtrace[1..-1].each do |bt|
+        logthis += "\tfrom #{bt.gsub(/(.*?:.*?):(.*)/,'\1 \2')}\n"
+      end
+      self[RACK_LOGGER].error(logthis)
+    end
+
     # @param name [Symbol] The method to check if we respond to it.
     # @return [Boolean] True if the Env responds to the method, false otherwise
     def respond_to?(name)
