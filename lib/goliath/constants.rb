@@ -23,6 +23,7 @@ module Goliath
     RACK_VERSION_NUM = [1, 0]
     RACK_LOGGER     = 'rack.logger'
     RACK_EXCEPTION  = 'rack.exception'
+    RACK_URL_SCHEME = 'rack.url_scheme'
 
     ASYNC_CALLBACK  = 'async.callback'
     ASYNC_HEADERS   = 'async.headers'

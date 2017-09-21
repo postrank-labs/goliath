@@ -23,12 +23,13 @@ module Goliath
       @parser = Http::Parser.new
       @parser.on_headers_complete = proc do |h|
         env = Goliath::Env.new
-        env[SERVER_PORT] = port.to_s
-        env[RACK_LOGGER] = logger
-        env[OPTIONS]     = options
-        env[STATUS]      = status
-        env[CONFIG]      = config
-        env[REMOTE_ADDR] = remote_address
+        env[SERVER_PORT]     = port.to_s
+        env[RACK_LOGGER]     = logger
+        env[OPTIONS]         = options
+        env[STATUS]          = status
+        env[CONFIG]          = config
+        env[REMOTE_ADDR]     = remote_address
+        env[RACK_URL_SCHEME] = options[:ssl] ? "https" : "http"
 
         r = Goliath::Request.new(@app, self, env)
         r.parse_header(h, @parser) do
