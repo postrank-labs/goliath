@@ -228,9 +228,14 @@ module Goliath
       if e.is_a?(Goliath::Validation::Error)
         status, headers, body = [e.status_code, e.headers, ('{"error":"%s"}' % e.message)]
       else
-        @env[RACK_LOGGER].error("#{e.message}\n#{e.backtrace.join("\n")}")
-        message = Goliath.env?(:production) ? 'An error happened' : e.message
+        logthis = "#{e.backtrace[0]}: #{e.message} (#{e.class})\n"
+        e.backtrace[1..-1].each do |bt|
+          logthis += "    from #{bt}\n"
+        end
+        @env.logger.error(logthis)
+        @env[RACK_EXCEPTION] = e
 
+        message = Goliath.env?(:production) ? 'An error happened' : e.message
         status, headers, body = [500, {}, message]
       end
 
