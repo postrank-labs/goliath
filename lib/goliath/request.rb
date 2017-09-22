@@ -218,6 +218,24 @@ module Goliath
       end
     end
 
+    # Used to determine if the connection should  be kept open
+    #
+    # @return [Boolean] True to keep the connection open, false otherwise
+    def keep_alive
+      return false if @env[:terminate_connection]
+      case @env[HTTP_VERSION]
+        # HTTP 1.1: all requests are persistent requests, client
+        # must send a Connection:close header to indicate otherwise
+      when '1.1' then
+        @env[HTTP_PREFIX + CONNECTION].to_s.downcase != 'close'
+
+        # HTTP 1.0: all requests are non keep-alive, client must
+        # send a Connection: Keep-Alive to indicate otherwise
+      when '1.0' then
+        @env[HTTP_PREFIX + CONNECTION].to_s.downcase == 'keep-alive'
+      end
+    end
+
     private
 
     # Handles logging server exceptions
@@ -247,24 +265,6 @@ module Goliath
       # Note: #on_body and #response hooks may still fire if the data
       # is already in the parser buffer.
       succeed
-    end
-
-    # Used to determine if the connection should  be kept open
-    #
-    # @return [Boolean] True to keep the connection open, false otherwise
-    def keep_alive
-      return false if @env[:terminate_connection]
-      case @env[HTTP_VERSION]
-        # HTTP 1.1: all requests are persistent requests, client
-        # must send a Connection:close header to indicate otherwise
-      when '1.1' then
-        (@env[HTTP_PREFIX + CONNECTION].downcase != 'close') rescue true
-
-        # HTTP 1.0: all requests are non keep-alive, client must
-        # send a Connection: Keep-Alive to indicate otherwise
-      when '1.0' then
-        (@env[HTTP_PREFIX + CONNECTION].downcase == 'keep-alive') rescue false
-      end
     end
   end
 end
