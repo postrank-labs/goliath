@@ -79,6 +79,8 @@ module Goliath
     # @yield [String] The header line, headers and body content
     # @return [Nil]
     def each
+      return enum_for(__method__) unless block_given?
+
       yield head
       yield headers_output
 

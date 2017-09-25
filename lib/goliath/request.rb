@@ -197,28 +197,45 @@ module Goliath
         callback do
           begin
             @response.status, @response.headers, @response.body = status, headers, body
-            @response.each { |chunk| @conn.send_data(chunk) }
 
-            elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
-            begin
-              Goliath::Request.log_block.call(@env, @response, elapsed_time)
-            rescue => err
-              # prevent an infinite loop if the block raised an error
-              @env[RACK_LOGGER].error("log block raised #{err}")
+            stream_data(@response.each) do
+              terminate_request
             end
-
-            @conn.terminate_request(keep_alive)
           rescue Exception => e
             server_exception(e)
           end
         end
-
       rescue Exception => e
         server_exception(e)
       end
     end
 
     private
+
+    # Writes each chunk of the response data in a new tick. This achieves
+    # streaming, because EventMachine flushes the sent data to the socket at
+    # the end of each tick.
+    def stream_data(chunks, &block)
+      @conn.send_data(chunks.next)
+      EM.next_tick { stream_data(chunks, &block) }
+    rescue StopIteration
+      block.call
+    rescue Exception => e
+      server_exception(e)
+    end
+
+    # Logs the response time and terminates the request.
+    def terminate_request
+      elapsed_time = (Time.now.to_f - @env[:start_time]) * 1000
+      begin
+        Goliath::Request.log_block.call(@env, @response, elapsed_time)
+      rescue => err
+        # prevent an infinite loop if the block raised an error
+        @env[RACK_LOGGER].error("log block raised #{err}")
+      end
+
+      @conn.terminate_request(keep_alive)
+    end
 
     # Handles logging server exceptions
     #
