@@ -237,11 +237,6 @@ module Goliath
       headers['Content-Length'] = body.bytesize.to_s
       @env[:terminate_connection] = true
       post_process([status, headers, body])
-
-      # Mark the request as complete to force a flush on the response.
-      # Note: #on_body and #response hooks may still fire if the data
-      # is already in the parser buffer.
-      succeed
     end
 
     # Used to determine if the connection should  be kept open
