@@ -41,7 +41,8 @@ module Goliath
       end
 
       @parser.on_body = proc do |data|
-        @requests.first.parse(data)
+        req = @requests.first
+        req.parse(data) unless req.env[:terminate_connection]
       end
 
       @parser.on_message_complete = proc do
