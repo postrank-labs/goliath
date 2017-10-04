@@ -42,7 +42,8 @@ module Goliath
       end
 
       @parser.on_body = proc do |data|
-        @requests.first.parse(data)
+        req = @requests.first
+        req.parse(data) unless req.env[:terminate_connection]
       end
 
       @parser.on_message_complete = proc do
@@ -84,15 +85,17 @@ module Goliath
     end
 
     def terminate_request(keep_alive)
-      if req = @pending.shift
-        @current = req
-        @current.succeed
-      elsif @current
+      if @current
         @current.close
         @current = nil
       end
 
       close_connection_after_writing rescue nil if !keep_alive
+
+      if req = @pending.shift
+        @current = req
+        @current.succeed
+      end
     end
 
     def remote_address

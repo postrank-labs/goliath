@@ -4,17 +4,11 @@ module Goliath
       include Goliath::Rack::AsyncMiddleware
 
       def post_process(env, status, headers, body)
-        return [status, headers, body] if body.respond_to?(:to_ary)
-
-        new_body = []
-        if body.respond_to?(:each)
-          body.each { |chunk| new_body << chunk }
+        if body.is_a?(String)
+          [status, headers, [body]]
         else
-          new_body << body
+          [status, headers, body]
         end
-        new_body.collect! { |item| item.to_s }
-
-        [status, headers, new_body.flatten]
       end
     end
   end
