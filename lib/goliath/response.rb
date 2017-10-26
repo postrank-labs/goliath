@@ -13,7 +13,7 @@ module Goliath
     attr_accessor :status
 
     # The headers to send
-    attr_accessor :headers
+    attr_reader :headers
 
     # The body to send
     attr_accessor :body
