@@ -73,7 +73,7 @@ module Goliath
           end
         end
 
-      rescue HTTP::Parser::Error => e
+      rescue HTTP::Parser::Error
         terminate_request(false)
       end
     end
