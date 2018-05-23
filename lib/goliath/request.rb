@@ -214,8 +214,9 @@ module Goliath
 
     # Writes each chunk of the response data in a new tick. This achieves
     # streaming, because EventMachine flushes the sent data to the socket at
-    # the end of each tick.
+    # the end of each tick. Stops sending data if connection has been closed.
     def stream_data(chunks, &block)
+      return if @response.closed?
       @conn.send_data(chunks.next)
       EM.next_tick { stream_data(chunks, &block) }
     rescue StopIteration

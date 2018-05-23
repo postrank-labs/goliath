@@ -28,6 +28,7 @@ module Goliath
     def initialize
       @headers = Goliath::Headers.new
       @status = 200
+      @closed = false
     end
 
     # Creates the header line for the response
@@ -72,6 +73,14 @@ module Goliath
     # @return [Nil]
     def close
       body.close if body.respond_to?(:close)
+      @closed = true
+    end
+
+    # Returns whether the response has been closed
+    #
+    # @return [Boolean]
+    def closed?
+      @closed
     end
 
     # Yields each portion of the response
