@@ -251,7 +251,7 @@ module Goliath
       # @return [String | nil] Template file or nil if it doesn't exist.
       def find_template(views, name, engine)
         filename = ::File.join(views, "#{name}.#{engine}")
-        File.exists?(filename) ? filename : nil
+        File.exist?(filename) ? filename : nil
       end
 
       # Renders a template with the given engine. Don't call this directly --

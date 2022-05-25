@@ -132,7 +132,7 @@ module Goliath
     def load_config(file = nil)
       api_name = api.class.to_s.gsub('::', '_').gsub(/([^_A-Z])([A-Z])/,'\1_\2').downcase!
       file ||= "#{config_dir}/#{api_name}.rb"
-      return unless File.exists?(file)
+      return unless File.exist?(file)
 
       proc = Proc.new {} # create proc to grab binding
       eval(IO.read(file), proc.binding, file)
