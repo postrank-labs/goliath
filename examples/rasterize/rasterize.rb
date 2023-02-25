@@ -17,7 +17,7 @@ class Rasterize < Goliath::API
     url = PostRank::URI.clean(params['url'])
     hash = PostRank::URI.hash(url, :clean => false)
 
-    if !File.exists? filename(hash)
+    if !File.exist? filename(hash)
       fiber = Fiber.current
       EM.system('phantomjs rasterize.js ' + url.to_s + ' ' + filename(hash)) do |output, status|
         env.logger.info "Phantom exit status: #{status}"
